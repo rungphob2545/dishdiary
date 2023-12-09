@@ -1,6 +1,7 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import Home from './components/Home.vue';
+import Home from "./components/Home.vue";
+import Navbar from "./components/Navbar.vue";
+import Search from "./components/Search.vue";
 </script>
 
 <template>
@@ -13,6 +14,7 @@ import Home from './components/Home.vue';
     </a>
   </div>
   <HelloWorld msg="Vite + Vue" /> -->
+
   <Home />
 </template>
 

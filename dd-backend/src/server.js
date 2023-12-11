@@ -4,7 +4,7 @@ const ip = require("ip");
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "http://localhost:80",
 };
 
 const port = process.env.PORT || 8080;
@@ -42,9 +42,9 @@ const router = require("./routes");
 app.use("/api", router);
 
 app.get("/", (req, res) => {
-  res.json({ message: "Hello from api!" });
+  res.status(200).json({ message: "Hello from api!" });
 });
 
 app.listen(port, () =>
-  console.log(`app listening on: ${ip.address()}:${port}`)
+  console.log(`[server] listening on: ${ip.address()}:${port}`)
 );

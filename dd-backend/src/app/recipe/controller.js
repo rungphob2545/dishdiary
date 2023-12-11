@@ -47,6 +47,7 @@ const addRecipe = async (req, res) => {
 
 const updateRecipe = async (req, res) => {
   let id = req.params.id;
+
   try {
     const recipe = await Recipe.update(req.body, { where: { id: id } });
     res.status(200).send("update success");

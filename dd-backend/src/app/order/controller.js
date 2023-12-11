@@ -1,4 +1,4 @@
-const db = require("../../");
+const db = require("../..");
 const Order = db.orders;
 
 const createOrder = async (req, res) => {

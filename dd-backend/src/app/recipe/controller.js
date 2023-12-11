@@ -16,6 +16,7 @@ const getRecipeById = async (req, res) => {
   console.log(recipe);
 };
 
+//add new recipe(s)
 const addRecipe = async (req, res) => {
   if (!req.body) {
     res.status(400).send({
@@ -31,7 +32,7 @@ const addRecipe = async (req, res) => {
 
   try {
     const recipe = await Recipe.create(result);
-    res.status(200).send(recipe);
+    res.status(201).send(recipe);
     console.log(recipe);
   } catch (err) {
     res.status(500).send({

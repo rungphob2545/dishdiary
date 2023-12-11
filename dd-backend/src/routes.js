@@ -8,6 +8,7 @@ router.get("/recipe", recipeController.getAllRecipe);
 router.get("/recipe/:id", recipeController.getRecipeById);
 router.post("/recipe", recipeController.addRecipe);
 router.delete("/recipe/:id", recipeController.removeRecipe);
+router.put("/recipe/:id", recipeController.updateRecipe);
 
 router.post("/order", orderController.createOrder);
 

@@ -3,7 +3,6 @@ WORKDIR /app
 COPY package*.json ./
 COPY . .
 RUN npm install
-RUN npm install vue-router@4
 RUN npm run build
 
 FROM nginx:stable-alpine as production-stage

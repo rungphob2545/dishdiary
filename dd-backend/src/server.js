@@ -45,11 +45,8 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Hello from api!" });
 });
 
-<<<<<<< HEAD
 
-app.listen(port, () => console.log(`app listening on: ${ip.address()}:${port}`));
-=======
 app.listen(port, () =>
   console.log(`[server] listening on: ${ip.address()}:${port}`)
 );
->>>>>>> 8ea8db4bbc0d9a85bed0d5ead2d22c1b52e27f54
+

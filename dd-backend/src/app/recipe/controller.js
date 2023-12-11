@@ -3,7 +3,9 @@ const Recipe = db.recipes;
 
 //get all recipe
 const getAllRecipe = async (req, res) => {
-  const recipe = await Recipe.findAll();
+  const recipe = await Recipe.findAll({
+    attributes: ["id", "recipeName", "recipeImage"],
+  });
   res.status(200).send(recipe);
   console.log(recipe);
 };
@@ -26,8 +28,11 @@ const addRecipe = async (req, res) => {
   }
   let result = {
     recipeName: req.body.recipeName,
-    cookingInstruction: req.body.cookingInstruction,
+    cookingSteps: req.body.cookingSteps,
+    cookingIngredients: req.body.cookingIngredients,
+    introduce: req.body.introduce,
     recipeImage: req.body.recipeImage,
+    categoryId: req.body.categoryId,
   };
 
   try {
@@ -39,6 +44,12 @@ const addRecipe = async (req, res) => {
       message: err.message || " Error occurred while creating",
     });
   }
+};
+
+const updateRecipe = async (req, res) => {
+  let id = req.params.id;
+  const recipe = await Recipe.update(req.body, { where: { id: id } });
+  res.status(200).send("Recipe have been edit");
 };
 
 const removeRecipe = async (req, res) => {

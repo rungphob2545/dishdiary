@@ -5,6 +5,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 
 const items = ref({});
+const itemline = ref([]);
 
 const fetchData = async (id) => {
   try {
@@ -17,7 +18,6 @@ const fetchData = async (id) => {
     console.error("Error fetching data:", error);
   }
 };
-
 onMounted(() => {
   const route = useRoute();
   const id = route.params.id;
@@ -31,12 +31,15 @@ onMounted(() => {
     <div>
       <Navbar />
     </div>
-    <div class="mt-[-900px] ml-64 justify-start flex flex-wrap">
+    <div class="mt-[-900px] ml-64 justify-start flex-wrap">
       <p>{{ items.recipeName }}</p>
-      <p>{{ items.cookingInstruction }}</p>
+      <br />
+      <p>{{ items.introduce }}</p>
+      <p>{{ items.cookingIngredients }}</p>
       <p>
         <img class="w-[450px] h-[300px]" v-bind:src="items.recipeImage" />
       </p>
+      <p>{{ items.cookingSteps }}</p>
     </div>
   </div>
 

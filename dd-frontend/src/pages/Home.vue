@@ -5,11 +5,15 @@ import Navbar from "../components/Navbar.vue";
 
 const items = ref([]);
 
+console.log(import.meta.env.VITE_APP_API_URL);
 const fetchData = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/api/recipe", {
-      method: "GET",
-    });
+    const response = await axios.get(
+      `${import.meta.env.VITE_APP_API_URL}/api/recipe`,
+      {
+        method: "GET",
+      }
+    );
     items.value = response.data;
     console.log(items.value);
   } catch (error) {

@@ -8,7 +8,9 @@ const items = ref({});
 
 const fetchData = async (id) => {
   try {
-    const response = await axios.get(`http://localhost:8080/api/recipe/${id}`);
+    const response = await axios.get(
+      `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe/" + `${id}`
+    );
     items.value = response.data;
     console.log(items);
   } catch (error) {

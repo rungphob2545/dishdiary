@@ -25,8 +25,11 @@ const addRecipe = async (req, res) => {
   }
   let result = {
     recipeName: req.body.recipeName,
-    cookingInstruction: req.body.cookingInstruction,
+    cookingSteps: req.body.cookingSteps,
+    cookingIngredients: req.body.cookingIngredients,
+    introduce: req.body.introduce,
     recipeImage: req.body.recipeImage,
+    categoryId: req.body.categoryId,
   };
 
   try {
@@ -40,6 +43,12 @@ const addRecipe = async (req, res) => {
   }
 };
 
+const updateRecipe = async (req, res) => {
+  let id = req.params.id;
+  const recipe = await Recipe.update(req.body, { where: { id: id } });
+  res.status(200).send("Recipe have been edit");
+};
+
 const removeRecipe = async (req, res) => {
   let id = req.params.id;
   await Recipe.destroy({ where: { id: id } });
@@ -51,4 +60,5 @@ module.exports = {
   getRecipeById,
   addRecipe,
   removeRecipe,
+  updateRecipe,
 };

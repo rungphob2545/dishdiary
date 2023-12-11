@@ -1,6 +1,16 @@
 const db = require("../..");
 const Order = db.orders;
 
+const getOwnOrder = async (req, res) => {
+  const userId = req.params.id;
+  if (!userId) {
+    return res.status(400).json({ message: "Invalid Data" });
+  }
+  const order = await Order.findAll({ where: { userId: userId } });
+  res.status(200).send(order);
+  console.log(order);
+};
+
 const createOrder = async (req, res) => {
   try {
     const userId = req.body.userId;
@@ -32,4 +42,5 @@ const createOrder = async (req, res) => {
 
 module.exports = {
   createOrder,
+  getOwnOrder,
 };

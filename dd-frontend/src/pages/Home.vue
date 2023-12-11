@@ -14,6 +14,7 @@ const fetchData = async () => {
         method: "GET",
       }
     );
+
     items.value = response.data;
     console.log(items.value);
   } catch (error) {
@@ -31,7 +32,13 @@ onBeforeMount(() => {
     <div>
       <Navbar />
     </div>
-    <div class="mt-[-900px] ml-64 justify-start flex flex-wrap">
+    <div
+      class="mt-[-900px] ml-64 justify-start flex flex-wrap"
+      v-if="items.length < 1"
+    >
+      <h1>No Recipe</h1>
+    </div>
+    <div class="mt-[-900px] ml-64 justify-start flex flex-wrap" v-else>
       <ul v-for="item in items" :key="item.id" class="px-5 pb-10">
         <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
           <li>{{ item.recipeName }}</li>

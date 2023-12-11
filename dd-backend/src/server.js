@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const ip = require("ip");
 const app = express();
 
 const corsOptions = {
@@ -21,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
       console.log("Table and model has been synced");
     })
     .catch((err) => {
-      console.log("Error syncing the table and model");
+      console.log(err,"Error syncing the table and model");
     });
 })();
 
@@ -44,4 +45,4 @@ app.get("/", (req, res) => {
   res.json({ message: "Hello from api!" });
 });
 
-app.listen(port, () => console.log(`app listening on port ${port}`));
+app.listen(port, () => console.log(`app listening on: ${ip.address()}:${port}`));

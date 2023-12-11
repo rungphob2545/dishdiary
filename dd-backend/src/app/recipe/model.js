@@ -34,8 +34,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       recipeImage: {
-        field: "recipe_price",
-        type: DataTypes.INTEGER,
+        field: "recipe_image",
+        type: DataTypes.STRING,
         allowNull: false,
       },
     },

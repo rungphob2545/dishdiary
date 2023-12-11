@@ -6,13 +6,15 @@ export default {
 
 <template>
   <!-- Search input -->
-  <div class="mb-4">
-    <!-- Add w-812 and h-57 classes for width and height -->
+  <div class="relative">
     <input
       type="text"
-      class="w-[400px] h-8 bg-gray-700 text-white px-4 py-2 rounded"
+      class="w-[500px] h-[45px] bg-gray-700 text-white p-4 rounded mr-[420px] pl-10"
       placeholder="Search..."
     />
+    <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+      <i class="fas fa-search text-gray-400"></i>
+    </span>
   </div>
 
   <!-- Content -->

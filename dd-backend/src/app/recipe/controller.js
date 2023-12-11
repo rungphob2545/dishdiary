@@ -1,4 +1,4 @@
-const db = require("../../");
+const db = require("../..");
 const Recipe = db.recipes;
 
 //get all recipe

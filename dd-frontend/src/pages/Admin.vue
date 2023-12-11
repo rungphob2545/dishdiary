@@ -6,11 +6,11 @@ import Navbar from "../components/Navbar.vue";
 const items = ref([]);
 const isOpen = ref(false);
 
-console.log(import.meta.env.VITE_APP_API_URL);
+console.log(import.meta.env.VITE_PRODUCT_API_URL);
 const fetchData = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/recipe`,
+      `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe`,
       {
         method: "GET",
       }
@@ -27,7 +27,7 @@ const removeData = async (id) => {
   try {
     if (confirm("Delete this user?") == true) {
       const response = await axios.delete(
-        `${import.meta.env.VITE_APP_API_URL}/api/recipe/${id}`,
+        `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe/${id}`,
         {
           method: "DELETE",
         }

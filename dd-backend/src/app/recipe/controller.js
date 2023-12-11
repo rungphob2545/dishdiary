@@ -34,7 +34,7 @@ const addRecipe = async (req, res) => {
 
   try {
     const recipe = await Recipe.create(result);
-    res.status(200).send(recipe);
+    res.status(201).send(recipe);
     console.log(recipe);
   } catch (err) {
     res.status(500).send({

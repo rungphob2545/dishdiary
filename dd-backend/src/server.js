@@ -4,7 +4,7 @@ const ip = require("ip");
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost",
+  origin: "http://10.4.85.10",
 };
 
 const port = process.env.PORT || 8080;

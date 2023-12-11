@@ -5,11 +5,11 @@ import Navbar from "../components/Navbar.vue";
 
 const items = ref([]);
 
-console.log(import.meta.env.VITE_APP_API_URL);
+console.log(import.meta.env.VITE_PRODUCT_API_URL);
 const fetchData = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/recipe`,
+      `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe`,
       {
         method: "GET",
       }

@@ -58,12 +58,6 @@ const removeRecipe = async (req, res) => {
   res.status(200).send("Recipe has been deleted");
 };
 
-const updateRecipe = async (req, res) => {
-  let id = req.params.id;
-  const recipe = await Recipe.update(req.body, { where: { id: id } });
-  res.status(200).send("Recipe have been edit");
-};
-
 module.exports = {
   getAllRecipe,
   getRecipeById,

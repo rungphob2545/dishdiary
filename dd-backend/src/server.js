@@ -22,11 +22,7 @@ app.use(express.urlencoded({ extended: true }));
       console.log("Table and model has been synced");
     })
     .catch((err) => {
-<<<<<<< HEAD
-      console.log(err,"Error syncing the table and model");
-=======
       console.log(err, "Error syncing the table and model");
->>>>>>> 4adc2b6f2abbe30c123744d3f88cda065f8d7673
     });
 })();
 
@@ -49,10 +45,5 @@ app.get("/", (req, res) => {
   res.json({ message: "Hello from api!" });
 });
 
-<<<<<<< HEAD
+
 app.listen(port, () => console.log(`app listening on: ${ip.address()}:${port}`));
-=======
-app.listen(port, () =>
-  console.log(`app listening on: ${ip.address()}:${port}`)
-);
->>>>>>> 4adc2b6f2abbe30c123744d3f88cda065f8d7673

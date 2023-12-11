@@ -34,7 +34,7 @@ const addRecipe = async (req, res) => {
 
   try {
     const recipe = await Recipe.create(result);
-    res.status(200).send(recipe);
+    res.status(201).send(recipe);
     console.log(recipe);
   } catch (err) {
     res.status(500).send({
@@ -45,8 +45,15 @@ const addRecipe = async (req, res) => {
 
 const updateRecipe = async (req, res) => {
   let id = req.params.id;
-  const recipe = await Recipe.update(req.body, { where: { id: id } });
-  res.status(200).send("Recipe have been edit");
+  try {
+    const recipe = await Recipe.update(req.body, { where: { id: id } });
+    res.status(200).send("update success");
+    console.log(recipe);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || " Error occurred while updating",
+    });
+  }
 };
 
 const removeRecipe = async (req, res) => {

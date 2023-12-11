@@ -32,13 +32,15 @@ onMounted(() => {
       <Navbar />
     </div>
     <div class="mt-[-900px] ml-64 justify-start flex-wrap">
-      <p>{{ items.recipeName }}</p>
+      <p class="text-[30px]">{{ items.recipeName }}</p>
       <br />
       <p>{{ items.introduce }}</p>
+      <h1 class="text-[30px]">ส่วนผสมในการทำอาหาร</h1>
       <p>{{ items.cookingIngredients }}</p>
       <p>
         <img class="w-[450px] h-[300px]" v-bind:src="items.recipeImage" />
       </p>
+      <h1 class="text-[30px]">ขั้นตอนการทำอาหาร</h1>
       <p>{{ items.cookingSteps }}</p>
     </div>
   </div>

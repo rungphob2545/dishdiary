@@ -3,7 +3,9 @@ const Recipe = db.recipes;
 
 //get all recipe
 const getAllRecipe = async (req, res) => {
-  const recipe = await Recipe.findAll();
+  const recipe = await Recipe.findAll({
+    attributes: ["id", "recipeName", "recipeImage"],
+  });
   res.status(200).send(recipe);
   console.log(recipe);
 };

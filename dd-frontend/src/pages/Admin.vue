@@ -29,7 +29,7 @@ const fetchDataById = async (id) => {
   console.log(id);
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe/" + `${id}`
+      `${import.meta.env.VITE_PRODUCT_API_URL}` + "/api/recipe/" + `${id}`
     );
     recipe.value = response.data;
     console.log(recipe);
@@ -55,7 +55,7 @@ const createData = async (
   );
   try {
     const response = await axios.post(
-      `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe",
+      `${import.meta.env.VITE_PRODUCT_API_URL}` + "/api/recipe",
       {
         recipeName: recipeName,
         introduce: introduce,
@@ -114,7 +114,7 @@ const editData = async (
   try {
     if (confirm("Edit data?") == true) {
       const response = await axios.put(
-        `${import.meta.env.VITE_APP_API_URL}/api/recipe/${id}`,
+        `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe/${id}`,
         {
           recipeName: recipeName,
           introduce: introduce,

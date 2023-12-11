@@ -7,7 +7,11 @@ const sequelize = new Sequelize(
   dbConfig.PASSWORD,
   {
     host: dbConfig.HOST,
+<<<<<<< HEAD
     port: dbConfig.PORT_DB,		  
+=======
+    port: dbConfig.PORT_DB,
+>>>>>>> 4adc2b6f2abbe30c123744d3f88cda065f8d7673
     dialect: dbConfig.DIALECT,
   }
 );
@@ -21,5 +25,7 @@ db.ingredients = require("./app/ingredient/model")(
   Sequelize.DataTypes
 );
 db.recipes = require("./app/recipe/model")(sequelize, Sequelize.DataTypes);
+db.orders = require("./app/order/model")(sequelize, Sequelize.DataTypes);
+db.users = require("./app/user/model")(sequelize, Sequelize.DataTypes);
 
 module.exports = db;

@@ -28,6 +28,15 @@ module.exports = (sequelize, DataTypes) => {
         field: "recipe_name",
         type: DataTypes.STRING,
         allowNull: false,
+        unique: {
+          msg: "Validation error: Name must be unique",
+        },
+        validate: {
+          len: {
+            args: [4, 50],
+            msg: "Name must between 4 - 50 character",
+          },
+        },
       },
       cookingSteps: {
         field: "cooking_steps",
@@ -46,6 +55,7 @@ module.exports = (sequelize, DataTypes) => {
         field: "recipe_image",
         type: DataTypes.STRING,
         allowNull: false,
+        // isUrl: true
       },
       categoryId: {
         field: "category_id",

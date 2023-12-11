@@ -46,8 +46,26 @@ const addRecipe = async (req, res) => {
   }
 };
 
+//update recipe(s)
 const updateRecipe = async (req, res) => {
   let id = req.params.id;
+  let updateField = req.body;
+
+  let allowedFields = [
+    "cookingSteps",
+    "cookingIngredients",
+    "introduce",
+    "recipeImage",
+  ];
+
+  let filteredUpdate = {};
+
+  allowedFields.forEach((field) => {
+    if (updateField[field]) {
+      filteredUpdate[field] = updateField[field];
+    }
+  });
+
   const recipe = await Recipe.update(req.body, { where: { id: id } });
   res.status(200).send("Recipe have been edit");
 };

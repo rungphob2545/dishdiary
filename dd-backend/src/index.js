@@ -23,5 +23,7 @@ db.ingredients = require("./app/ingredient/model")(
 db.recipes = require("./app/recipe/model")(sequelize, Sequelize.DataTypes);
 db.orders = require("./app/order/model")(sequelize, Sequelize.DataTypes);
 db.users = require("./app/user/model")(sequelize, Sequelize.DataTypes);
+db.carts = require("./app/cart/model")(sequelize, Sequelize.DataTypes);
+db.categories = require("./app/category/model")(sequelize, Sequelize.DataTypes);
 
 module.exports = db;

@@ -29,13 +29,27 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      cookingInstruction: {
-        field: "cooking_instruction",
+      cookingSteps: {
+        field: "cooking_steps",
+        type: DataTypes.STRING,
+      },
+      cookingIngredients: {
+        field: "cooking_ingredients",
+        type: DataTypes.STRING,
+      },
+
+      introduce: {
+        field: "introduce",
         type: DataTypes.STRING,
       },
       recipeImage: {
         field: "recipe_image",
         type: DataTypes.STRING,
+        allowNull: false,
+      },
+      categoryId: {
+        field: "category_id",
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
     },

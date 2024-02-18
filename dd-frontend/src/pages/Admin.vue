@@ -8,6 +8,7 @@ const recipe = ref({});
 const isOpen = ref(false);
 const isOpenCreate = ref(false);
 const newRecipe = ref({});
+const errors = ref(null);
 
 console.log(import.meta.env.VITE_APP_API_URL);
 const fetchData = async () => {
@@ -73,8 +74,9 @@ const createData = async (
       console.log("Error adding recipe");
     }
   } catch (error) {
-    console.error("Error adding recipe:", error);
-    console.log(error.response);
+    console.error("Error adding recipe:", error.response.data.message);
+    errors.value = error.response.data.message;
+    console.log(errors);
   }
 };
 
@@ -275,27 +277,32 @@ onBeforeMount(() => {
               </div>
               <div class="flex justify-between"></div>
             </form>
-            <button
-              @click="isOpenCreate = false"
-              class="px-6 py-2 text-blue-800 border border-blue-600 rounded"
-            >
-              Cancel
-            </button>
-            <button
-              class="px-6 py-2 ml-2 text-blue-100 bg-blue-600 rounded"
-              @click="
-                createData(
-                  newRecipe.recipeName,
-                  newRecipe.introduce,
-                  newRecipe.cookingIngredients,
-                  newRecipe.cookingSteps,
-                  newRecipe.recipeImage,
-                  newRecipe.categoryId
-                )
-              "
-            >
-              Save
-            </button>
+            <div v-if="errors" class="text-red-500 mt-2 text-2xl mb-4">
+              {{ errors }}
+            </div>
+            <div class="">
+              <button
+                @click="isOpenCreate = false"
+                class="px-6 py-2 text-blue-800 border border-blue-600 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                class="px-6 py-2 ml-2 text-blue-100 bg-blue-600 rounded"
+                @click="
+                  createData(
+                    newRecipe.recipeName,
+                    newRecipe.introduce,
+                    newRecipe.cookingIngredients,
+                    newRecipe.cookingSteps,
+                    newRecipe.recipeImage,
+                    newRecipe.categoryId
+                  )
+                "
+              >
+                Save
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -453,6 +460,9 @@ onBeforeMount(() => {
                   </div>
                   <div class="flex justify-between"></div>
                 </form>
+                <div v-if="errors" class="text-red-500 mt-2 text-2xl mb-4">
+                  {{ errors }}
+                </div>
                 <button
                   @click="isOpenCreate = false"
                   class="px-6 py-2 text-blue-800 border border-blue-600 rounded"

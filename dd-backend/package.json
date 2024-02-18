@@ -15,6 +15,9 @@
     "mysql2": "^3.6.3",
     "nodemon": "^3.0.1",
     "pg": "^8.11.3",
-    "sequelize": "^6.33.0"
+    "sequelize": "^6.33.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "yaml": "^2.3.4"
   }
 }

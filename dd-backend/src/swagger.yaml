@@ -1,12 +1,12 @@
 openapi: 3.0.0
 info:
-  title: Sample API
+  title: Dish Diary API
   description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
   version: 0.1.9
 servers:
   - url: http://localhost:8080
 paths:
-  /recipe:
+  /api/recipe:
     get:
       summary: Returns a list of recipes.
       responses:
@@ -18,3 +18,17 @@ paths:
                 type: array
                 items:
                   type: string
+    post:
+      summary: Creates a user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipe:
+                  type: string
+      responses:
+        "201":
+          description: Created

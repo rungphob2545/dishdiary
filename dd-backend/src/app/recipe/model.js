@@ -1,25 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../..");
 
-// const Recipe = sequelize.define("recipes", {
-//   recipeName: {
-//     field: "recipe_name",
-//     type: DataTypes.STRING,
-//     allowNull: false,
-//   },
-//   cookingInstrcution: {
-//     field: "cooking_instruction",
-//     type: DataTypes.STRING,
-//   },
-//   recipeImage: {
-//     field: "recipe_price",
-//     type: DataTypes.INTEGER,
-//     allowNull: false,
-//   },
-// });
-
-// Recipe.sync();
-
 module.exports = (sequelize, DataTypes) => {
   const Recipe = sequelize.define(
     "recipes",
@@ -33,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         validate: {
           len: {
-            args: [4, 50],
-            msg: "Name must between 4 - 50 character",
+            args: [5, 20],
+            msg: "Name must between 5 - 20 characters",
           },
         },
       },

@@ -3,9 +3,18 @@ const cors = require("cors");
 const ip = require("ip");
 const app = express();
 const path = require("path");
+const swaggerUi = require("swagger-ui-express");
+
+const fs = require("fs");
+const YAML = require("yaml");
+const file = fs.readFileSync("src/swagger.yaml", "utf8");
+const swaggerDoc = YAML.parse(file);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 const corsOptions = {
   origin: "http://localhost",
+  origin: "http://10.4.85.10",
 };
 
 //port

@@ -49,6 +49,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //routes
 const router = require("./routes");
+const multer = require("multer");
 app.use("/api", router);
 
 //static img folder

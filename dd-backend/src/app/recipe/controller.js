@@ -1,5 +1,37 @@
+const { STATUS_CODES } = require("http");
 const db = require("../..");
 const Recipe = db.recipes;
+const multer = require("multer");
+const path = require("path");
+const { json } = require("sequelize");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./dist/images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  // limits: { fileSize: '1000000'}
+  fileFilter: (req, file, cb) => {
+    const fileTypes = /jpeg|jpg|png|gif/;
+    const mimeType = fileTypes.test(file.mimetype);
+    const extname = fileTypes.test(path.extname(file.originalname));
+
+    if (mimeType && extname) {
+      return cb(null, true);
+    }
+    const err = new Error();
+    err.message = "Please select an image file (jpg, jpeg, or png)";
+    err.status = 400;
+    return cb(err);
+  },
+}).single("recipeImage");
+//.array('3','images') if multiple upload
 
 //get all recipe
 const getAllRecipe = async (req, res) => {
@@ -25,12 +57,27 @@ const addRecipe = async (req, res) => {
     });
     return;
   }
+
+  const existingRecipe = await Recipe.findOne({
+    where: { recipeName: req.body.recipeName },
+  });
+  if (existingRecipe) {
+    return res.status(400).send({ message: "Recipe name must be unique" });
+  }
+
+  const minLength = 5;
+  if (req.body.recipeName.length < minLength) {
+    return res.status(400).send({
+      message: `Recipe name must be at least ${minLength} characters long`,
+    });
+  }
+
   let result = {
     recipeName: req.body.recipeName,
     cookingSteps: req.body.cookingSteps,
     cookingIngredients: req.body.cookingIngredients,
     introduce: req.body.introduce,
-    recipeImage: req.body.recipeImage,
+    recipeImage: req.file.path,
     categoryId: req.body.categoryId,
   };
 
@@ -39,6 +86,7 @@ const addRecipe = async (req, res) => {
     res.status(201).send(recipe);
     console.log(recipe);
   } catch (err) {
+    console.log(result);
     res.status(500).send({
       message: err.message || " Error occurred while creating",
     });
@@ -70,4 +118,5 @@ module.exports = {
   addRecipe,
   removeRecipe,
   updateRecipe,
+  upload,
 };

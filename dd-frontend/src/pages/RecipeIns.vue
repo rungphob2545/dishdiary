@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
@@ -13,17 +13,28 @@ const fetchData = async (id) => {
       `${import.meta.env.VITE_PRODUCT_API_URL}` + "/api/recipe/" + `${id}`
     );
     items.value = response.data;
-    console.log(items);
+    console.log(response.data);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 };
+
 onMounted(() => {
   const route = useRoute();
   const id = route.params.id;
   console.log(id);
   fetchData(id);
 });
+
+const formatCookingSteps = (steps) => {
+  return steps ? steps.replace(/\\n/g, "\n") : "";
+};
+
+// const formattedCookingSteps = computed(() => {
+//   return items.value.cookingSteps
+//     ? items.value.cookingSteps.replace(/\\n/g, "\n")
+//     : "";
+// });
 </script>
 
 <template>
@@ -36,12 +47,18 @@ onMounted(() => {
       <br />
       <p>{{ items.introduce }}</p>
       <h1 class="text-[30px]">ส่วนผสมในการทำอาหาร</h1>
-      <p>{{ items.cookingIngredients }}</p>
+      <p class="formatted-text">
+        {{ formatCookingSteps(items.cookingIngredients) }}
+      </p>
       <p>
-        <img class="w-[450px] h-[300px]" v-bind:src="items.recipeImage" />
+        <img
+          class="w-[450px] h-[300px]"
+          v-bind:src="`http://localhost:8080/${items.recipeImage}`"
+        />
       </p>
       <h1 class="text-[30px]">ขั้นตอนการทำอาหาร</h1>
-      <p>{{ items.cookingSteps }}</p>
+      <p class="formatted-text">{{ formatCookingSteps(items.cookingSteps) }}</p>
+      <p>{{ items.categoryId }}</p>
     </div>
   </div>
 
@@ -50,4 +67,8 @@ onMounted(() => {
   <!-- Navigation bar at the bottom -->
 </template>
 
-<style scoped></style>
+<style scoped>
+.formatted-text {
+  white-space: pre-wrap;
+}
+</style>

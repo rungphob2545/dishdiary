@@ -43,7 +43,10 @@ onBeforeMount(() => {
         <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
           <li>{{ item.recipeName }}</li>
           <li>
-            <img class="w-[450px] h-[300px]" v-bind:src="item.recipeImage" />
+            <img
+              class="w-[450px] h-[300px]"
+              v-bind:src="`http://localhost:8080/${item.recipeImage}`"
+            />
           </li>
           <li class="p-4 text-right">ดูเพิ่มเติม...</li>
         </router-link>

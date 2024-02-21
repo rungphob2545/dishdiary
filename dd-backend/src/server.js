@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const ip = require("ip");
 const app = express();
+const path = require("path");
 const swaggerUi = require("swagger-ui-express");
 
 const fs = require("fs");
@@ -13,10 +14,14 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 const corsOptions = {
   origin: "http://localhost",
+  origin: "http://10.4.85.10",
 };
 
+//port
 const port = process.env.PORT || 8080;
 const db = require(".");
+
+const Category = db.categories;
 
 //middleware
 app.use(cors(corsOptions));
@@ -27,6 +32,12 @@ app.use(express.urlencoded({ extended: true }));
   await db.sequelize
     .sync({ force: true })
     .then((data) => {
+      const categories = Category.bulkCreate([
+        { categoryName: "Egg" },
+        { categoryName: "Beef" },
+        { categoryName: "Chicken" },
+        { categoryName: "Pork" },
+      ]);
       console.log("Table and model has been synced");
     })
     .catch((err) => {
@@ -47,8 +58,13 @@ app.use(express.urlencoded({ extended: true }));
 
 //routes
 const router = require("./routes");
+const multer = require("multer");
 app.use("/api", router);
 
+//static img folder
+app.use("/dist/images", express.static("dist/images"));
+
+//server
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Hello from api!" });
 });

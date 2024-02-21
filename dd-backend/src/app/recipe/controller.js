@@ -45,6 +45,12 @@ const getAllRecipe = async (req, res) => {
 //get one recipe by id
 const getRecipeById = async (req, res) => {
   let id = req.params.id;
+  const existingRecipe = await Recipe.findOne({
+    where: { id: id },
+  });
+  if (!existingRecipe) {
+    return res.status(404).send({ message: "Error: Not Found" });
+  }
   const recipe = await Recipe.findOne({ where: { id: id } });
   res.status(200).send(recipe);
   console.log(recipe);
@@ -95,6 +101,12 @@ const addRecipe = async (req, res) => {
 
 const updateRecipe = async (req, res) => {
   let id = req.params.id;
+  const existingRecipe = await Recipe.findOne({
+    where: { id: id },
+  });
+  if (!existingRecipe) {
+    return res.status(404).send({ message: "Error: Not Found" });
+  }
   try {
     const recipe = await Recipe.update(req.body, { where: { id: id } });
     res.status(200).send("update success");
@@ -108,8 +120,26 @@ const updateRecipe = async (req, res) => {
 
 const removeRecipe = async (req, res) => {
   let id = req.params.id;
+  const existingRecipe = await Recipe.findOne({
+    where: { id: id },
+  });
+  if (!existingRecipe) {
+    return res.status(404).send({ message: "Error: Not Found" });
+  }
   await Recipe.destroy({ where: { id: id } });
   res.status(200).send("Recipe has been deleted");
+};
+
+const getRecipeByCategory = async (req, res) => {
+  let id = req.params.id;
+  const existingCategory = await Recipe.findOne({
+    where: { categoryId: id },
+  });
+  if (!existingCategory) {
+    return res.status(404).send({ message: "Error: Not Found" });
+  }
+  const recipe = await Recipe.findAll({ where: { categoryId: id } });
+  res.status(200).send(recipe);
 };
 
 module.exports = {
@@ -119,4 +149,5 @@ module.exports = {
   removeRecipe,
   updateRecipe,
   upload,
+  getRecipeByCategory,
 };

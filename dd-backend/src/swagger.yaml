@@ -23,13 +23,64 @@ paths:
       requestBody:
         required: true
         content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                recipeName:
+                  type: string
+                cookingSteps:
+                  type: string
+                cookingIngredients:
+                  type: string
+                introduce:
+                  type: string
+                categoryId:
+                  type: string
+                recipeImage:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: Created
+
+  /api/recipe/{recipeId}:
+    parameters:
+      - name: recipeId
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      summary: Updates a recipe.
+      requestBody:
+        required: true
+        content:
           application/json:
             schema:
               type: object
               properties:
-                recipe:
+                introduce:
+                  type: string
+                cookingIngredients:
+                  type: string
+                cookingSteps:
                   type: string
       responses:
-        "201":
-          description: Created
-    
+        "200":
+          description: OK
+        "404":
+          description: Recipe not found
+    delete:
+      summary: Deletes a recipe.
+      parameters:
+        - name: recipeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Recipe not found

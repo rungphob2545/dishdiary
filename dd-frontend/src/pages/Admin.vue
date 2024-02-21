@@ -232,7 +232,7 @@ const isRecipeNameValid = () => {
     >
       <div class="max-w-2xl p-6 bg-white rounded-md shadow-xl w-1/2">
         <div class="flex items-center justify-between">
-          <h3 class="text-2xl">Create Recipe</h3>
+          <h3 class="text-2xl">เพิ่มสูตรอาหาร</h3>
           <svg
             @click="isOpenCreate = false"
             xmlns="http://www.w3.org/2000/svg"
@@ -438,20 +438,22 @@ const isRecipeNameValid = () => {
     </div>
 
     <div class="mt-[-900px] ml-64 justify-start" v-if="items.length < 1">
-      <h1 class="text-[80px] text-center font-bold">No Recipe</h1>
       <button
-        class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded mb-16"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full ml-32"
         @click="isOpenCreate = true"
       >
-        Add
+        เพิ่มสูตรอาหาร
       </button>
+      <h1 class="text-[80px] text-center font-bold mr-500">
+        ยังไม่มีสูตรอาหารในขณะนี้
+      </h1>
     </div>
-    <div class="mt-[-900px] ml-64 justify-start" v-else>
+    <div class="mt-[-900px] ml-96 justify-start" v-else>
       <button
-        class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded mb-16"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full mb-32"
         @click="isOpenCreate = true"
       >
-        Add
+        เพิ่มสูตรอาหาร
       </button>
 
       <div class="flex flex-wrap">

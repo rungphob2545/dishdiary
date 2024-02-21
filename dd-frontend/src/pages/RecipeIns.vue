@@ -53,7 +53,7 @@ const formatCookingSteps = (steps) => {
       <p>
         <img
           class="w-[450px] h-[300px]"
-          v-bind:src="`http://localhost:8080/${items.recipeImage}`"
+          v-bind:src="`http://10.4.85.10:8080/${items.recipeImage}`"
         />
       </p>
       <h1 class="text-[30px]">ขั้นตอนการทำอาหาร</h1>

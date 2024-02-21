@@ -31,7 +31,7 @@ onMounted(() => {
     <div>
       <Navbar />
     </div>
-    <div class="mt-[-900px] ml-64 justify-start flex-wrap">
+    <div class="mt-[-900px] ml-96 justify-start flex-wrap">
       <h1 class="text-lg mb-4">รายการของฉัน</h1>
       <ul v-for="item in items" :key="item.id" class="px-5 pb-10">
         <li>หมายเลข Product : {{ item.ingredientId }}</li>

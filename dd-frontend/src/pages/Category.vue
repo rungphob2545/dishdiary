@@ -1,49 +1,32 @@
 <script setup>
 import { ref, onBeforeMount } from "vue";
 import axios from "axios";
-import Navbar from "../components/Navbar.vue";
 import { useRoute, useRouter } from "vue-router";
+import Navbar from "../components/Navbar.vue";
 
 const items = ref([]);
-const categories = ref([]);
 const route = useRoute();
 const id = route.params.id;
+console.log(id);
 
-console.log(import.meta.env.VITE_APP_API_URL);
-const fetchData = async () => {
+const fetchData = async (id) => {
+  const router = useRouter();
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/recipe`,
-      {
-        method: "GET",
-      }
+      `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe/category/" + `${id}`
     );
-
-    items.value = response.data;
-    console.log(items.value);
+    if (response.status === 200) {
+      items.value = response.data;
+      console.log(response.data);
+    }
   } catch (error) {
     console.error("Error fetching data:", error);
-  }
-};
-
-const fetchCategories = async () => {
-  try {
-    const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/categories`,
-      {
-        method: "GET",
-      }
-    );
-
-    categories.value = response.data;
-    console.log(categories.value);
-  } catch (error) {
-    console.error("Error fetching data:", error);
+    // alert(`${error.response.data.message}`);
   }
 };
 
 const convertCategoryIdToString = (id) => {
-  switch (id) {
+  switch (parseInt(id)) {
     case 1:
       return "ไข่";
     case 2:
@@ -59,8 +42,10 @@ const convertCategoryIdToString = (id) => {
 };
 
 onBeforeMount(() => {
-  fetchData();
-  fetchCategories();
+  const route = useRoute();
+  const id = route.params.id;
+  console.log(id);
+  fetchData(id);
 });
 </script>
 
@@ -100,38 +85,23 @@ onBeforeMount(() => {
             ขอเสนอให้คุณสร้างประสบการณ์ทำอาหารที่สุดแสนสนุกและอร่อยที่สุดได้ที่นี่
           </p>
         </div>
-        <p class="text-[40px] font-bold pb-8">สูตรอาหารของเรา</p>
+        <p class="text-[40px] font-bold pb-8">
+          อาหารประเภท {{ convertCategoryIdToString(id) }}
+        </p>
       </div>
-      <div class="flex flex-wrap">
-        <ul v-for="item in items" :key="item.id" class="px-5 pb-10 w-1/3">
-          <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
-            <li>{{ item.recipeName }}</li>
-            <li>
-              <img
-                class="w-[450px] h-[300px]"
-                v-bind:src="`http://localhost:8080/${item.recipeImage}`"
-              />
-            </li>
-            <li class="p-4 text-right">ดูเพิ่มเติม...</li>
-          </router-link>
-        </ul>
-      </div>
-      <div class="w-screen">
-        <p class="text-[40px] font-bold pb-8">ประเภทของอาหาร</p>
-        <div class="flex">
-          <ul
-            v-for="category in categories"
-            :key="category.id"
-            class="px-5 pb-10"
-          >
-            <router-link :to="{ name: 'Category', params: { id: category.id } }"
-              ><button class="px-6 py-2 text-blue-100 bg-blue-600 rounded">
-                {{ convertCategoryIdToString(category.id) }}
-              </button>
-            </router-link>
-          </ul>
-        </div>
-      </div>
+
+      <ul v-for="item in items" :key="item.id" class="px-5 pb-10">
+        <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
+          <li>{{ item.recipeName }}</li>
+          <li>
+            <img
+              class="w-[450px] h-[300px]"
+              v-bind:src="`http://localhost:8080/${item.recipeImage}`"
+            />
+          </li>
+          <li class="p-4 text-right">ดูเพิ่มเติม...</li>
+        </router-link>
+      </ul>
     </div>
   </div>
 

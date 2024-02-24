@@ -20,16 +20,27 @@ paths:
                 items:
                   type: string
     post:
-      summary: Creates a user.
+      summary: Creates a recipe.
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
-                recipe:
+                recipeName:
                   type: string
+                cookingSteps:
+                  type: string
+                cookingIngredients:
+                  type: string
+                introduce:
+                  type: string
+                categoryId:
+                  type: string
+                recipeImage:
+                  type: string
+                  format: binary
       responses:
         "201":
           description: Created

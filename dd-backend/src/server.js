@@ -14,7 +14,6 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 const corsOptions = {
   origin: "http://localhost",
-  origin: "http://10.4.85.10",
 };
 
 //port

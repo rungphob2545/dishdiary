@@ -11,7 +11,7 @@ router.get("/recipe/:id", recipeController.getRecipeById);
 router.post("/recipe", recipeController.upload, recipeController.addRecipe);
 router.put("/recipe/:id", recipeController.updateRecipe);
 router.delete("/recipe/:id", recipeController.removeRecipe);
-router.put("/recipe/:id", recipeController.updateRecipe);
+router.get("/recipe/category/:id", recipeController.getRecipeByCategory);
 
 //Order
 router.get("/order/:id", orderController.getOwnOrder);

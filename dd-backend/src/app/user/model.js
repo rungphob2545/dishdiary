@@ -13,6 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       userEmail: {
         field: "user_email",
         type: DataTypes.STRING,
+        validate: {
+          isEmail: {
+            arg: true,
+            msg: "Invalid email address format",
+          },
+        },
       },
     },
     {

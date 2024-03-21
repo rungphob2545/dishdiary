@@ -56,6 +56,7 @@ const getRecipeById = async (req, res) => {
   console.log(recipe);
 };
 
+//add recipe
 const addRecipe = async (req, res) => {
   if (!req.body) {
     res.status(400).send({
@@ -99,6 +100,7 @@ const addRecipe = async (req, res) => {
   }
 };
 
+//update recipe
 const updateRecipe = async (req, res) => {
   let id = req.params.id;
   const existingRecipe = await Recipe.findOne({
@@ -118,6 +120,7 @@ const updateRecipe = async (req, res) => {
   }
 };
 
+//delete recipe
 const removeRecipe = async (req, res) => {
   let id = req.params.id;
   const existingRecipe = await Recipe.findOne({
@@ -130,6 +133,7 @@ const removeRecipe = async (req, res) => {
   res.status(200).send("Recipe has been deleted");
 };
 
+//get recipe by category
 const getRecipeByCategory = async (req, res) => {
   let id = req.params.id;
   const existingCategory = await Recipe.findOne({

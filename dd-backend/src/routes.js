@@ -1,6 +1,7 @@
 const recipeController = require("./app/recipe/controller");
 const orderController = require("./app/order/controller");
 const categoryController = require("./app/category/controller");
+const userController = require("./app/user/controller");
 const router = require("express").Router();
 
 // const apiRouter = Router();
@@ -19,4 +20,10 @@ router.post("/order", orderController.createOrder);
 
 //Categories
 router.get("/categories", categoryController.getAllCategories);
+
+//User
+router.get("/user", userController.getAllUsers);
+router.post("/user", userController.createUser);
+router.delete("/user/:id", userController.deleteUser);
+
 module.exports = router;

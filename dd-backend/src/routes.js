@@ -1,12 +1,18 @@
 const recipeController = require("./app/recipe/controller");
-const orderController = require("./app/order/controller");
 const categoryController = require("./app/category/controller");
+const orderController = require("./app/order/controller");
+const userController = require("./app/user/controller");
 const router = require("express").Router();
 
 // const apiRouter = Router();
 
 //Recipe
-router.get("/recipe", recipeController.getAllRecipe);
+router.get(
+  "/recipe",
+  userController.verifyToken,
+  userController.checkUserRole("admin"),
+  recipeController.getAllRecipe
+);
 router.get("/recipe/:id", recipeController.getRecipeById);
 router.post("/recipe", recipeController.upload, recipeController.addRecipe);
 router.put("/recipe/:id", recipeController.updateRecipe);
@@ -19,4 +25,9 @@ router.post("/order", orderController.createOrder);
 
 //Categories
 router.get("/categories", categoryController.getAllCategories);
+
+//User
+router.post("/register", userController.userRegister);
+router.post("/login", userController.userLogin);
+
 module.exports = router;

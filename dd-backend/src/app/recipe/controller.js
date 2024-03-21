@@ -3,7 +3,6 @@ const db = require("../..");
 const Recipe = db.recipes;
 const multer = require("multer");
 const path = require("path");
-const { json } = require("sequelize");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -57,37 +56,37 @@ const getRecipeById = async (req, res) => {
 };
 
 const addRecipe = async (req, res) => {
-  if (!req.body) {
-    res.status(400).send({
-      message: "can't add",
-    });
-    return;
-  }
-
-  const existingRecipe = await Recipe.findOne({
-    where: { recipeName: req.body.recipeName },
-  });
-  if (existingRecipe) {
-    return res.status(400).send({ message: "Recipe name must be unique" });
-  }
-
-  const minLength = 5;
-  if (req.body.recipeName.length < minLength) {
-    return res.status(400).send({
-      message: `Recipe name must be at least ${minLength} characters long`,
-    });
-  }
-
-  let result = {
-    recipeName: req.body.recipeName,
-    cookingSteps: req.body.cookingSteps,
-    cookingIngredients: req.body.cookingIngredients,
-    introduce: req.body.introduce,
-    recipeImage: req.file.path,
-    categoryId: req.body.categoryId,
-  };
-
   try {
+    if (!req.body) {
+      res.status(400).send({
+        message: "can't add",
+      });
+      return;
+    }
+
+    const existingRecipe = await Recipe.findOne({
+      where: { recipeName: req.body.recipeName },
+    });
+    if (existingRecipe) {
+      return res.status(400).send({ message: "Recipe name must be unique" });
+    }
+
+    const minLength = 5;
+    if (req.body.recipeName.length < minLength) {
+      return res.status(400).send({
+        message: `Recipe name must be at least ${minLength} characters long`,
+      });
+    }
+
+    let result = {
+      recipeName: req.body.recipeName,
+      cookingSteps: req.body.cookingSteps,
+      cookingIngredients: req.body.cookingIngredients,
+      introduce: req.body.introduce,
+      recipeImage: req.file.path,
+      categoryId: req.body.categoryId,
+    };
+
     const recipe = await Recipe.create(result);
     res.status(201).send(recipe);
     console.log(recipe);
@@ -100,14 +99,14 @@ const addRecipe = async (req, res) => {
 };
 
 const updateRecipe = async (req, res) => {
-  let id = req.params.id;
-  const existingRecipe = await Recipe.findOne({
-    where: { id: id },
-  });
-  if (!existingRecipe) {
-    return res.status(404).send({ message: "Error: Not Found" });
-  }
   try {
+    let id = req.params.id;
+    const existingRecipe = await Recipe.findOne({
+      where: { id: id },
+    });
+    if (!existingRecipe) {
+      return res.status(404).send({ message: "Error: Not Found" });
+    }
     const recipe = await Recipe.update(req.body, { where: { id: id } });
     res.status(200).send("update success");
     console.log(recipe);

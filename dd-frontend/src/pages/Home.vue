@@ -15,6 +15,9 @@ const fetchData = async () => {
     const response = await axios.get(
       `${import.meta.env.VITE_APP_API_URL}/api/recipe`,
       {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         method: "GET",
       }
     );
@@ -103,7 +106,7 @@ onBeforeMount(() => {
         <p class="text-[40px] font-bold pb-8">สูตรอาหารของเรา</p>
       </div>
       <div class="flex flex-wrap">
-        <ul v-for="item in items" :key="item.id" class="px-5 pb-10 w-1/3">
+        <ul v-for="item in items" :key="item.id" class="px-5 pb-10">
           <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
             <li>{{ item.recipeName }}</li>
             <li>

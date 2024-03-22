@@ -3,6 +3,8 @@ const cors = require("cors");
 const ip = require("ip");
 const app = express();
 const path = require("path");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const swaggerUi = require("swagger-ui-express");
 
 const fs = require("fs");

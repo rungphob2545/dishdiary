@@ -1,13 +1,33 @@
 const recipeController = require("./app/recipe/controller");
-const orderController = require("./app/order/controller");
 const categoryController = require("./app/category/controller");
+const orderController = require("./app/order/controller");
+const userController = require("./app/user/controller");
+const historyController = require("./app/history/controller");
 const router = require("express").Router();
 
-// const apiRouter = Router();
+// Middleware to validate ID parameter
+const validateId = (req, res, next) => {
+  const { id } = req.params;
+  if (!/^\d+$/.test(id)) {
+    // Check if id is a positive integer
+    return res.status(400).send({ message: "Invalid ID" });
+  }
+  next(); // Continue to the next middleware or route handler
+};
 
 //Recipe
-router.get("/recipe", recipeController.getAllRecipe);
-router.get("/recipe/:id", recipeController.getRecipeById);
+router.get(
+  "/recipe",
+  userController.verifyToken,
+  userController.checkUserRole("admin"),
+  recipeController.getAllRecipe
+);
+
+//search
+router.get("/recipe/search", recipeController.searchRecipeByName);
+
+//CRUD Recipe
+router.get("/recipe/:id", validateId, recipeController.getRecipeById);
 router.post("/recipe", recipeController.upload, recipeController.addRecipe);
 router.put("/recipe/:id", recipeController.updateRecipe);
 router.delete("/recipe/:id", recipeController.removeRecipe);
@@ -19,4 +39,13 @@ router.post("/order", orderController.createOrder);
 
 //Categories
 router.get("/categories", categoryController.getAllCategories);
+
+//User
+router.post("/register", userController.userRegister);
+router.post("/login", userController.userLogin);
+
+//History
+router.post("/history", historyController.searchRecord);
+router.get("/history/:userId", historyController.searchHistory);
+
 module.exports = router;

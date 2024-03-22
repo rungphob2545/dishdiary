@@ -3,6 +3,7 @@ const db = require("../..");
 const Recipe = db.recipes;
 const multer = require("multer");
 const path = require("path");
+const { Op } = require("sequelize");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -92,7 +93,7 @@ const addRecipe = async (req, res) => {
     res.status(201).send(recipe);
     console.log(recipe);
   } catch (err) {
-    console.log(result);
+    console.log("err", err);
     res.status(500).send({
       message: err.message || " Error occurred while creating",
     });
@@ -135,14 +136,40 @@ const removeRecipe = async (req, res) => {
 //get recipe by category
 const getRecipeByCategory = async (req, res) => {
   let id = req.params.id;
-  const existingCategory = await Recipe.findOne({
-    where: { categoryId: id },
-  });
-  if (!existingCategory) {
-    return res.status(404).send({ message: "Error: Not Found" });
+  try {
+    const existingCategory = await Recipe.findOne({
+      where: { categoryId: id },
+    });
+    if (!existingCategory) {
+      return res.status(404).send({ message: "Error: Not Found" });
+    }
+    const recipe = await Recipe.findAll({ where: { categoryId: id } });
+    res.status(200).send(recipe);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || " Error occurred while updating",
+    });
   }
-  const recipe = await Recipe.findAll({ where: { categoryId: id } });
-  res.status(200).send(recipe);
+};
+
+const searchRecipeByName = async (req, res) => {
+  const { query } = req.query;
+  try {
+    console.log(query);
+    const recipes = await Recipe.findAll({
+      where: {
+        recipeName: {
+          [Op.like]: `%${query}%`,
+        },
+      },
+    });
+    res.status(200).send(recipes);
+  } catch (err) {
+    console.log("error:", err);
+    res.status(500).send({
+      message: err.message || " Error occurred while updating",
+    });
+  }
 };
 
 module.exports = {
@@ -153,4 +180,5 @@ module.exports = {
   updateRecipe,
   upload,
   getRecipeByCategory,
+  searchRecipeByName,
 };

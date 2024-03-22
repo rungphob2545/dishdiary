@@ -13,6 +13,12 @@ const userRegister = async (req, res) => {
     });
     return;
   }
+  const existingName = await User.findOne({
+    where: { userEmail: req.body.userName },
+  });
+  if (existingName) {
+    return res.status(400).send({ message: "Name must be unique" });
+  }
 
   const existingEmail = await User.findOne({
     where: { userEmail: req.body.userEmail },

@@ -36,7 +36,7 @@ const upload = multer({
 //get all recipe
 const getAllRecipe = async (req, res) => {
   const recipe = await Recipe.findAll({
-    attributes: ["id", "recipeName", "recipeImage"],
+    attributes: ["id", "recipeName", "recipeImage", "categoryId"],
   });
   res.status(200).send(recipe);
   console.log(recipe);

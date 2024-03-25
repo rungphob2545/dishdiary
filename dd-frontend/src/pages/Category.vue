@@ -96,7 +96,7 @@ onBeforeMount(() => {
           <li>
             <img
               class="w-[450px] h-[300px]"
-              v-bind:src="`http://localhost:8080/${item.recipeImage}`"
+              v-bind:src="`http://10.4.85.10:8080/${item.recipeImage}`"
             />
           </li>
           <li class="p-4 text-right">ดูเพิ่มเติม...</li>

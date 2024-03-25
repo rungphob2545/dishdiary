@@ -466,7 +466,7 @@ const isRecipeNameValid = () => {
                 v-bind:src="`http://10.4.85.10:8080/${item.recipeImage}`"
               />
             </li>
-            <li class="p-4 text-right">ดูเพิ่มเติม...</li>
+            <button class="p-4 text-right">ดูเพิ่มเติม...</button>
           </router-link>
           <div class="flex justify-between">
             <button

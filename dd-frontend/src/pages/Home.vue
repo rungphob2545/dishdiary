@@ -29,7 +29,7 @@ const fetchData = async () => {
 const fetchCategories = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/categories`,
+      `${import.meta.env.VITE_PRODUCT_API_URL}/api/categories`,
       {
         method: "GET",
       }
@@ -103,13 +103,13 @@ onBeforeMount(() => {
         <p class="text-[40px] font-bold pb-8">สูตรอาหารของเรา</p>
       </div>
       <div class="flex flex-wrap">
-        <ul v-for="item in items" :key="item.id" class="px-5 pb-10 w-1/3">
+        <ul v-for="item in items" :key="item.id" class="px-5 pb-10">
           <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
             <li>{{ item.recipeName }}</li>
             <li>
               <img
                 class="w-[450px] h-[300px]"
-                v-bind:src="`http://localhost:8080/${item.recipeImage}`"
+                v-bind:src="`http://10.4.85.10:8080/${item.recipeImage}`"
               />
             </li>
             <li class="p-4 text-right">ดูเพิ่มเติม...</li>

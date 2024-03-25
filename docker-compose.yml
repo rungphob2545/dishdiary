@@ -1,0 +1,44 @@
+version: "3.3"
+services:
+  database:
+    image: mysql
+    container_name: dishdiarydb
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD="abcd1234"
+      - MYSQL_DATABASE="dish_diaries_app"
+    ports:
+      - 3307:3306
+    volumes:
+      - ./dd-database:/var/lib/mysql
+  frontend:
+    image: my-vue-app
+    container_name: dishdiaryfront
+    build: ./dd-frontend
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /home/dohttps/nginx/config/nginx.conf:/etc/nginx/nginx.conf/:rw
+      - /home/dohttps/nginx/config/conf.d/default.conf:/etc/nginx/conf.d/default.conf:rw
+      - /home/dohttps/nginx/logs:/var/log/nginx/:rw
+      - /home/dohttps/nginx/ssl:/ssl/:rw
+  backend:
+    image: my-node-app
+    container_name: dishdiaryback
+    restart: on-failure
+    build: ./dd-backend
+    ports:
+      - 8080:8080
+    depends_on:
+      - database
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://10.4.85.10:8080" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  dd-database:
+
+

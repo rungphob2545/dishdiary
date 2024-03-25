@@ -34,12 +34,17 @@ export default {
           </svg>
         </div>
         <Search />
-        <div class="flex space-x-4">
+        <div class="flex">
           <router-link to="/" class="text-white">My Account</router-link>
+        </div>
+        <div>
+          <router-link to="/account/login" class="text-white"
+            >My Account</router-link
+          >
         </div>
       </div>
     </nav>
-
+    <!-- 
     <div class="flex">
       <nav class="bg-gray-800 h-screen p-4">
         <div class="flex flex-col space-y-4 w-72">
@@ -109,7 +114,7 @@ export default {
           >
         </div>
       </nav>
-    </div>
+    </div> -->
   </div>
 </template>
 

@@ -1,6 +1,10 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import Navbar from "../components/Navbar.vue";
+import { useRouter } from "vue-router";
+
+const appRouter = useRouter();
 
 const register = async (userName, userEmail, password) => {
   console.log(userEmail);
@@ -11,10 +15,12 @@ const register = async (userName, userEmail, password) => {
         userName: userName,
         userEmail: userEmail,
         password: password,
+        role: "admin",
       }
     );
     if (response.status === 201) {
       alert("Login successfully");
+      appRouter.push({ path: "/account/login" });
       //   const jwttoken = await response.json();
       //   LocalStorage("token", jwttoken.accessToken);
     } else {
@@ -28,10 +34,18 @@ const register = async (userName, userEmail, password) => {
 </script>
 
 <template>
+  <div>
+    <Navbar />
+  </div>
   <div
     class="login-form bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-xs mx-auto"
   >
-    <h2 class="text-center text-xl font-semibold mb-4">Register</h2>
+    <div class="flex justify-between my-4">
+      <div class="text-center text-xl font-semibold col-6">
+        <router-link to="/account/login">Login</router-link>
+      </div>
+      <div class="text-center text-xl font-semibold col-6">Sign up</div>
+    </div>
     <form @submit.prevent="register">
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="username"

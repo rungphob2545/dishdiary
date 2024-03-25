@@ -76,7 +76,7 @@ const userLogin = async (req, res) => {
       },
       "mysecretpassword",
       {
-        expiresIn: "1h",
+        expiresIn: "1d",
       }
     );
     res.status(201).json({ token });

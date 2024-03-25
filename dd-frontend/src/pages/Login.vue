@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import Navbar from "../components/Navbar.vue";
 
 const LocalStorage = (name, accessToken) => {
   localStorage.setItem(name, `${accessToken}`);
@@ -36,10 +37,18 @@ const login = async (userEmail, password) => {
 </script>
 
 <template>
+  <div>
+    <Navbar />
+  </div>
   <div
     class="login-form bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-xs mx-auto"
   >
-    <h2 class="text-center text-xl font-semibold mb-4">Login</h2>
+    <div class="flex justify-between my-4">
+      <div class="text-center text-xl font-semibold">Login</div>
+      <div class="text-center text-xl font-semibold">
+        <router-link to="/account/signup">Sign up</router-link>
+      </div>
+    </div>
     <form @submit.prevent="login">
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="username"

@@ -1,34 +1,55 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watchEffect, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
+import Swal from "sweetalert2";
 
 const items = ref({});
 const itemline = ref([]);
+const route = useRoute();
+const router = useRouter();
+const id = ref(route.params.id);
 
 const fetchData = async (id) => {
-  const router = useRouter();
+  console.log(id);
   try {
     const response = await axios.get(
       `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe/" + `${id}`
     );
-    if (response.status === 200) {
+    if (response.status === 404) {
+      alert("Not found this recipe id");
+      router.push("/");
+    } else if (response.status === 200) {
       items.value = response.data;
       console.log(response.data);
     }
   } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "ไม่พบหน้านี้",
+      text: "ขออภัย ไม่พบหน้าที่คุณกำลังค้นหา",
+      confirmButtonText: "กลับสู่หน้าแรก",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        router.push("/");
+      }
+    });
     console.error("Error fetching data:", error);
-    alert(`${error.response.data.message}`);
-    router.push("/");
   }
 };
 
+watch(
+  () => route.params.id,
+  (newValue, oldValue) => {
+    fetchData(newValue);
+  }
+);
+
 onMounted(() => {
-  const route = useRoute();
-  const id = route.params.id;
-  console.log(id);
-  fetchData(id);
+  fetchData(id.value);
 });
 
 const formatCookingSteps = (steps) => {
@@ -45,7 +66,7 @@ const convertCategoryIdToString = (categoryId) => {
       return "เนื้อไก่";
     case 4:
       return "เนื้อหมู";
-    // เพิ่ม case ตาม categoryId ที่คุณมีในฐานข้อมูลของคุณต่อไป
+
     default:
       return "หมวดหมู่อื่นๆ";
   }

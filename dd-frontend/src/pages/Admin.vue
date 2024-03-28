@@ -20,6 +20,9 @@ const fetchData = async () => {
     const response = await axios.get(
       `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe`,
       {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         method: "GET",
       }
     );
@@ -448,9 +451,9 @@ onBeforeMount(() => {
       </div>
     </div>
 
-    <div class="mt-[-900px] ml-64 justify-start" v-if="items.length < 1">
+    <div class="justify-start" v-if="items.length < 1">
       <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full ml-32"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
         @click="isOpenCreate = true"
       >
         เพิ่มสูตรอาหาร
@@ -459,16 +462,16 @@ onBeforeMount(() => {
         ยังไม่มีสูตรอาหารในขณะนี้
       </h1>
     </div>
-    <div class="mt-[-900px] ml-96 justify-start" v-else>
+    <div class="justify-start" v-else>
       <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full mb-32"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
         @click="isOpenCreate = true"
       >
         เพิ่มสูตรอาหาร
       </button>
 
       <div class="flex flex-wrap">
-        <ul v-for="item in items" :key="item.id" class="px-5 pb-10">
+        <ul v-for="item in items" :key="item.id" class="">
           <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
             <li>{{ item.recipeName }}</li>
             <li>

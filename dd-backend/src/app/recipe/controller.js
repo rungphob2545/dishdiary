@@ -159,7 +159,7 @@ const searchRecipeByName = async (req, res) => {
     const recipes = await Recipe.findAll({
       where: {
         recipeName: {
-          [Op.like]: `%${query}%`,
+          [Op.like]: `${query}%`,
         },
       },
     });

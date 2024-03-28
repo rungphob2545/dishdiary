@@ -13,7 +13,7 @@ export default {
   <div>
     <nav class="bg-gray-800 p-4">
       <div class="flex items-center justify-between h-8">
-        <div class="text-white">
+        <div class="text-white mr-4">
           <svg
             class="h-8 w-8 text-white-500"
             viewBox="0 0 24 24"

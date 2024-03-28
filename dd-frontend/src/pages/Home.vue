@@ -125,9 +125,10 @@ onBeforeMount(() => {
               <input type="checkbox"  :value="category.id" v-model="selectedCategory">
                 {{ convertCategoryIdToString(category.id) }}
           </label>
-          <div class="">
-            <ul class="flex">
-            <li v-for="item in filteredItems" :key="item.id">
+          <div class="flex">
+            <ul v-for="item in filteredItems" :key="item.id">
+            <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
+            <li >
               <li>{{ item.recipeName }}</li>
             <li>
               <img
@@ -137,6 +138,7 @@ onBeforeMount(() => {
             </li>
             <li class="p-4 text-right">ดูเพิ่มเติม...</li>
             </li>
+          </router-link>
           </ul>
           </div>
           <h1 class="text-8xl font-bold font-serif pb-4">DISH DIARIES</h1>

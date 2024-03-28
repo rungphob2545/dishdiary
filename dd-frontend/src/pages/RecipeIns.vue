@@ -63,7 +63,7 @@ const convertCategoryIdToString = (categoryId) => {
     <div>
       <Navbar />
     </div>
-    <div class="mt-[-900px] ml-96 justify-start flex-wrap">
+    <div class="justify-start flex-wrap">
       <p class="text-[30px]">{{ items.recipeName }}</p>
       <br />
       <p>{{ items.introduce }}</p>

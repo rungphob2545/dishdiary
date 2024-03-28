@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, computed } from "vue";
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import { useRoute, useRouter } from "vue-router";
@@ -9,12 +9,17 @@ const categories = ref([]);
 const route = useRoute();
 const id = route.params.id;
 
-console.log(import.meta.env.VITE_PRODUCT_API_URL);
+const selectedCategory = ref([]);
+
+console.log(import.meta.env.VITE_APP_API_URL);
 const fetchData = async () => {
   try {
     const response = await axios.get(
       `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe`,
       {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         method: "GET",
       }
     );
@@ -58,9 +63,36 @@ const convertCategoryIdToString = (id) => {
   }
 };
 
+// const filteredItems = computed(() => {
+//   if (!selectedCategory.value) {
+//     return items.value;
+//   } else {
+//     const filtered = items.value.filter(
+//       (item) => item.categoryId === selectedCategory.value
+//     );
+//     console.log("Filtered items:", filtered); // เพิ่ม console.log นี้เพื่อดูผลลัพธ์ของการ filter
+//     return filtered;
+//   }
+// });
+
+const filteredItems = computed(() => {
+  if (selectedCategory.value.length === 0) {
+
+    console.log("Filtered items1:", selectedCategory); // เพิ่ม console.log นี้เพื่อดูผลลัพธ์ของการ filter
+    return items.value;
+  } else {
+    const filtered = items.value.filter(item => selectedCategory.value.includes(item.categoryId));
+    console.log(items.value)
+    console.log(selectedCategory.value)
+    console.log("Filtered items2:", filtered); // เพิ่ม console.log นี้เพื่อดูผลลัพธ์ของการ filter
+    return filtered
+   
+  }
+});
 onBeforeMount(() => {
   fetchData();
   fetchCategories();
+  console.log("filter", filteredItems);
 });
 </script>
 
@@ -69,10 +101,7 @@ onBeforeMount(() => {
     <div>
       <Navbar />
     </div>
-    <div
-      class="mt-[-900px] ml-96 justify-start flex flex-wrap"
-      v-if="items.length < 1"
-    >
+    <div class="justify-start flex flex-wrap" v-if="items.length < 1">
       <div class="w-full">
         <div class="text py-4 w-[750px] pb-16">
           <h1 class="text-8xl font-bold font-serif pb-4">DISH DIARIES</h1>
@@ -89,9 +118,27 @@ onBeforeMount(() => {
         ยังไม่มีสูตรอาหารในขณะนี้
       </h1>
     </div>
-    <div class="mt-[-900px] ml-96 justify-start flex flex-wrap" v-else>
+    <div class="justify-start flex flex-wrap" v-else>
       <div class="w-full">
-        <div class="text py-4 w-[750px] pb-16">
+        <div class="text py-4 pb-16">
+          <label v-for="category in categories" :key="category.id">
+              <input type="checkbox"  :value="category.id" v-model="selectedCategory">
+                {{ convertCategoryIdToString(category.id) }}
+          </label>
+          <div class="">
+            <ul class="flex">
+            <li v-for="item in filteredItems" :key="item.id">
+              <li>{{ item.recipeName }}</li>
+            <li>
+              <img
+                class="w-[450px] h-[300px]"
+                v-bind:src="`http://localhost:8080/${item.recipeImage}`"
+              />
+            </li>
+            <li class="p-4 text-right">ดูเพิ่มเติม...</li>
+            </li>
+          </ul>
+          </div>
           <h1 class="text-8xl font-bold font-serif pb-4">DISH DIARIES</h1>
 
           <p class="text-lg">

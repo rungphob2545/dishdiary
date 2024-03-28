@@ -4,6 +4,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 
 const items = ref([]);
+const selectedCategory = ref("");
 const recipe = ref({});
 const categories = ref([]);
 const isOpen = ref(false);
@@ -198,11 +199,6 @@ const getCategories = async () => {
   }
 };
 
-onBeforeMount(() => {
-  fetchData();
-  getCategories();
-});
-
 const checkValid = ref(false);
 const isRecipeNameValid = () => {
   console.log(newRecipe.value.recipeName.length);
@@ -210,6 +206,21 @@ const isRecipeNameValid = () => {
     checkValid.value = false;
   } else checkValid.value = true;
 };
+
+const filteredItems = computed(() => {
+  if (!selectedCategory.value) {
+    return items.value;
+  } else {
+    return items.value.filter(
+      (item) => item.category === selectedCategory.value
+    );
+  }
+});
+
+onBeforeMount(() => {
+  fetchData();
+  getCategories();
+});
 
 // const isIntroduceValid = computed(() => items.value.introduce.length > 0);
 // const isCookingIngredientsValid = computed(
@@ -466,7 +477,7 @@ const isRecipeNameValid = () => {
                 v-bind:src="`http://10.4.85.10:8080/${item.recipeImage}`"
               />
             </li>
-            <button class="p-4 text-right">ดูเพิ่มเติม...</button>
+            <li class="p-12 text-right">ดูเพิ่มเติม...</li>
           </router-link>
           <div class="flex justify-between">
             <button

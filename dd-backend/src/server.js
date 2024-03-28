@@ -2,9 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const ip = require("ip");
 const app = express();
-const path = require("path");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 const swaggerUi = require("swagger-ui-express");
 
 const fs = require("fs");
@@ -59,7 +56,6 @@ app.use(express.urlencoded({ extended: true }));
 
 //routes
 const router = require("./routes");
-const multer = require("multer");
 app.use("/api", router);
 
 //static img folder

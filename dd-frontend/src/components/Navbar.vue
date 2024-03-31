@@ -1,46 +1,70 @@
-<script>
+<script setup>
 import Search from "./Search.vue";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
-const appRouter = useRouter();
+const router = useRouter();
 
-export default {
-  name: "Navbar",
-  components: { Search },
+const token = localStorage.getItem("token");
+
+const clearData = () => {
+  localStorage.removeItem("token");
+  Swal.fire({
+    icon: "info",
+    title: "Logout สำเร็จ",
+    confirmButtonText: "กลับสู่หน้าแรก",
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      router.push("/account/login");
+    }
+  });
 };
 </script>
 <template>
   <div>
-    <nav class="bg-gray-800 p-4">
+    <nav class="bg-green-700 p-4">
       <div class="flex items-center justify-between h-8">
-        <div class="text-white mr-4">
-          <svg
-            class="h-8 w-8 text-white-500"
-            viewBox="0 0 24 24"
-            width="24"
-            height="24"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
-            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
-            <line x1="6" y1="1" x2="6" y2="4" />
-            <line x1="10" y1="1" x2="10" y2="4" />
-            <line x1="14" y1="1" x2="14" y2="4" />
-          </svg>
-        </div>
+        <router-link to="/" class="flex">
+          <div class="text-white mr-4">
+            <svg
+              class="h-8 w-8 text-white-500"
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+              <line x1="6" y1="1" x2="6" y2="4" />
+              <line x1="10" y1="1" x2="10" y2="4" />
+              <line x1="14" y1="1" x2="14" y2="4" />
+            </svg>
+          </div>
+          <div class="items-center font-bold text-2xl w-40 text-white">
+            Dish DIARIES
+          </div>
+        </router-link>
         <Search />
-        <div class="flex">
-          <router-link to="/" class="text-white">My Account</router-link>
-        </div>
-        <div>
-          <router-link to="/account/login" class="text-white"
-            >My Account</router-link
+
+        <div v-if="!token">
+          <router-link
+            to="/account/login"
+            class="text-white hover:text-gray-200"
+            >Login / Sign Up</router-link
           >
+        </div>
+        <div
+          v-else
+          class="bg-green-900 p-2 border rounded-lg text-white hover:bg-red-600 cursor-pointer"
+        >
+          <button @click="clearData()">Logout</button>
         </div>
       </div>
     </nav>

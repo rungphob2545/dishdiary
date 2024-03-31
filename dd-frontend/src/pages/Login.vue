@@ -2,6 +2,10 @@
 import { ref } from "vue";
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
+import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
+
+const router = useRouter();
 
 const LocalStorage = (name, accessToken) => {
   localStorage.setItem(name, `${accessToken}`);
@@ -21,7 +25,17 @@ const login = async (userEmail, password) => {
     if (response.status === 201) {
       LocalStorage("email", `${userEmail}`);
       LocalStorage("token", response.data.token);
-      alert("Login successfully");
+      Swal.fire({
+        icon: "success",
+        title: "Login สำเร็จ",
+        confirmButtonText: "กลับสู่หน้าแรก",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/");
+        }
+      });
       //   const jwttoken = await response.json();
       //   LocalStorage("token", jwttoken.accessToken);
       console.log(response);

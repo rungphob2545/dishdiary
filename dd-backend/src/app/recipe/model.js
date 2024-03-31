@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const { sequelize } = require("../..");
+const { sequelize, Sequelize } = require("../..");
 
 module.exports = (sequelize, DataTypes) => {
   const Recipe = sequelize.define(
@@ -21,16 +21,16 @@ module.exports = (sequelize, DataTypes) => {
       },
       cookingSteps: {
         field: "cooking_steps",
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(500),
       },
       cookingIngredients: {
         field: "cooking_ingredients",
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(500),
       },
 
       introduce: {
         field: "introduce",
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(500),
       },
       recipeImage: {
         field: "recipe_image",
@@ -42,6 +42,11 @@ module.exports = (sequelize, DataTypes) => {
         field: "category_id",
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 0,
+      },
+      type: {
+        type: DataTypes.ENUM("Soup", "Pizza", "Noodles", "Rice"),
+        defaultValue: "Rice",
       },
     },
     {

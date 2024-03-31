@@ -17,7 +17,7 @@ const fetchData = async (id) => {
   console.log(id);
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe/" + `${id}`
+      `${import.meta.env.VITE_PRODUCT_API_URL}` + "/api/recipe/" + `${id}`
     );
     if (response.status === 404) {
       alert("Not found this recipe id");

@@ -18,7 +18,7 @@ console.log(import.meta.env.VITE_APP_API_URL);
 const fetchData = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/recipe`,
+      `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -37,7 +37,7 @@ const fetchData = async () => {
 const fetchCategories = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/categories`,
+      `${import.meta.env.VITE_PRODUCT_API_URL}/api/categories`,
       {
         method: "GET",
       }

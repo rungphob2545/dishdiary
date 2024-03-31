@@ -10,7 +10,7 @@ const items = ref([]);
 const fetchData = async (id) => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}` + "/api/order/" + `${id}`
+      `${import.meta.env.VITE_PRODUCT_API_URL}` + "/api/order/" + `${id}`
     );
     items.value = response.data;
     console.log(items.value);

@@ -14,11 +14,11 @@ const errors = ref(null);
 const validateUnique = ref(false);
 const imageName = ref("");
 
-console.log(import.meta.env.VITE_APP_API_URL);
+console.log(import.meta.env.VITE_PRODUCT_API_URL);
 const fetchData = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/recipe`,
+      `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -37,7 +37,7 @@ const fetchDataById = async (id) => {
   console.log(id);
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe/" + `${id}`
+      `${import.meta.env.VITE_PRODUCT_API_URL}` + "/api/recipe/" + `${id}`
     );
     recipe.value = response.data;
     console.log(recipe);
@@ -109,7 +109,7 @@ const createData = async (
     formData.append("categoryId", categoryId);
 
     const response = await axios.post(
-      `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe",
+      `${import.meta.env.VITE_PRODUCT_API_URL}` + "/api/recipe",
       formData,
       {
         headers: {
@@ -138,7 +138,7 @@ const removeData = async (id) => {
   try {
     if (confirm("Delete this user?") == true) {
       const response = await axios.delete(
-        `${import.meta.env.VITE_APP_API_URL}/api/recipe/${id}`,
+        `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe/${id}`,
         {
           method: "DELETE",
         }
@@ -169,7 +169,7 @@ const editData = async (
   try {
     if (confirm("Edit data?") == true) {
       const response = await axios.put(
-        `${import.meta.env.VITE_APP_API_URL}/api/recipe/${id}`,
+        `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe/${id}`,
         {
           recipeName: recipeName,
           introduce: introduce,
@@ -191,7 +191,7 @@ const editData = async (
 const getCategories = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/categories`,
+      `${import.meta.env.VITE_PRODUCT_API_URL}/api/categories`,
       {
         method: "GET",
       }
@@ -477,7 +477,7 @@ onBeforeMount(() => {
             <li>
               <img
                 class="w-[450px] h-[300px]"
-                v-bind:src="`http://localhost:8080/${item.recipeImage}`"
+                v-bind:src="`http://10.4.85.10:8080/${item.recipeImage}`"
               />
             </li>
             <li class="p-12 text-right">ดูเพิ่มเติม...</li>

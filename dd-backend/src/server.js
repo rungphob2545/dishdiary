@@ -15,7 +15,7 @@ const swaggerDoc = YAML.parse(file);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 const corsOptions = {
-  origin: "http://localhost",
+  origin: "http://10.4.85.10",
 };
 
 //port
@@ -117,6 +117,8 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Hello from api!" });
 });
 
+
 app.listen(port, () =>
   console.log(`[server] listening on: ${ip.address()}:${port}`)
 );
+

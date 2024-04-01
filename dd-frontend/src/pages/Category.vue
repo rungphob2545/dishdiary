@@ -13,7 +13,9 @@ const fetchData = async (id) => {
   const router = useRouter();
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_PRODUCT_API_URL}` + "/api/recipe/category/" + `${id}`
+      `${import.meta.env.VITE_PRODUCT_API_URL}` +
+        "/api/recipe/category/" +
+        `${id}`
     );
     if (response.status === 200) {
       items.value = response.data;

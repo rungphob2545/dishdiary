@@ -101,7 +101,7 @@ const share = async () => {
       <div
         class="flex justify-end items-center w-[150px] border border-green-500 bg-white absolute right-0"
       >
-        <button class="flex p-2 items-center" @click="share">
+        <button class="flex p-2 items-center hover:bg-gray-200" @click="share">
           <p class="mr-1">แชร์สูตรอาหารนี้</p>
           <svg
             class="h-5 w-5 text-blue-500"
@@ -195,12 +195,16 @@ const share = async () => {
         class="flex justify-center items-center mb-12 w-[660px] text-center mx-auto border p-4 border-black rounded-lg bg-black"
       >
         <iframe
+          v-if="items.video !== null"
           width="660"
           height="400"
-          src="https://www.youtube.com/embed/mRoaxyGLHgw"
+          :src="items.video"
           frameborder="0"
           allowfullscreen
         ></iframe>
+        <div v-else>
+          <p class="text-white text-2xl">ขออภัย Video ไม่พร้อมในขณะนี้</p>
+        </div>
       </div>
     </div>
     <Footer />

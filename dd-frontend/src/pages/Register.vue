@@ -68,11 +68,11 @@ const register = async (userName, userEmail, password) => {
 </script>
 
 <template>
-  <div>
+  <div class="pb-24">
     <Navbar />
   </div>
   <div
-    class="login-form bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-xs mx-auto"
+    class="login-form bg-white shadow-md rounded px-8 pt-4 pb-8 mb-4 max-w-xs mx-auto"
   >
     <div class="flex justify-between my-4">
       <div class="text-center text-xl font-semibold col-6">

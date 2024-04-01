@@ -81,18 +81,6 @@ const convertCategoryIdToString = (id) => {
   }
 };
 
-// const filteredItems = computed(() => {
-//   if (!selectedCategory.value) {
-//     return items.value;
-//   } else {
-//     const filtered = items.value.filter(
-//       (item) => item.categoryId === selectedCategory.value
-//     );
-//     console.log("Filtered items:", filtered); // เพิ่ม console.log นี้เพื่อดูผลลัพธ์ของการ filter
-//     return filtered;
-//   }
-// });
-
 const filteredItems = computed(() => {
   if (selectedCategory.value.length === 0) {
     console.log("Filtered items1:", selectedCategory); // เพิ่ม console.log นี้เพื่อดูผลลัพธ์ของการ filter
@@ -103,7 +91,7 @@ const filteredItems = computed(() => {
     );
     console.log(items.value);
     console.log(selectedCategory.value);
-    console.log("Filtered items2:", filtered); // เพิ่ม console.log นี้เพื่อดูผลลัพธ์ของการ filter
+    console.log("Filtered items2:", filtered);
     return filtered;
   }
 });
@@ -119,10 +107,13 @@ onBeforeMount(() => {
     <div class="">
       <Navbar />
     </div>
-    <div class="justify-start flex flex-wrap" v-if="items.length < 1">
+    <div
+      class="justify-start flex flex-wrap ml-56 pt-16"
+      v-if="items.length < 1"
+    >
       <div class="w-full">
-        <div class="text py-4 w-[750px] pb-16">
-          <h1 class="text-8xl font-bold font-serif pb-4">DISH DIARIES</h1>
+        <div class="text py-4 pb-16">
+          <h1 class="text-8xl font-bold pb-4 text-green-700">Dish DIARIES</h1>
 
           <p class="text-lg">
             ค้นพบความสุขในการทำอาหารด้วยเรา!
@@ -130,8 +121,8 @@ onBeforeMount(() => {
             ขอเสนอให้คุณสร้างประสบการณ์ทำอาหารที่สุดแสนสนุกและอร่อยที่สุดได้ที่นี่
           </p>
         </div>
+        <p class="text-[40px] font-bold pb-2 text-green-700">สูตรอาหารของเรา</p>
       </div>
-      <p class="text-[40px] font-bold">สูตรอาหารของเรา</p>
       <h1 class="text-[80px] text-center ml-82 pt-16">
         ยังไม่มีสูตรอาหารในขณะนี้
       </h1>
@@ -147,7 +138,36 @@ onBeforeMount(() => {
             ขอเสนอให้คุณสร้างประสบการณ์ทำอาหารที่สุดแสนสนุกและอร่อยที่สุดได้ที่นี่
           </p>
         </div>
-        <p class="text-[40px] font-bold pb-2 text-green-700">สูตรอาหารของเรา</p>
+        <div class="flex items-center">
+          <p class="text-[40px] font-bold pb-2 text-green-700">
+            สูตรอาหารของเรา
+          </p>
+          <div class="tooltip ml-2">
+            <svg
+              class="h-8 w-8 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span class="tooltiptext w-72 rounded-lg p-1">
+              <div class="flex items-center">
+                <img src="src\assets\icon\nut.png" class="w-8 h-8 mr-2" />
+                <span>เป็นเมนูอาหารที่มีถั่ว</span>
+              </div>
+              <div class="flex items-center">
+                <img src="src\assets\icon\vegan.png" class="w-8 h-8 mr-2" />
+                <span>เป็นเมนูอาหารสำหรับคนทานมังสวิรัติ</span>
+              </div>
+            </span>
+          </div>
+        </div>
       </div>
       <div class="flex w-full pb-4">
         <label
@@ -184,7 +204,7 @@ onBeforeMount(() => {
             <div class="w-1/3">
               <li>
                 <img
-                  class="h-auto w-full"
+                  class="h-40 w-full object-cover"
                   v-bind:src="`http://localhost:8080/${item.recipeImage}`"
                 />
               </li>
@@ -196,26 +216,51 @@ onBeforeMount(() => {
                 >
                   {{ item.recipeName }}
                 </li>
-                <li class="float-right flex">
-                  <span class="mr-3"> ประเภท </span>
+                <li class="float-right flex gap-2">
+                  <span class=""> ประเภท </span>
                   <img
                     :src="getCategoryImage(item.categoryId)"
                     class="w-8 h-8"
                   />
+                  <img
+                    v-if="item.nutAllergy == 1"
+                    src="src\assets\icon\nut.png"
+                    class="w-8 h-8"
+                  />
+                  <img
+                    v-if="item.vegetarian == 1"
+                    src="src\assets\icon\vegan.png"
+                    class="w-8 h-8"
+                  />
                 </li>
-                <li class="absolute bottom-0 mb-4">
+                <li class="absolute bottom-0 mb-2" v-if="item.video">
                   <svg
                     class="h-8 w-8 text-red-500 ml-56"
-                    fill="none"
                     viewBox="0 0 24 24"
+                    fill="none"
                     stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polygon points="23 7 16 12 23 17 23 7" />
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                  </svg>
+                </li>
+                <li class="absolute bottom-0 mb-2" v-else>
+                  <svg
+                    class="h-8 w-8 text-gray-500 ml-56"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                      d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10"
                     />
+                    <line x1="1" y1="1" x2="23" y2="23" />
                   </svg>
                 </li>
               </router-link>
@@ -234,4 +279,24 @@ onBeforeMount(() => {
   <!-- Navigation bar at the bottom -->
 </template>
 
-<style scoped></style>
+<style scoped>
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+</style>

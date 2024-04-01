@@ -14,11 +14,13 @@ const errors = ref(null);
 const validateUnique = ref(false);
 const imageName = ref("");
 
-console.log(import.meta.env.VITE_PRODUCT_API_URL);
+const getCategoryImage = (id) => `/kp2/src/assets/icon/category_${id}.png`;
+
+console.log(import.meta.env.VITE_APP_API_URL);
 const fetchData = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe`,
+      `${import.meta.env.VITE_APP_API_URL}/api/recipe`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -37,7 +39,7 @@ const fetchDataById = async (id) => {
   console.log(id);
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_PRODUCT_API_URL}` + "/api/recipe/" + `${id}`
+      `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe/" + `${id}`
     );
     recipe.value = response.data;
     console.log(recipe);
@@ -114,6 +116,7 @@ const createData = async (
       {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
@@ -138,8 +141,11 @@ const removeData = async (id) => {
   try {
     if (confirm("Delete this user?") == true) {
       const response = await axios.delete(
-        `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe/${id}`,
+        `${import.meta.env.VITE_APP_API_URL}/api/recipe/${id}`,
         {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
           method: "DELETE",
         }
       );
@@ -169,7 +175,13 @@ const editData = async (
   try {
     if (confirm("Edit data?") == true) {
       const response = await axios.put(
-        `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe/${id}`,
+        `${import.meta.env.VITE_APP_API_URL}/api/recipe/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          method: "PUT",
+        },
         {
           recipeName: recipeName,
           introduce: introduce,
@@ -191,8 +203,11 @@ const editData = async (
 const getCategories = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_PRODUCT_API_URL}/api/categories`,
+      `${import.meta.env.VITE_APP_API_URL}/api/categories`,
       {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         method: "GET",
       }
     );
@@ -451,7 +466,7 @@ onBeforeMount(() => {
       </div>
     </div>
 
-    <div class="justify-start" v-if="items.length < 1">
+    <div class="justify-start pt-24" v-if="items.length < 1">
       <button
         class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
         @click="isOpenCreate = true"
@@ -462,7 +477,7 @@ onBeforeMount(() => {
         ยังไม่มีสูตรอาหารในขณะนี้
       </h1>
     </div>
-    <div class="justify-start" v-else>
+    <div class="justify-start pt-24" v-else>
       <button
         class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
         @click="isOpenCreate = true"
@@ -470,31 +485,66 @@ onBeforeMount(() => {
         เพิ่มสูตรอาหาร
       </button>
 
-      <div class="flex flex-wrap">
+      <div class="flex flex-wrap gap-4 p-8">
         <ul v-for="item in items" :key="item.id" class="">
-          <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
-            <li>{{ item.recipeName }}</li>
-            <li>
-              <img
-                class="w-[450px] h-[300px]"
-                v-bind:src="`http://10.4.85.10:8080/${item.recipeImage}`"
-              />
-            </li>
-            <li class="p-12 text-right">ดูเพิ่มเติม...</li>
-          </router-link>
-          <div class="flex justify-between">
-            <button
-              class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
-              @click="(isOpen = true), fetchDataById(item.id)"
-            >
-              Edit
-            </button>
-            <button
-              class="bg-red-500 hover:bg-danger-700 text-white font-bold py-2 px-4 rounded"
-              @click="removeData(item.id)"
-            >
-              Delete
-            </button>
+          <div
+            class="flex max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden object-cover object-center transition duration-300 transform hover:scale-105 cursor-pointer"
+          >
+            <div class="w-1/3">
+              <li>
+                <img
+                  class="h-auto w-full"
+                  v-bind:src="`http://localhost:8080/${item.recipeImage}`"
+                />
+              </li>
+            </div>
+            <div class="p-6 w-2/3 relative">
+              <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
+                <li
+                  class="text-right font-bold text-2xl mb-2 mt-[-10px] text-green-500"
+                >
+                  {{ item.recipeName }}
+                </li>
+                <li class="float-right flex">
+                  <span class="mr-3"> ประเภท </span>
+                  <img
+                    :src="getCategoryImage(item.categoryId)"
+                    class="w-8 h-8"
+                  />
+                </li>
+                <li class="absolute bottom-0 mb-4">
+                  <svg
+                    class="h-8 w-8 text-red-500 ml-56"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
+                  </svg>
+                </li>
+              </router-link>
+            </div>
+          </div>
+          <div class="pt-4">
+            <div class="flex justify-between">
+              <button
+                class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
+                @click="(isOpen = true), fetchDataById(item.id)"
+              >
+                Edit
+              </button>
+              <button
+                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                @click="removeData(item.id)"
+              >
+                Delete
+              </button>
+            </div>
           </div>
 
           <!-- Modal Edit -->

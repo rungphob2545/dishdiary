@@ -21,16 +21,16 @@ module.exports = (sequelize, DataTypes) => {
       },
       cookingSteps: {
         field: "cooking_steps",
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       cookingIngredients: {
         field: "cooking_ingredients",
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
 
       introduce: {
         field: "introduce",
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       recipeImage: {
         field: "recipe_image",
@@ -42,6 +42,10 @@ module.exports = (sequelize, DataTypes) => {
         field: "category_id",
         type: DataTypes.INTEGER,
         allowNull: false,
+      },
+      type: {
+        type: DataTypes.ENUM("Soup", "Pizza", "Noodles", "Rice"),
+        defaultValue: "Rice",
       },
     },
     {

@@ -196,12 +196,12 @@ onBeforeMount(() => {
           </button>
         </label>
       </div>
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid grid-cols-3 gap-4 pb-12">
         <ul v-for="item in filteredItems" :key="item.id" class="">
           <div
-            class="flex max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden object-cover object-center transition duration-300 transform hover:scale-105 cursor-pointer"
+            class="flex bg-white shadow-lg rounded-lg overflow-hidden object-center transition duration-300 transform hover:scale-105 cursor-pointer"
           >
-            <div class="w-1/3">
+            <div class="w-[200px]">
               <li>
                 <img
                   class="h-40 w-full object-cover"
@@ -209,7 +209,7 @@ onBeforeMount(() => {
                 />
               </li>
             </div>
-            <div class="p-6 w-2/3 relative">
+            <div class="p-6 w-[300px] relative">
               <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
                 <li
                   class="text-right font-bold text-2xl mb-2 mt-[-10px] text-green-500"
@@ -269,9 +269,6 @@ onBeforeMount(() => {
         </ul>
       </div>
     </div>
-    <Footer
-      class="absolute bg-green-700 text-white text-center bottom-0 w-full"
-    />
   </div>
 
   <!-- Brand name on the left -->

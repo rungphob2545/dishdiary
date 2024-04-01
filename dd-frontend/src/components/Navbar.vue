@@ -24,7 +24,7 @@ const clearData = () => {
 </script>
 <template>
   <div>
-    <nav class="bg-green-700 p-4">
+    <nav class="bg-green-700 p-4 w-screen fixed">
       <div class="flex items-center justify-between h-8">
         <router-link to="/" class="flex">
           <div class="text-white mr-4">
@@ -62,7 +62,7 @@ const clearData = () => {
         </div>
         <div
           v-else
-          class="bg-green-900 p-2 border rounded-lg text-white hover:bg-red-600 cursor-pointer"
+          class="bg-green-900 p-2 border rounded-lg text-white hover:bg-red-600 cursor-pointer mr-4"
         >
           <button @click="clearData()">Logout</button>
         </div>

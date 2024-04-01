@@ -36,16 +36,22 @@ const login = async (userEmail, password) => {
           router.push("/");
         }
       });
-      //   const jwttoken = await response.json();
-      //   LocalStorage("token", jwttoken.accessToken);
       console.log(response);
     } else {
       console.log("Error adding recipe");
       console.log(response);
     }
   } catch (error) {
-    console.error("Error while login:", error);
-    console.log(error.response);
+    if (error.response.status === 400) {
+      Swal.fire({
+        icon: "error",
+        title: `เกิดข้อผิดพลาดโปรดลองอีกครั้ง \n${error.response.data.message}`,
+        confirmButtonText: "Ok",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      });
+      console.log(error.response);
+    }
   }
 };
 </script>
@@ -66,7 +72,7 @@ const login = async (userEmail, password) => {
     <form @submit.prevent="login">
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="username"
-          >Username:</label
+          >Email:</label
         >
         <input
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

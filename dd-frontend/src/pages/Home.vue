@@ -3,6 +3,7 @@ import { ref, onBeforeMount, computed } from "vue";
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import { useRoute, useRouter } from "vue-router";
+import Footer from "../components/Footer.vue";
 
 const items = ref([]);
 const categories = ref([]);
@@ -10,7 +11,7 @@ const route = useRoute();
 const id = route.params.id;
 
 const selectedCategory = ref([]);
-const getCategoryImage = (id) => `/src/assets/icon/category_${id}.png`;
+const getCategoryImage = (id) => `/kp2/src/assets/icon/category_${id}.png`;
 
 console.log("getimage", getCategoryImage(1));
 
@@ -18,7 +19,7 @@ console.log(import.meta.env.VITE_APP_API_URL);
 const fetchData = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_PRODUCT_API_URL}/api/recipe`,
+      `${import.meta.env.VITE_APP_API_URL}/api/recipe`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -37,7 +38,7 @@ const fetchData = async () => {
 const fetchCategories = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_PRODUCT_API_URL}/api/categories`,
+      `${import.meta.env.VITE_APP_API_URL}/api/categories`,
       {
         method: "GET",
       }
@@ -115,7 +116,7 @@ onBeforeMount(() => {
 
 <template>
   <div class="">
-    <div>
+    <div class="">
       <Navbar />
     </div>
     <div class="justify-start flex flex-wrap" v-if="items.length < 1">
@@ -135,10 +136,10 @@ onBeforeMount(() => {
         ยังไม่มีสูตรอาหารในขณะนี้
       </h1>
     </div>
-    <div class="justify-start flex flex-wrap ml-56" v-else>
+    <div class="justify-start flex flex-wrap ml-56 pt-16" v-else>
       <div class="w-full">
         <div class="text py-4 pb-16">
-          <h1 class="text-8xl font-bold pb-4 text-green-500">Dish DIARIES</h1>
+          <h1 class="text-8xl font-bold pb-4 text-green-700">Dish DIARIES</h1>
 
           <p class="text-lg">
             ค้นพบความสุขในการทำอาหารด้วยเรา!
@@ -146,7 +147,7 @@ onBeforeMount(() => {
             ขอเสนอให้คุณสร้างประสบการณ์ทำอาหารที่สุดแสนสนุกและอร่อยที่สุดได้ที่นี่
           </p>
         </div>
-        <p class="text-[40px] font-bold pb-2 text-green-500">สูตรอาหารของเรา</p>
+        <p class="text-[40px] font-bold pb-2 text-green-700">สูตรอาหารของเรา</p>
       </div>
       <div class="flex w-full pb-4">
         <label
@@ -223,6 +224,9 @@ onBeforeMount(() => {
         </ul>
       </div>
     </div>
+    <Footer
+      class="absolute bg-green-700 text-white text-center bottom-0 w-full"
+    />
   </div>
 
   <!-- Brand name on the left -->

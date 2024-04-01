@@ -47,6 +47,19 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM("Soup", "Pizza", "Noodles", "Rice"),
         defaultValue: "Rice",
       },
+      video: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: null,
+      },
+      vegetarian: {
+        type: DataTypes.ENUM("0", "1"),
+        defaultValue: "0",
+      },
+      nutAllergy: {
+        type: DataTypes.ENUM("0", "1"),
+        defaultValue: "0",
+      },
     },
     {
       createdAt: "created_at",

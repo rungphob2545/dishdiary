@@ -60,23 +60,32 @@ app.use(express.urlencoded({ extended: true }));
             "สปาเก็ตตี้คาโบนาร่าเป็นอาหารพื้นเมืองของอิตาลีที่มีเส้นสปาเก็ตตี้นุ่มๆ รับรสหวานจากไข่และเกลือ และมีรสชาติเข้มข้นจากพาเมซานชีสและเบคอนที่อบกรอบ อาหารชนิดนี้มีชื่อเสียงทั่วโลกและเป็นที่นิยมอย่างมาก โดยมักจะเสริฟพร้อมกับขนมปังหรือขนมปังกรอบ เป็นเมนูที่เหมาะสำหรับคนที่ชื่นชอบอาหารอิตาเลียนและความหรูหราของรสชาติที่เข้มข้น",
           categoryId: [1],
           recipeImage: "dist\\images\\Spagetti_Carbonara.jpg",
+          video: "https://www.youtube.com/embed/mRoaxyGLHgw",
+          nutAllergy: "1",
         },
         {
-          recipeName: "Pad Thai",
-          cookingSteps: "Soak rice noodles...",
-          cookingIngredients: "Cook shrimp and tofu...",
-          introduce: "A popular Thai stir-fried noodle dish...",
-          categoryId: 2,
-          recipeImage: "dist\\images\\Spagetti_Carbonara.jpg",
-        },
-        {
-          recipeName: "Margherita Pizza",
-          cookingSteps: "Preheat oven...",
-          cookingIngredients: "Stretch pizza dough...",
+          recipeName: "Pan-fried eggs",
+          cookingSteps:
+            "1.หั่นครึ่ง ไส้กรอก แฮม เบคอน และ โบโลน่า เตรียมไว้\n 2.ตั้งกระทะใช้ไฟกลางค่อนอ่อน ใส่เนยลงไปรอจนละลาย แล้วใส่เบคอนลงทอดให้พอกรอบ ตามด้วยไส้กรอก แฮม และโบโลน่า เมื่อทุกอย่างพอเปลี่ยนสี จัดให้ไปอยู่ข้างใดข้างหนึ่งให้สวยงาม นำโบโลน่าออกก่อน แล้วตอกไข่ใส่ลงไป ม้วนโบโลน่าให้เป็นรูปดอกไม้ แล้วนำมาวางตรงไข่ขาวที่ยังไม่สุกดี เพื่อให้ไข่ขาวช่วยพยุงโบโลน่าให้อยู่ตัว\n 3.เมื่อไข่เริ่มสุก โรยด้วยมะเขือเทศหั่นเต๋า แล้วปิดไฟ โรยด้วยต้นหอมซอย ปรุงรสด้วยซีอิ๊วขาว และพริกไทย เพียงแต่นี้ “ไข่กระทะ” สไตล์อเมริกันก็พร้อมจัดเสิร์ฟให้เรารับประทาน ",
+          cookingIngredients:
+            "1.ไข่ไก่ 2 ฟอง\n 2.แฮม 2 แผ่น\n 3.ไส้กรอก 2 ชิ้น\n 4.sเบคอน 2 ชิ้น\n 5.โบโลน่า 2 แผ่น\n 6.มะเขือเทศหั่นเต๋า ½ ถ้วย\n 7.ต้นหอมซอย 1 ต้น\n 8.เนย 2 ช้อนโต๊ะ\n 9.ซีอิ๊ว และพริกไทย",
           introduce:
-            "An Italian pizza topped with tomatoes, mozzarella, and basil...",
-          categoryId: 3,
-          recipeImage: "dist\\images\\Spagetti_Carbonara.jpg",
+            "ไข่กระทะ เมนูอาหารเช้าทำง่าย สามารถหาวัตถุดิบได้จากร้านค้า หรือห้างสรรพสินค้าทั่วไป โดยใช้เวลาเตรียมวัตถุดิบไม่นาน และมีขั้นตอนแน่นอนว่านอกจากความอร่อย ทำง่าย กินง่าย ไข่กระทะยังอุดมไปด้วยสารอาหารครบที่จำเป็นต่อร่างกาย ดีต่อใจและดีต่อสุขภาพ",
+          categoryId: [1],
+          recipeImage: "dist\\images\\Pan_Fried_Egg.jpg",
+          nutAllergy: "1",
+        },
+        {
+          recipeName: "Beaf Steak",
+          cookingSteps:
+            "1. ปรุงเนื้อสเต็กด้วยเกลือและพริกไทย\n2. เปิดไฟกระทะหรือเตาแล้วนำเนื้อสเต็กไปย่างจนสุกตามระดับความพอดี ประมาณ 4-5 นาทีต่อด้านสำหรับเนื้อสเต็กปริมาณ 1 นิ้ว\n3. นำเนื้อสเต็กออกจากไฟแล้วปล่อยให้พักสักครู่ก่อนหั่น\n4. เสริฟเนื้อสเต็กพร้อมกับอาหารที่ชอบ",
+          cookingIngredients:
+            "1. เนื้อสเต็ก หนา 1 นิ้ว\n2. เกลือ ตามรสชาติ\n3. พริกไทย ตามรสชาติ\n4. น้ำมันมะกอก สำหรับย่าง\n5. อื่นๆ: กระเทียม, โรสแมรี่ หรือสมุนไพรต่างๆ สำหรับปรุงรส",
+          introduce:
+            "สเต็กเนื้อเป็นเมนูอาหารที่เป็นที่นิยมและเหมาะสำหรับทุกโอกาส ไม่ว่าจะเป็นการย่างนอกบ้านหรือใช้กระทะบนเตา สำคัญคือการปรุงรสด้วยเกลือและพริกไทยอย่างเหมาะสม และนำไปย่างให้สุกตามรสชาติที่ต้องการ ให้เสิร์ฟพร้อมกับมันสำปะหลังสับ, ผักย่าง หรือสลัดสดเพื่อได้เมนูครบถ้วน",
+          categoryId: [2],
+          recipeImage: "dist\\images\\steak.jpg",
+          nutAllergy: "0",
         },
         {
           recipeName: "Caesar Salad",
@@ -86,6 +95,7 @@ app.use(express.urlencoded({ extended: true }));
             "A classic salad with romaine lettuce, croutons, and Caesar dressing...",
           categoryId: 4,
           recipeImage: "dist\\images\\Spagetti_Carbonara.jpg",
+          vegetarian: "1",
         },
         {
           recipeName: "Tiramisu",

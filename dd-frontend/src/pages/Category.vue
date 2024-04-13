@@ -13,7 +13,9 @@ const fetchData = async (id) => {
   const router = useRouter();
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe/category/" + `${id}`
+      `${import.meta.env.VITE_PRODUCT_API_URL}` +
+        "/api/recipe/category/" +
+        `${id}`
     );
     if (response.status === 200) {
       items.value = response.data;
@@ -96,7 +98,7 @@ onBeforeMount(() => {
           <li>
             <img
               class="w-[450px] h-[300px]"
-              v-bind:src="`http://localhost:8080/${item.recipeImage}`"
+              v-bind:src="`http://10.4.85.10:8080/${item.recipeImage}`"
             />
           </li>
           <li class="p-4 text-right">ดูเพิ่มเติม...</li>

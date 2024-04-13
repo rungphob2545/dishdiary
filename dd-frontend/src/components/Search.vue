@@ -61,57 +61,51 @@ const hideResults = () => {
 
 const handleFocus = () => {
   showCloseIcon.value = true;
-  showIcon.value = false; // ซ่อน icon แว่นขยายเมื่อเลือกช่อง
 };
 
 const clearSearch = () => {
   searchQuery.value = "";
   showResults.value = false;
   showCloseIcon.value = false;
-  showIcon.value = true;
 };
 </script>
 
 <template>
   <!-- Search input -->
   <div class="relative">
-    <div>
+    <div class="">
       <input
         type="text"
-        class="w-[250px] h-[45px] bg-gray-700 text-white p-4 rounded mr-[1440px] pl-10 rounded-full input-with-animation"
-        placeholder="Search..."
+        class="w-[500px] h-[45px] bg-white text-gray-800 p-4 rounded mr-[1000px] pl-10 rounded-lg input-with-animation"
+        placeholder="ค้นหาสูตรอาหารได้ที่นี้ !"
         v-model="searchQuery"
         @input="searchFetch"
         @blur="hideResults"
         @focus="handleFocus"
       />
 
-      <transition name="icon-animation">
-        <span
-          v-show="showIcon"
-          class="absolute inset-y-0 left-0 ml-52 flex items-center"
+      <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+        <svg
+          class="h-5 w-5 text-sky-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          @click="toggleSearch"
         >
-          <svg
-            class="h-5 w-5 text-sky-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            @click="toggleSearch"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </span>
-      </transition>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
+      </span>
+
       <transition name="close-animation">
         <span
           v-show="showCloseIcon"
           @click="clearSearch"
-          class="absolute inset-y-0 left-0 ml-52 flex items-center cursor-pointer"
+          class="absolute inset-y-0 left-0 flex items-center cursor-pointer ml-[465px]"
         >
           <svg
             class="h-5 w-5 text-sky-500"
@@ -128,12 +122,10 @@ const clearSearch = () => {
           </svg>
         </span>
       </transition>
+
       <!-- Search results box -->
-      <div v-if="showResults" class="absolute w-[250px] bg-gray-400 mt-[9px]">
-        <div
-          v-if="isLoading"
-          class="border border-blue-300 shadow rounded-md p-4 max-w-sm w-full mx-auto"
-        >
+      <div v-if="showResults" class="absolute w-[500px] bg-gray-200 mt-[9px]">
+        <div v-if="isLoading" class="p-4 max-w-sm w-full">
           <div class="animate-pulse flex space-x-4">
             <div class="rounded-full bg-slate-700 h-10 w-10"></div>
             <div class="flex-1 space-y-6 py-1">
@@ -167,7 +159,6 @@ const clearSearch = () => {
             </router-link>
           </li>
         </ul>
-        <!-- Loading Screen -->
 
         <div class="flex items-center p-2">
           <svg

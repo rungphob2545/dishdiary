@@ -19,7 +19,6 @@ const validateId = (req, res, next) => {
 router.get(
   "/recipe",
   userController.verifyToken,
-  userController.checkUserRole("admin"),
   recipeController.getAllRecipe
 );
 
@@ -28,10 +27,27 @@ router.get("/recipe/search", recipeController.searchRecipeByName);
 
 //CRUD Recipe
 router.get("/recipe/:id", validateId, recipeController.getRecipeById);
-router.post("/recipe", recipeController.upload, recipeController.addRecipe);
-router.put("/recipe/:id", recipeController.updateRecipe);
-router.delete("/recipe/:id", recipeController.removeRecipe);
-router.get("/recipe/category/:id", recipeController.getRecipeByCategory);
+router.post(
+  "/recipe",
+  userController.checkUserRole("Admin"),
+  recipeController.upload,
+  recipeController.addRecipe
+);
+router.put(
+  "/recipe/:id",
+  userController.checkUserRole("Admin"),
+  recipeController.updateRecipe
+);
+router.delete(
+  "/recipe/:id",
+  userController.checkUserRole("Admin"),
+  recipeController.removeRecipe
+);
+router.get(
+  "/recipe/category/:id",
+  userController.checkUserRole("Admin"),
+  recipeController.getRecipeByCategory
+);
 
 //Order
 router.get("/order/:id", orderController.getOwnOrder);

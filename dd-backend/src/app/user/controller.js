@@ -7,12 +7,15 @@ const jwt = require("jsonwebtoken");
 // const path = require("path");
 
 const userRegister = async (req, res) => {
-  if (!req.body) {
+  const { userName, userEmail, password, role } = req.body;
+
+  if (!userName || !userEmail || !password || !role) {
     res.status(400).send({
-      message: "can't add",
+      message: "Input Fill Empty",
     });
     return;
   }
+
   const existingName = await User.findOne({
     where: { userEmail: req.body.userName },
   });
@@ -27,14 +30,20 @@ const userRegister = async (req, res) => {
     return res.status(400).send({ message: "Email must be unique" });
   }
 
-  // const minLength = 5;
-  // if (req.body.email.length < minLength) {
-  //   return res.status(400).send({
-  //     message: `Recipe name must be at least ${minLength} characters long`,
-  //   });
-  // }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const { userName, userEmail, password, role } = req.body;
+  if (!emailRegex.test(userEmail)) {
+    return res.status(400).send({ message: "Invalid Email format" });
+  }
+
+  if (userName.length < 4 || userName.length > 20) {
+    return res.status(400).send({ message: "Invalid Name length" });
+  }
+
+  if (password.length < 8 || password.length > 16) {
+    return res.status(400).send({ message: "Invalid Password length" });
+  }
+
   const hashedPassword = await bcrypt.hash(password, 10);
   let result = {
     userName,
@@ -58,14 +67,29 @@ const userRegister = async (req, res) => {
 const userLogin = async (req, res) => {
   try {
     const { userEmail, password } = req.body;
-    const user = await User.findOne({ where: { userEmail } });
-    if (!user) {
-      return res.status(400).json({ message: "Invalid Credentials" });
+
+    if (!userEmail || !password) {
+      res.status(400).send({
+        message: "Input Fill Empty",
+      });
+      return;
     }
+    const user = await User.findOne({ where: { userEmail } });
+
+    if (!user) {
+      return res.status(400).json({ message: "่ไม่พบ User ในระบบ" });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(userEmail)) {
+      return res.status(400).send({ message: "Invalid email format" });
+    }
+
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     console.log("user log", user);
     if (!isPasswordMatch) {
-      return res.status(400).json({ meesage: "Password not match" });
+      return res.status(400).send({ message: "Password not match" });
     }
     const token = jwt.sign(
       {

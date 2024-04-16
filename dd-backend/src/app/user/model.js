@@ -29,6 +29,11 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: "User",
         allowNull: false,
       },
+      userImage: {
+        field: "user_image",
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       createdAt: "created_at",

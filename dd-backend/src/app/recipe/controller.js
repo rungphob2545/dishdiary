@@ -44,6 +44,10 @@ const getAllRecipe = async (req, res) => {
       "video",
       "vegetarian",
       "nutAllergy",
+      "rating",
+      "timeBased",
+      "difficulty",
+      "type",
     ],
   });
   res.status(200).send(recipe);
@@ -162,11 +166,37 @@ const searchRecipeByName = async (req, res) => {
     console.log(query);
     const recipes = await Recipe.findAll({
       where: {
-        recipeName: {
-          [Op.like]: `${query}%`,
-        },
+        [Op.or]: [
+          { recipeName: { [Op.like]: `${query}%` } }, // ค้นหาชื่อเมนู
+          { type: { [Op.like]: `${query}%` } }, // ค้นหา tag
+        ],
       },
     });
+    res.status(200).send(recipes);
+  } catch (err) {
+    console.log("error:", err);
+    res.status(500).send({
+      message: err.message || " Error occurred while updating",
+    });
+  }
+};
+
+const searchRecipes = async (req, res) => {
+  const { type, difficulty, ratingMin, ratingMax } = req.query;
+  try {
+    let whereClause = {};
+    if (type) {
+      whereClause.type = type;
+    }
+    if (difficulty) {
+      whereClause.difficulty = difficulty;
+    }
+    if (ratingMin && ratingMax) {
+      whereClause.rating = {
+        [Op.between]: [parseFloat(ratingMin), parseFloat(ratingMax)],
+      };
+    }
+    const recipes = await Recipe.findAll({ where: whereClause });
     res.status(200).send(recipes);
   } catch (err) {
     console.log("error:", err);
@@ -185,4 +215,5 @@ module.exports = {
   upload,
   getRecipeByCategory,
   searchRecipeByName,
+  searchRecipes,
 };

@@ -50,6 +50,7 @@ const userRegister = async (req, res) => {
     userEmail,
     password: hashedPassword,
     role,
+    userImage: "dist\\images\\avatar_1.png",
   };
 
   try {

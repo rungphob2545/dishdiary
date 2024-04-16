@@ -172,10 +172,10 @@ const difficulties = [
 ];
 
 const timeBased = [
-  { name: "Quick" },
-  { name: "Moderate" },
-  { name: "Time-Consuming" },
-  { name: "Time-intensive" },
+  { name: "30m" },
+  { name: "moreThan60" },
+  { name: "2h" },
+  { name: "ทั้งหมด" },
 ];
 
 const isVegetarian = ref(false);
@@ -209,11 +209,12 @@ const filteredItems = computed(() => {
     console.log(filtered);
   }
 
-  if (selectedTimeBased.value.length > 0) {
-    filtered = filtered.filter((item) =>
-      selectedTimeBased.value.includes(item.timeBased)
-    );
-    console.log(filtered);
+  if (selectedTimeBased.value === "moreThan30") {
+    filtered = filtered.filter((item) => item.timeBased === "30m");
+  } else if (selectedTimeBased.value === "moreThan60") {
+    filtered = filtered.filter((item) => item.timeBased === "60m");
+  } else if (selectedTimeBased.value === "2h") {
+    filtered = filtered.filter((item) => item.timeBased === "2h");
   }
 
   if (isVegetarian.value === 1) {
@@ -522,19 +523,7 @@ onBeforeMount(() => {
                   class="absolute top-0 right-0 m-2 p-2 rounded-full bg-white shadow-md hover:bg-gray-200 focus:outline-none"
                   @click="removeFavorites(item.id)"
                 >
-                  <svg
-                    class="h-8 w-8 text-red-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
+                  <img src="src\assets\icon\heart.png" class="w-7 h-7" />
                 </button>
                 <button
                   v-else

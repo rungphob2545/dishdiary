@@ -97,7 +97,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div class="">
+  <div class="h-screen">
     <div class="">
       <Navbar />
     </div>
@@ -134,7 +134,7 @@ onBeforeMount(() => {
           <div>
             <router-link
               :to="{ name: 'Recipe' }"
-              class="flex bg-black text-white shadow-lg overflow-hidden object-center transition duration-300 transform hover:scale-105 cursor-pointer w-[120px] rounded-lg mt-8 ml-auto"
+              class="flex bg-black text-white shadow-lg overflow-hidden object-center transition duration-300 hover:scale-105 cursor-pointer w-[120px] rounded-lg mt-8 ml-auto"
             >
               <div class="p-4 relative items-center">เริ่มต้นใช้งาน</div>
             </router-link>
@@ -149,7 +149,7 @@ onBeforeMount(() => {
               :to="{ name: 'RecipeIns', params: { id: item.id } }"
             >
               <div
-                class="flex flex-col items-center shadow-lg rounded-lg overflow-hidden object-center transition duration-300 transform hover:scale-105 cursor-pointer"
+                class="flex flex-col items-center shadow-lg rounded-lg overflow-hidden object-center transition duration-300 hover:scale-105 cursor-pointer"
               >
                 <div class="w-full h-48">
                   <img

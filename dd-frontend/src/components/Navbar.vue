@@ -25,7 +25,7 @@ const clearData = () => {
 <template>
   <div class="">
     <nav
-      class="bg-black p-4 fixed w-full justify-center flex items-center shadow-lg shadow-lime-900"
+      class="bg-black p-4 fixed w-full justify-center flex items-center shadow-md shadow-blue-900"
     >
       <div class="flex items-center h-8">
         <router-link to="/" class="flex">

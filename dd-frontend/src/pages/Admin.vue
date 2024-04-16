@@ -479,6 +479,7 @@ onBeforeMount(() => {
         ยังไม่มีสูตรอาหารในขณะนี้
       </h1>
     </div>
+
     <div class="justify-start pt-24 ml-32" v-else>
       <button
         class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
@@ -490,7 +491,7 @@ onBeforeMount(() => {
       <div class="grid grid-cols-3 gap-4 pb-12">
         <ul v-for="item in filteredItems" :key="item.id" class="">
           <div
-            class="flex bg-white shadow-lg rounded-lg overflow-hidden object-center transition duration-300 transform hover:scale-105 cursor-pointer"
+            class="flex bg-white shadow-lg rounded-lg overflow-hidden object-center transition duration-300 hover:scale-105 cursor-pointer"
           >
             <div class="w-[200px]">
               <li>
@@ -500,7 +501,7 @@ onBeforeMount(() => {
                 />
               </li>
             </div>
-            <div class="p-6 w-[300px] relative">
+            <div class="p-6 w-[300px]">
               <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
                 <li
                   class="text-right font-bold text-2xl mb-2 mt-[-10px] text-green-500"

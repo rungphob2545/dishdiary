@@ -11,6 +11,7 @@ const itemline = ref([]);
 const route = useRoute();
 const router = useRouter();
 const id = ref(route.params.id);
+const favorites = ref([]);
 
 const getCategoryImage = (id) => `/kp2/src/assets/icon/category_${id}.png`;
 
@@ -44,6 +45,104 @@ const fetchData = async (id) => {
   }
 };
 
+const fetchFavorites = async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_APP_API_URL}/api/favorite`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        method: "GET",
+      }
+    );
+
+    favorites.value = response.data;
+    console.log("favorite", favorites.value.recipes[0].id);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+const addToFavorites = async (recipeId, userId) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_APP_API_URL}/api/favorite`,
+      {
+        recipeId: recipeId,
+        userId: userId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (response.status === 201) {
+      Swal.fire({
+        icon: "success",
+        title: "นำเข้า Favorite สำเร็จ",
+        confirmButtonText: "ตกลง",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          location.reload();
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Error adding recipe:", error);
+    errors.value = error;
+    console.log(errors);
+  }
+};
+
+const removeFavorites = async (recipeId, userId) => {
+  try {
+    const response = await axios.delete(
+      `${import.meta.env.VITE_APP_API_URL}/api/favorite`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        data: {
+          recipeId: recipeId,
+          userId: userId,
+        },
+      }
+    );
+    if (response.status === 200) {
+      Swal.fire({
+        icon: "success",
+        title: "นำออกจาก Favorite สำเร็จ",
+        confirmButtonText: "ตกลง",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          location.reload();
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Error adding recipe:", error);
+    errors.value = error;
+    console.log(errors);
+  }
+};
+
+const combinedItems = computed(() => {
+  return items.value.map((item) => {
+    const favorite = favorites.value.recipes
+      ? favorites.value.recipes.find((recipe) => recipe.id === item.id)
+      : null;
+    return {
+      ...item,
+      favorite,
+    };
+  });
+});
+
 watch(
   () => route.params.id,
   (newValue, oldValue) => {
@@ -53,6 +152,8 @@ watch(
 
 onMounted(() => {
   fetchData(id.value);
+  fetchFavorites();
+  console.log("com", combinedItems);
 });
 
 const formatCookingSteps = (steps) => {
@@ -153,41 +254,18 @@ const pauseVideo = () => {
     </div>
     <div class="w-screen mx-auto text-center pt-16">
       <p class="text-[50px] text-orange-500">{{ items.recipeName }}</p>
-      <div
-        class="flex justify-end items-center w-[150px] border border-green-500 bg-white absolute right-0"
-      >
-        <button class="flex p-2 items-center hover:bg-gray-200" @click="share">
-          <p class="mr-1">แชร์สูตรอาหารนี้</p>
-          <svg
-            class="h-5 w-5 text-blue-500"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" />
-            <circle cx="6" cy="12" r="3" />
-            <circle cx="18" cy="6" r="3" />
-            <circle cx="18" cy="18" r="3" />
-            <line x1="8.7" y1="10.7" x2="15.3" y2="7.3" />
-            <line x1="8.7" y1="13.3" x2="15.3" y2="16.7" />
-          </svg>
-        </button>
-      </div>
       <div class="flex mt-8">
         <div>
           <img
-            class="block mx-auto w-[500px] h-[450px] rounded-lg ml-96"
+            class="block mx-auto w-[500px] h-[450px] rounded-lg ml-96 border-blue-400 border"
             v-bind:src="`http://localhost:8080/${items.recipeImage}`"
           />
         </div>
         <div class="">
           <div class="flex justify-center gap-8">
-            <div class="flex items-center border rounded-lg p-2 bg-white">
+            <div
+              class="flex items-center border rounded-lg p-2 bg-white border-blue-400"
+            >
               <span class="mr-3">ประเภทของเนื้อสัตว์</span>
 
               <img
@@ -195,7 +273,9 @@ const pauseVideo = () => {
                 class="w-12 h-12"
               />
             </div>
-            <div class="flex items-center border rounded-lg p-2 bg-white">
+            <div
+              class="flex items-center border rounded-lg p-2 bg-white border-blue-400"
+            >
               <span class="mr-3">ประเภทของอาหาร</span>
               <span class="mr-3 underline underline-offset-8">{{
                 convertTypeToThai(items.type)
@@ -205,26 +285,92 @@ const pauseVideo = () => {
 
           <div>
             <p
-              class="ml-8 my-4 w-[800px] text-center mx-auto border p-4 border-green-500 rounded-lg bg-white"
+              class="ml-8 my-4 w-[800px] text-center mx-auto border p-4 border-blue-400 rounded-lg bg-white border-blue-400"
             >
               {{ items.introduce }}
             </p>
           </div>
           <div class="flex gap-4 justify-center">
-            <div class="flex items-center border rounded-lg p-2 bg-white">
+            <div
+              class="flex items-center border rounded-lg p-2 bg-white border-blue-400"
+            >
               <img src="src\assets\icon\star.png" class="w-12 h-12" />
               <span class="absolute ml-2 p-1">{{ items.rating }}</span>
             </div>
 
-            <div class="flex items-center border rounded-lg p-2 bg-white">
+            <div
+              class="flex items-center border rounded-lg p-2 bg-white border-blue-400"
+            >
               <span class="mr-3">ระดับความยากในการทำอาหาร</span>
               <span class="mr-3">{{
                 convertDiffToThai(items.difficulty)
               }}</span>
             </div>
-            <div class="flex items-center border rounded-lg p-2 bg-white">
+            <div
+              class="flex items-center border rounded-lg p-2 bg-white border-blue-400"
+            >
               <span class="mr-3">ระยะเวลาที่ใช้โดยประมาณ</span>
-              <span class="mr-3">{{ convertTimeToThai(items.timeBased) }}</span>
+              <span class="mr-3">{{ items.timeBased }}</span>
+            </div>
+          </div>
+          <div class="flex justify-center">
+            <div
+              class="flex items-center w-[150px] border border-blue-400 bg-white rounded-lg my-4"
+            >
+              <button
+                class="flex p-2 items-center hover:bg-gray-200"
+                @click="share"
+              >
+                <p class="mr-1">แชร์สูตรอาหารนี้</p>
+                <svg
+                  class="h-5 w-5 text-blue-500"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="6" r="3" />
+                  <circle cx="18" cy="18" r="3" />
+                  <line x1="8.7" y1="10.7" x2="15.3" y2="7.3" />
+                  <line x1="8.7" y1="13.3" x2="15.3" y2="16.7" />
+                </svg>
+              </button>
+            </div>
+            <div class="flex items-center">
+              <div>
+                <button
+                  v-if="items.favorite"
+                  class="m-2 p-2 rounded-full bg-white shadow-md hover:bg-gray-200 focus:outline-none"
+                  @click="removeFavorites(items.id)"
+                >
+                  <img src="src\assets\icon\heart.png" class="w-7 h-7" />
+                </button>
+                <button
+                  v-else
+                  class="m-2 p-2 rounded-full bg-white shadow-md hover:bg-gray-200 focus:outline-none"
+                  @click="addToFavorites(items.id)"
+                >
+                  <svg
+                    class="h-8 w-8 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -233,7 +379,7 @@ const pauseVideo = () => {
         <div class="w-1/2 top-0">
           <h1 class="text-[30px] text-orange-500 mb-4">ส่วนผสมในการทำอาหาร</h1>
           <div
-            class="formatted-text mb-4 w-[400px] text-center mx-auto border p-4 border-green-500 rounded-lg bg-white"
+            class="formatted-text mb-4 w-[400px] text-center mx-auto border p-4 border-blue-400 rounded-lg bg-white"
           >
             <table>
               <thead>
@@ -362,14 +508,14 @@ const pauseVideo = () => {
         <div class="w-1/2">
           <h1 class="text-[30px] text-orange-500 mb-4">ขั้นตอนการทำอาหาร</h1>
           <p
-            class="formatted-text mb-4 w-[800px] text-center mx-auto border p-4 border-green-500 rounded-lg bg-white"
+            class="formatted-text mb-4 w-[800px] text-center mx-auto border p-4 border-blue-400 rounded-lg bg-white"
           >
             {{ formatCookingSteps(items.cookingSteps) }}
           </p>
         </div>
       </div>
       <div
-        class="mt-8 mb-8 w-[400px] text-center mx-auto border p-4 border-green-500 rounded-lg text-orange-500 text-[30px] bg-white"
+        class="mt-8 mb-8 w-[400px] text-center mx-auto border p-4 border-blue-400 rounded-lg text-orange-500 text-[30px] bg-white"
       >
         <h1>วิดิโอสอนทำ</h1>
         <h1>{{ items.recipeName }}</h1>

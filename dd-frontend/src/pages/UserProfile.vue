@@ -203,10 +203,10 @@ onBeforeMount(() => {
     <div
       class="w-[1350px] bg-white shadow-md rounded-lg overflow-hidden p-8 mt-6 text-center"
     >
-      <div class="grid grid-cols-2 gap-4 pb-12">
+      <div class="grid grid-cols-1 gap-4 pb-12">
         <ul v-for="item in sortedItems" :key="item.id" class="">
           <div
-            class="flex bg-white shadow-lg rounded-lg overflow-hidden object-center transition duration-300 transform hover:scale-105 cursor-pointer"
+            class="flex bg-white shadow-lg rounded-lg overflow-hidden object-center transition duration-300 cursor-pointer"
           >
             <div class="w-[200px]">
               <li>

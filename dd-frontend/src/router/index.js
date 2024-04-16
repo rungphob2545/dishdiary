@@ -6,7 +6,9 @@ import Admin from "../pages/Admin.vue";
 import Category from "../pages/Category.vue";
 import Login from "../pages/Login.vue";
 import Register from "../pages/Register.vue";
+import Recipe from "../pages/Recipe.vue";
 import Swal from "sweetalert2";
+import UserProfile from "../pages/UserProfile.vue";
 
 const history = createWebHashHistory(import.meta.env.BASE_URL);
 
@@ -15,6 +17,14 @@ const routes = [
     path: "/",
     component: Home,
     name: "Home",
+    meta: {
+      requiresAuth: false,
+    },
+  },
+  {
+    path: "/recipe",
+    component: Recipe,
+    name: "Recipe",
     meta: {
       requiresAuth: true,
     },
@@ -58,6 +68,14 @@ const routes = [
     name: "Login",
     meta: {
       requiresAuth: false,
+    },
+  },
+  {
+    path: "/account/profile",
+    component: UserProfile,
+    name: "userProfile",
+    meta: {
+      requiresAuth: true,
     },
   },
   { path: "/account/signup", component: Register, name: "Register" },

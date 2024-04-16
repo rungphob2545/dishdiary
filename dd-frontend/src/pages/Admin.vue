@@ -16,6 +16,8 @@ const imageName = ref("");
 
 const getCategoryImage = (id) => `/kp2/src/assets/icon/category_${id}.png`;
 
+const getImage = (recipeName) => `http://localhost:8080/${recipeName}`;
+
 console.log(import.meta.env.VITE_APP_API_URL);
 const fetchData = async () => {
   try {
@@ -477,7 +479,7 @@ onBeforeMount(() => {
         ยังไม่มีสูตรอาหารในขณะนี้
       </h1>
     </div>
-    <div class="justify-start pt-24" v-else>
+    <div class="justify-start pt-24 ml-32" v-else>
       <button
         class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
         @click="isOpenCreate = true"
@@ -485,51 +487,77 @@ onBeforeMount(() => {
         เพิ่มสูตรอาหาร
       </button>
 
-      <div class="flex flex-wrap gap-4 p-8">
-        <ul v-for="item in items" :key="item.id" class="">
+      <div class="grid grid-cols-3 gap-4 pb-12">
+        <ul v-for="item in filteredItems" :key="item.id" class="">
           <div
-            class="flex max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden object-cover object-center transition duration-300 transform hover:scale-105 cursor-pointer"
+            class="flex bg-white shadow-lg rounded-lg overflow-hidden object-center transition duration-300 transform hover:scale-105 cursor-pointer"
           >
-            <div class="w-1/3">
+            <div class="w-[200px]">
               <li>
                 <img
-                  class="h-auto w-full"
-                  v-bind:src="`http://localhost:8080/${item.recipeImage}`"
+                  class="h-40 w-full object-cover"
+                  v-bind:src="getImage(item.recipeImage)"
                 />
               </li>
             </div>
-            <div class="p-6 w-2/3 relative">
+            <div class="p-6 w-[300px] relative">
               <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
                 <li
                   class="text-right font-bold text-2xl mb-2 mt-[-10px] text-green-500"
                 >
                   {{ item.recipeName }}
                 </li>
-                <li class="float-right flex">
-                  <span class="mr-3"> ประเภท </span>
+                <li class="float-right flex gap-2">
+                  <span class=""> ประเภท </span>
                   <img
                     :src="getCategoryImage(item.categoryId)"
                     class="w-8 h-8"
                   />
+                  <img
+                    v-if="item.nutAllergy == 1"
+                    src="src\assets\icon\nut.png"
+                    class="w-8 h-8"
+                  />
+                  <img
+                    v-if="item.vegetarian == 1"
+                    src="src\assets\icon\vegan.png"
+                    class="w-8 h-8"
+                  />
                 </li>
-                <li class="absolute bottom-0 mb-4">
+                <li class="absolute bottom-0 mb-2" v-if="item.video">
                   <svg
                     class="h-8 w-8 text-red-500 ml-56"
-                    fill="none"
                     viewBox="0 0 24 24"
+                    fill="none"
                     stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polygon points="23 7 16 12 23 17 23 7" />
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                  </svg>
+                </li>
+                <li class="absolute bottom-0 mb-2" v-else>
+                  <svg
+                    class="h-8 w-8 text-gray-500 ml-56"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                      d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10"
                     />
+                    <line x1="1" y1="1" x2="23" y2="23" />
                   </svg>
                 </li>
               </router-link>
             </div>
           </div>
+
           <div class="pt-4">
             <div class="flex justify-between">
               <button

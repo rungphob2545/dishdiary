@@ -75,6 +75,52 @@ const convertCategoryIdToString = (categoryId) => {
   }
 };
 
+const convertTypeToThai = (type) => {
+  switch (type) {
+    case "Rice":
+      return "ข้าว";
+    case "Soup":
+      return "ซุป";
+    case "Noodle":
+      return "เส้น";
+    case "Salad":
+      return "สลัด";
+
+    default:
+      return "หมวดหมู่อื่นๆ";
+  }
+};
+
+const convertTimeToThai = (t) => {
+  switch (t) {
+    case "Quick":
+      return "ค่อนข้างเร็ว";
+    case "Moderate":
+      return "ปานกลาง";
+    case "Time-Consuming":
+      return "ค่อนข้างใช้เวลาทำ";
+    case "Time-intensive":
+      return "ใช้เวลาทำนาน";
+
+    default:
+      return "ไม่ทราบ";
+  }
+};
+
+const convertDiffToThai = (d) => {
+  switch (d) {
+    case "Easy":
+      return "ง่าย";
+    case "Normal":
+      return "ปานกลาง";
+    case "Difficulty":
+      return "ค่อนข้างยาก";
+
+    default:
+      return "ไม่ทราบ";
+  }
+};
+
 const share = async () => {
   const id = ref(route.params.id);
   console.log(id.value);
@@ -88,6 +134,15 @@ const share = async () => {
   } catch (error) {
     console.error("เกิดข้อผิดพลาดในการแชร์:", error);
   }
+};
+
+//Video pause func
+const videoRef = ref(null);
+const pauseVideo = () => {
+  console.log("test01");
+  const iframe = videoRef.value;
+  const player = iframe.contentWindow;
+  player.postMessage('{"event":"command","func":"pauseVideo","args":""}', "*");
 };
 </script>
 
@@ -123,33 +178,161 @@ const share = async () => {
           </svg>
         </button>
       </div>
-      <div
-        class="flex justify-center items-center mb-3 mt-8 mb-8 w-[300px] mx-auto border p-4 border-green-500 rounded-lg bg-white"
-      >
-        <span class="mr-3">ประเภทของอาหาร</span>
+      <div class="flex mt-8">
+        <div>
+          <img
+            class="block mx-auto w-[500px] h-[450px] rounded-lg ml-96"
+            v-bind:src="`http://localhost:8080/${items.recipeImage}`"
+          />
+        </div>
+        <div class="">
+          <div class="flex justify-center gap-8">
+            <div class="flex items-center border rounded-lg p-2 bg-white">
+              <span class="mr-3">ประเภทของเนื้อสัตว์</span>
 
-        <img :src="getCategoryImage(items.categoryId)" class="w-12 h-12" />
+              <img
+                :src="getCategoryImage(items.categoryId)"
+                class="w-12 h-12"
+              />
+            </div>
+            <div class="flex items-center border rounded-lg p-2 bg-white">
+              <span class="mr-3">ประเภทของอาหาร</span>
+              <span class="mr-3 underline underline-offset-8">{{
+                convertTypeToThai(items.type)
+              }}</span>
+            </div>
+          </div>
+
+          <div>
+            <p
+              class="ml-8 my-4 w-[800px] text-center mx-auto border p-4 border-green-500 rounded-lg bg-white"
+            >
+              {{ items.introduce }}
+            </p>
+          </div>
+          <div class="flex gap-4 justify-center">
+            <div class="flex items-center border rounded-lg p-2 bg-white">
+              <img src="src\assets\icon\star.png" class="w-12 h-12" />
+              <span class="absolute ml-2 p-1">{{ items.rating }}</span>
+            </div>
+
+            <div class="flex items-center border rounded-lg p-2 bg-white">
+              <span class="mr-3">ระดับความยากในการทำอาหาร</span>
+              <span class="mr-3">{{
+                convertDiffToThai(items.difficulty)
+              }}</span>
+            </div>
+            <div class="flex items-center border rounded-lg p-2 bg-white">
+              <span class="mr-3">ระยะเวลาที่ใช้โดยประมาณ</span>
+              <span class="mr-3">{{ convertTimeToThai(items.timeBased) }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <p class="text-center">
-        <img
-          class="block mx-auto w-[700px] h-[500px] rounded-lg"
-          v-bind:src="`http://localhost:8080/${items.recipeImage}`"
-        />
-      </p>
-      <p
-        class="mt-4 mb-8 w-[800px] text-center mx-auto border p-4 border-green-500 rounded-lg bg-white"
-      >
-        {{ items.introduce }}
-      </p>
       <div class="flex justify-center items-start mb-4">
         <div class="w-1/2 top-0">
           <h1 class="text-[30px] text-orange-500 mb-4">ส่วนผสมในการทำอาหาร</h1>
-          <p
+          <div
             class="formatted-text mb-4 w-[400px] text-center mx-auto border p-4 border-green-500 rounded-lg bg-white"
           >
-            {{ formatCookingSteps(items.cookingIngredients) }}
-          </p>
-          <div class="flex justify-center items-center gap-4">
+            <table>
+              <thead>
+                <tr class="">
+                  <th class="border border-gray-300 px-14 py-2">
+                    ชื่อวัตถุดิบ
+                  </th>
+                  <th class="border border-gray-300 px-14 py-2">ปริมาณ</th>
+                </tr>
+              </thead>
+              <tbody class="">
+                <tr
+                  class="border-b border-gray-300"
+                  v-if="items.ingredients1 != null"
+                >
+                  <td class="text-left">{{ items.ingredients1 }}</td>
+                  <td>{{ items.measure1 }}</td>
+                </tr>
+                <tr
+                  class="border-b border-gray-300"
+                  v-if="items.ingredients2 != null"
+                >
+                  <td class="text-left">{{ items.ingredients2 }}</td>
+                  <td>{{ items.measure2 }}</td>
+                </tr>
+                <tr
+                  class="border-b border-gray-300"
+                  v-if="items.ingredients3 != null"
+                >
+                  <td class="text-left">{{ items.ingredients3 }}</td>
+                  <td>{{ items.measure3 }}</td>
+                </tr>
+                <tr
+                  class="border-b border-gray-300"
+                  v-if="items.ingredients4 != null"
+                >
+                  <td class="text-left">{{ items.ingredients4 }}</td>
+                  <td>{{ items.measure4 }}</td>
+                </tr>
+                <tr
+                  class="border-b border-gray-300"
+                  v-if="items.ingredients5 != null"
+                >
+                  <td class="text-left">{{ items.ingredients5 }}</td>
+                  <td>{{ items.measure5 }}</td>
+                </tr>
+                <tr
+                  class="border-b border-gray-300"
+                  v-if="items.ingredients6 != null"
+                >
+                  <td class="text-left">{{ items.ingredients6 }}</td>
+                  <td>{{ items.measure6 }}</td>
+                </tr>
+                <tr
+                  class="border-b border-gray-300"
+                  v-if="items.ingredients7 != null"
+                >
+                  <td class="text-left">{{ items.ingredients7 }}</td>
+                  <td>{{ items.measure7 }}</td>
+                </tr>
+                <tr
+                  class="border-b border-gray-300"
+                  v-if="items.ingredients8 != null"
+                >
+                  <td class="text-left">{{ items.ingredients8 }}</td>
+                  <td>{{ items.measure8 }}</td>
+                </tr>
+                <tr
+                  class="border-b border-gray-300"
+                  v-if="items.ingredients9 != null"
+                >
+                  <td class="text-left">{{ items.ingredients9 }}</td>
+                  <td>{{ items.measure9 }}</td>
+                </tr>
+                <tr
+                  class="border-b border-gray-300"
+                  v-if="items.ingredients10 != null"
+                >
+                  <td class="text-left">{{ items.ingredients10 }}</td>
+                  <td>{{ items.measure10 }}</td>
+                </tr>
+                <tr
+                  class="border-b border-gray-300"
+                  v-if="items.ingredients11 != null"
+                >
+                  <td class="text-left">{{ items.ingredients11 }}</td>
+                  <td>{{ items.measure11 }}</td>
+                </tr>
+                <tr
+                  class="border-b border-gray-300"
+                  v-if="items.ingredients12 != null"
+                >
+                  <td class="text-left">{{ items.ingredients12 }}</td>
+                  <td>{{ items.measure12 }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- <div class="flex justify-center items-center gap-4">
             <a
               href="https://www.makro.pro"
               class="flex items-center text-blue-600 hover:text-blue-300"
@@ -174,7 +357,7 @@ const share = async () => {
                 class="h-12 w-12 rounded-full border border-green-500 mr-2"
               />ไปยังร้านค้า
             </a>
-          </div>
+          </div> -->
         </div>
         <div class="w-1/2">
           <h1 class="text-[30px] text-orange-500 mb-4">ขั้นตอนการทำอาหาร</h1>
@@ -195,15 +378,19 @@ const share = async () => {
         class="flex justify-center items-center mb-12 w-[660px] text-center mx-auto border p-4 border-black rounded-lg bg-black"
       >
         <iframe
+          ref="videoRef"
           v-if="items.video !== null"
           width="660"
           height="400"
-          :src="items.video"
+          :src="items.video + `?enablejsapi=1`"
           frameborder="0"
           allowfullscreen
         ></iframe>
         <div v-else>
           <p class="text-white text-2xl">ขออภัย Video ไม่พร้อมในขณะนี้</p>
+        </div>
+        <div>
+          <button class="text-white" @click="pauseVideo()">Pause</button>
         </div>
       </div>
     </div>

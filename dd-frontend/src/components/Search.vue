@@ -9,13 +9,15 @@ const showIcon = ref(true);
 const isLoading = ref(false);
 const showCloseIcon = ref(false);
 
+const token = localStorage.getItem("token");
+
 const searchFetch = async (query) => {
   try {
     isLoading.value = true;
     const response = await axios.get(
       `${
         import.meta.env.VITE_APP_API_URL
-      }/api/recipe/search?query=${searchQuery.value.trim()}`,
+      }/api/recipe/searchByName?query=${searchQuery.value.trim()}`,
       {
         method: "GET",
       }
@@ -76,12 +78,13 @@ const clearSearch = () => {
     <div class="">
       <input
         type="text"
-        class="w-[500px] h-[45px] bg-white text-gray-800 p-4 rounded mr-[1000px] pl-10 rounded-lg input-with-animation"
+        class="w-[500px] h-[45px] bg-white text-gray-800 p-4 rounded pl-10 rounded-lg input-with-animation disabled:bg-gray-300 disabled:cursor-not-allowed mr-80"
         placeholder="ค้นหาสูตรอาหารได้ที่นี้ !"
         v-model="searchQuery"
         @input="searchFetch"
         @blur="hideResults"
         @focus="handleFocus"
+        :disabled="!token"
       />
 
       <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
@@ -139,7 +142,11 @@ const clearSearch = () => {
             </div>
           </div>
         </div>
-        <ul v-else v-for="result in searchResults" :key="result.id">
+        <ul
+          v-else
+          v-for="(result, index) in searchResults.slice(0, 4)"
+          :key="result.id"
+        >
           <li class="p-2 cursor-pointer hover:bg-gray-200">
             <router-link :to="{ name: 'RecipeIns', params: { id: result.id } }">
               <div class="flex items-center">

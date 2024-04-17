@@ -14,12 +14,13 @@ const newUser = ref({});
 const checkValid = ref(false);
 
 const isLengthValid = () => {
-  if (
-    newUser.value.userName.length < 4 ||
-    newUser.value.userName.length > 20 ||
-    newUser.value.password.length < 8 ||
-    newUser.value.password.length > 16
-  ) {
+  if (newUser.value.userName.length < 4) {
+    checkValid.value = false;
+  } else checkValid.value = true;
+};
+
+const isPasswordValid = () => {
+  if (newUser.value.password.length < 8) {
     checkValid.value = false;
   } else checkValid.value = true;
 };
@@ -30,9 +31,9 @@ const register = async (userName, userEmail, password) => {
     const response = await axios.post(
       `${import.meta.env.VITE_APP_API_URL}` + "/api/register",
       {
-        userName: newUser.userName,
-        userEmail: newUser.userEmail,
-        password: newUser.password,
+        userName: newUser.value.userName,
+        userEmail: newUser.value.userEmail,
+        password: newUser.value.password,
         role: "User",
       }
     );
@@ -127,7 +128,7 @@ const register = async (userName, userEmail, password) => {
           type="password"
           placeholder="*********"
           required
-          v-on:input="isLengthValid()"
+          v-on:input="isPasswordValid()"
           minlength="8"
           maxlength="16"
         />

@@ -23,9 +23,11 @@ const clearData = () => {
 };
 </script>
 <template>
-  <div>
-    <nav class="bg-green-700 p-4 w-screen fixed">
-      <div class="flex items-center justify-between h-8">
+  <div class="">
+    <nav
+      class="bg-black p-4 fixed w-full justify-center flex items-center shadow-md shadow-blue-900"
+    >
+      <div class="flex items-center h-8">
         <router-link to="/" class="flex">
           <div class="text-white mr-4">
             <svg
@@ -62,7 +64,7 @@ const clearData = () => {
         </div>
         <div
           v-else
-          class="bg-green-900 p-2 border rounded-lg text-white hover:bg-red-600 cursor-pointer mr-4"
+          class="bg-green-900 px-2 border rounded-lg text-white hover:bg-red-600 cursor-pointer h-12"
         >
           <button @click="clearData()">Logout</button>
         </div>

@@ -89,6 +89,87 @@ const share = async () => {
     console.error("เกิดข้อผิดพลาดในการแชร์:", error);
   }
 };
+
+//Video pause/play func
+const videoRef = ref(null);
+const isPlaying = ref(false);
+
+//toggle func
+const toggleVideo = () => {
+  const iframe = videoRef.value;
+  const player = iframe.contentWindow;
+
+  if (isPlaying.value) {
+    player.postMessage(
+      '{"event":"command","func":"pauseVideo","args":""}',
+      "*"
+    );
+  } else {
+    player.postMessage('{"event":"command","func":"playVideo","args":""}', "*");
+  }
+
+  isPlaying.value = !isPlaying.value; // สลับสถานะการเล่นวิดีโอ
+};
+
+window.SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+if (window.SpeechRecognition) {
+  const recognition = new webkitSpeechRecognition();
+  recognition.lang = "th-TH";
+  // recognition.interimResults = true;
+  recognition.continuous = true;
+
+  recognition.onstart = function () {
+    console.log(
+      "Voice recognition activated. Try speaking into the microphone."
+    );
+  };
+
+  recognition.onresult = function (event) {
+    for (let i = 0; i < event.results.length; i++) {
+      const command = event.results[i][0].transcript.toLowerCase();
+
+      console.log("Command:", command);
+
+      if (
+        command.includes("play") ||
+        command.includes("start") ||
+        command.includes("เล่น") ||
+        command.includes("เริ่ม")
+      ) {
+        toggleVideo();
+      } else if (
+        command.includes("pause") ||
+        command.includes("stop") ||
+        command.includes("หยุด") ||
+        command.includes("พัก")
+      ) {
+        toggleVideo();
+      }
+    }
+  };
+
+  recognition.onerror = function (event) {
+    console.error("Error occurred in recognition:", event.error);
+  };
+
+  recognition.start();
+} else {
+  console.error("Speech recognition is not supported by this browser.");
+}
+
+//nomal func
+const pauseVideo = () => {
+  const iframe = videoRef.value;
+  const player = iframe.contentWindow;
+  player.postMessage('{"event":"command","func":"pauseVideo","args":""}', "*");
+};
+
+const playVideo = () => {
+  const iframe = videoRef.value;
+  const player = iframe.contentWindow;
+  player.postMessage('{"event":"command","func":"playVideo","args":""}', "*");
+};
 </script>
 
 <template>
@@ -195,16 +276,26 @@ const share = async () => {
         class="flex justify-center items-center mb-12 w-[660px] text-center mx-auto border p-4 border-black rounded-lg bg-black"
       >
         <iframe
+          ref="videoRef"
           v-if="items.video !== null"
           width="660"
           height="400"
-          :src="items.video"
+          :src="items.video + `?enablejsapi=1`"
           frameborder="0"
           allowfullscreen
         ></iframe>
         <div v-else>
           <p class="text-white text-2xl">ขออภัย Video ไม่พร้อมในขณะนี้</p>
         </div>
+      </div>
+      <div>
+        <button @click="pauseVideo">Pause</button>
+      </div>
+      <div>
+        <button @click="playVideo">Play</button>
+      </div>
+      <div>
+        <button @click="toggleVideo">{{ isPlaying ? "Pause" : "Play" }}</button>
       </div>
     </div>
     <Footer />

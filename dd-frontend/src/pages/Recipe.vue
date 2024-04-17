@@ -73,6 +73,7 @@ const fetchFavorites = async () => {
     console.error("Error fetching data:", error);
   }
 };
+
 const addToFavorites = async (recipeId, userId) => {
   try {
     const response = await axios.post(

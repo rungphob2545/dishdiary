@@ -12,6 +12,7 @@ const route = useRoute();
 const router = useRouter();
 const id = ref(route.params.id);
 const favorites = ref([]);
+const errors = ref(null);
 
 const getCategoryImage = (id) => `/kp2/src/assets/icon/category_${id}.png`;
 

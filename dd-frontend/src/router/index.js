@@ -8,6 +8,7 @@ import Login from "../pages/Login.vue";
 import Register from "../pages/Register.vue";
 import Recipe from "../pages/Recipe.vue";
 import Swal from "sweetalert2";
+import Cart from "../pages/Cart.vue";
 import UserProfile from "../pages/UserProfile.vue";
 
 const history = createWebHashHistory(import.meta.env.BASE_URL);
@@ -74,6 +75,14 @@ const routes = [
     path: "/account/profile",
     component: UserProfile,
     name: "userProfile",
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/account/cart",
+    component: Cart,
+    name: "cart",
     meta: {
       requiresAuth: true,
     },

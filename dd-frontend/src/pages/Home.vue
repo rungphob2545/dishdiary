@@ -3,8 +3,10 @@ import { ref, onBeforeMount, computed } from "vue";
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import { useRoute, useRouter } from "vue-router";
+import Swal from "sweetalert2";
 import Footer from "../components/Footer.vue";
 
+const ingredients = ref([]);
 const items = ref([]);
 const categories = ref([]);
 const route = useRoute();
@@ -53,6 +55,71 @@ const fetchCategories = async () => {
   }
 };
 
+const fetchIngredients = async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_APP_API_URL}/api/ingredients`
+    );
+
+    ingredients.value = response.data;
+    console.log("ingredient", ingredients.value);
+  } catch (error) {
+    console.error("Error fetching ingredient:", error);
+  }
+};
+
+const addToCart = async (ingredientId, userId, quantity) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_APP_API_URL}/api/cart`,
+      {
+        ingredientId: ingredientId,
+        userId: userId,
+        quantity: quantity,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (response.status === 201) {
+      Swal.fire({
+        icon: "success",
+        title: "นำเข้า Favorite สำเร็จ",
+        confirmButtonText: "ตกลง",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          location.reload();
+        }
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const formatPrice = (ingredient) => {
+  return `$${
+    ingredient.ingredientPricePerUnit * ingredient.ingredientQuantity
+  }`;
+};
+
+const calculatePrice = (ingredient) => {
+  ingredient.price =
+    ingredient.ingredientPricePerUnit * ingredient.ingredientQuantity;
+};
+
+const increaseQuantity = (ingredient) => {
+  ingredient.ingredientQuantity++; // เพิ่มจำนวนส่วนประกอบของรายการนี้
+};
+
+const deceaseQuantity = (ingredient) => {
+  ingredient.ingredientQuantity--; // เพิ่มจำนวนส่วนประกอบของรายการนี้
+};
+
 const convertCategoryIdToString = (id) => {
   switch (id) {
     case 1:
@@ -92,6 +159,7 @@ const shuffledItems = computed(() => {
 onBeforeMount(() => {
   fetchData();
   fetchCategories();
+  fetchIngredients();
   console.log("filter", filteredItems);
 });
 </script>
@@ -159,6 +227,59 @@ onBeforeMount(() => {
                 </div>
               </div>
             </router-link>
+          </div>
+        </div>
+      </div>
+      <div class="">
+        <div class="py-8">
+          <h1 class="text-2xl">รายการสินค้า</h1>
+        </div>
+        <div class="grid grid-cols-5 gap-4 border p-4 rounded-lg w-[1100px]">
+          <div v-for="ingredient in ingredients" :key="ingredient.id">
+            <div
+              class="bg-white shadow-lg rounded-lg overflow-hidden object-center transition duration-300 hover:scale-105 cursor-pointer"
+            >
+              <div>
+                <h3 class="text-center bg-black text-white bg-opacity-75 p-2">
+                  {{ ingredient.ingredientName }}
+                </h3>
+              </div>
+              <img
+                class="w-full h-48 object-cover"
+                :src="ingredient.ingredientImage"
+                alt="Ingredient Image"
+              />
+              <div class="p-4">
+                <div class="flex items-center justify-center gap-4">
+                  <p
+                    class="text-gray-500 border p-1 rounded-lg bg-black text-white"
+                  >
+                    1 ชิ้น : {{ ingredient.ingredientPricePerUnit }} บาท
+                  </p>
+                </div>
+                <button
+                  class="mt-2 px-4 py-2 bg-black text-white rounded hover:bg-blue-700 w-full flex items-center gap-3"
+                  @click="
+                    addToCart(ingredient.ingredientId, ingredient.quantity)
+                  "
+                >
+                  <svg
+                    class="h-5 w-5 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  <span>เพิ่มไปที่รถเข็น</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

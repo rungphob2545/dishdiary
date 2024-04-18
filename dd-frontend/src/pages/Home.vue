@@ -4,7 +4,6 @@ import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import { useRoute, useRouter } from "vue-router";
 import Swal from "sweetalert2";
-import Footer from "../components/Footer.vue";
 
 const ingredients = ref([]);
 const items = ref([]);
@@ -68,13 +67,16 @@ const fetchIngredients = async () => {
   }
 };
 
-const addToCart = async (ingredientId, userId, quantity) => {
+// ตัวอย่างการใช้งาน
+
+const addToCart = async (ingredientId, quantity) => {
+  console.log(ingredientId, quantity);
   try {
     const response = await axios.post(
       `${import.meta.env.VITE_APP_API_URL}/api/cart`,
       {
         ingredientId: ingredientId,
-        userId: userId,
+
         quantity: quantity,
       },
       {
@@ -86,8 +88,12 @@ const addToCart = async (ingredientId, userId, quantity) => {
     if (response.status === 201) {
       Swal.fire({
         icon: "success",
-        title: "นำเข้า Favorite สำเร็จ",
-        confirmButtonText: "ตกลง",
+        toast: true,
+        position: "top-right",
+        title: "เพิ่มเข้ารถเข็นแล้ว",
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false,
         allowOutsideClick: false,
         allowEscapeKey: false,
       }).then((result) => {
@@ -259,9 +265,7 @@ onBeforeMount(() => {
                 </div>
                 <button
                   class="mt-2 px-4 py-2 bg-black text-white rounded hover:bg-blue-700 w-full flex items-center gap-3"
-                  @click="
-                    addToCart(ingredient.ingredientId, ingredient.quantity)
-                  "
+                  @click="addToCart(ingredient.ingredientId, 1)"
                 >
                   <svg
                     class="h-5 w-5 text-white"
@@ -308,5 +312,41 @@ onBeforeMount(() => {
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+
+.alert {
+  padding: 10px;
+  margin: 10px;
+  background-color: #f44336;
+  color: white;
+  border-radius: 5px;
+  position: relative;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.slide-in {
+  opacity: 1;
+  transform: translateY(0);
+  animation: slide-in-animation 0.5s ease-out forwards;
+}
+
+.close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+}
+
+@keyframes slide-in-animation {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

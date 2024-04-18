@@ -2,7 +2,7 @@
 
 <template>
   <div></div>
-
+  <Toaster />
   <router-view></router-view>
 </template>
 

@@ -44,7 +44,31 @@ app.use(express.urlencoded({ extended: true }));
           ingredientImage:
             "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/16/94/9414977000016/9414977000016_1_1.jpg",
           ingredientPricePerUnit: "199",
-          ingredientQuantity: "4",
+          ingredientQuantity: "1",
+        },
+        {
+          ingredientId: "2",
+          ingredientName: "ปีกไก่",
+          ingredientImage:
+            "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/16/94/9414977000016/9414977000016_1_1.jpg",
+          ingredientPricePerUnit: "150",
+          ingredientQuantity: "1",
+        },
+        {
+          ingredientId: "3",
+          ingredientName: "ปีกเป็ด",
+          ingredientImage:
+            "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/16/94/9414977000016/9414977000016_1_1.jpg",
+          ingredientPricePerUnit: "150",
+          ingredientQuantity: "1",
+        },
+        {
+          ingredientId: "4",
+          ingredientName: "เนื้อหมู",
+          ingredientImage:
+            "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/16/94/9414977000016/9414977000016_1_1.jpg",
+          ingredientPricePerUnit: "150",
+          ingredientQuantity: "1",
         },
       ]);
       const favorites = Favorite.bulkCreate([

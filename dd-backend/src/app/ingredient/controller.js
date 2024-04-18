@@ -16,12 +16,10 @@ const addIngredient = async (req, res) => {
       ingredientPricePerUnit,
       ingredientQuantity,
     });
-    res
-      .status(201)
-      .json({
-        message: "Ingredient added successfully",
-        ingredient: newIngredient,
-      });
+    res.status(201).json({
+      message: "Ingredient added successfully",
+      ingredient: newIngredient,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -31,9 +29,9 @@ const addIngredient = async (req, res) => {
 const getAllIngredients = async (req, res) => {
   try {
     const ingredients = await Ingredient.findAll();
-    res.status(200).json({ ingredients });
+    res.status(200).send(ingredients);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).send({ error: error.message });
   }
 };
 

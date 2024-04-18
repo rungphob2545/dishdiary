@@ -4,7 +4,7 @@ info:
   description: Optional multiline or single-line description in CommonMark or HTML.
   version: 0.1.9
 servers:
-  - url: http://localhost:8080/
+  - url: http://10.4.85.10:8080/
 paths:
   /api/recipe:
     get:

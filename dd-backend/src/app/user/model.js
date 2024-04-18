@@ -27,10 +27,16 @@ module.exports = (sequelize, DataTypes) => {
         field: "password",
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: false,
       },
       role: {
         field: "role",
+        type: DataTypes.ENUM("Guest", "User", "Admin"),
+        defaultValue: "User",
+        allowNull: false,
+      },
+      userImage: {
+        field: "user_image",
         type: DataTypes.STRING,
         allowNull: false,
       },

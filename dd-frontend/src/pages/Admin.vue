@@ -14,12 +14,19 @@ const errors = ref(null);
 const validateUnique = ref(false);
 const imageName = ref("");
 
+const getCategoryImage = (id) => `/kp2/src/assets/icon/category_${id}.png`;
+
+const getImage = (recipeName) => `http://localhost:8080/${recipeName}`;
+
 console.log(import.meta.env.VITE_APP_API_URL);
 const fetchData = async () => {
   try {
     const response = await axios.get(
       `${import.meta.env.VITE_APP_API_URL}/api/recipe`,
       {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         method: "GET",
       }
     );
@@ -106,11 +113,12 @@ const createData = async (
     formData.append("categoryId", categoryId);
 
     const response = await axios.post(
-      `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe",
+      `${import.meta.env.VITE_PRODUCT_API_URL}` + "/api/recipe",
       formData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
@@ -137,6 +145,9 @@ const removeData = async (id) => {
       const response = await axios.delete(
         `${import.meta.env.VITE_APP_API_URL}/api/recipe/${id}`,
         {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
           method: "DELETE",
         }
       );
@@ -168,6 +179,12 @@ const editData = async (
       const response = await axios.put(
         `${import.meta.env.VITE_APP_API_URL}/api/recipe/${id}`,
         {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          method: "PUT",
+        },
+        {
           recipeName: recipeName,
           introduce: introduce,
           cookingIngredients: cookingIngredients,
@@ -190,6 +207,9 @@ const getCategories = async () => {
     const response = await axios.get(
       `${import.meta.env.VITE_APP_API_URL}/api/categories`,
       {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         method: "GET",
       }
     );
@@ -448,9 +468,9 @@ onBeforeMount(() => {
       </div>
     </div>
 
-    <div class="mt-[-900px] ml-64 justify-start" v-if="items.length < 1">
+    <div class="justify-start pt-24" v-if="items.length < 1">
       <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full ml-32"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
         @click="isOpenCreate = true"
       >
         เพิ่มสูตรอาหาร
@@ -459,39 +479,101 @@ onBeforeMount(() => {
         ยังไม่มีสูตรอาหารในขณะนี้
       </h1>
     </div>
-    <div class="mt-[-900px] ml-96 justify-start" v-else>
+
+    <div class="justify-start pt-24 ml-32" v-else>
       <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full mb-32"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
         @click="isOpenCreate = true"
       >
         เพิ่มสูตรอาหาร
       </button>
 
-      <div class="flex flex-wrap">
-        <ul v-for="item in items" :key="item.id" class="px-5 pb-10">
-          <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
-            <li>{{ item.recipeName }}</li>
-            <li>
-              <img
-                class="w-[450px] h-[300px]"
-                v-bind:src="`http://localhost:8080/${item.recipeImage}`"
-              />
-            </li>
-            <li class="p-12 text-right">ดูเพิ่มเติม...</li>
-          </router-link>
-          <div class="flex justify-between">
-            <button
-              class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
-              @click="(isOpen = true), fetchDataById(item.id)"
-            >
-              Edit
-            </button>
-            <button
-              class="bg-red-500 hover:bg-danger-700 text-white font-bold py-2 px-4 rounded"
-              @click="removeData(item.id)"
-            >
-              Delete
-            </button>
+      <div class="grid grid-cols-3 gap-4 pb-12">
+        <ul v-for="item in filteredItems" :key="item.id" class="">
+          <div
+            class="flex bg-white shadow-lg rounded-lg overflow-hidden object-center transition duration-300 hover:scale-105 cursor-pointer"
+          >
+            <div class="w-[200px]">
+              <li>
+                <img
+                  class="h-40 w-full object-cover"
+                  v-bind:src="getImage(item.recipeImage)"
+                />
+              </li>
+            </div>
+            <div class="p-6 w-[300px]">
+              <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
+                <li
+                  class="text-right font-bold text-2xl mb-2 mt-[-10px] text-green-500"
+                >
+                  {{ item.recipeName }}
+                </li>
+                <li class="float-right flex gap-2">
+                  <span class=""> ประเภท </span>
+                  <img
+                    :src="getCategoryImage(item.categoryId)"
+                    class="w-8 h-8"
+                  />
+                  <img
+                    v-if="item.nutAllergy == 1"
+                    src="src\assets\icon\nut.png"
+                    class="w-8 h-8"
+                  />
+                  <img
+                    v-if="item.vegetarian == 1"
+                    src="src\assets\icon\vegan.png"
+                    class="w-8 h-8"
+                  />
+                </li>
+                <li class="absolute bottom-0 mb-2" v-if="item.video">
+                  <svg
+                    class="h-8 w-8 text-red-500 ml-56"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polygon points="23 7 16 12 23 17 23 7" />
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                  </svg>
+                </li>
+                <li class="absolute bottom-0 mb-2" v-else>
+                  <svg
+                    class="h-8 w-8 text-gray-500 ml-56"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10"
+                    />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                  </svg>
+                </li>
+              </router-link>
+            </div>
+          </div>
+
+          <div class="pt-4">
+            <div class="flex justify-between">
+              <button
+                class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
+                @click="(isOpen = true), fetchDataById(item.id)"
+              >
+                Edit
+              </button>
+              <button
+                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                @click="removeData(item.id)"
+              >
+                Delete
+              </button>
+            </div>
           </div>
 
           <!-- Modal Edit -->

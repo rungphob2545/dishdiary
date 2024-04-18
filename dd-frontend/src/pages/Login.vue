@@ -2,6 +2,10 @@
 import { ref } from "vue";
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
+import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
+
+const router = useRouter();
 
 const LocalStorage = (name, accessToken) => {
   localStorage.setItem(name, `${accessToken}`);
@@ -21,27 +25,43 @@ const login = async (userEmail, password) => {
     if (response.status === 201) {
       LocalStorage("email", `${userEmail}`);
       LocalStorage("token", response.data.token);
-      alert("Login successfully");
-      //   const jwttoken = await response.json();
-      //   LocalStorage("token", jwttoken.accessToken);
+      Swal.fire({
+        icon: "success",
+        title: "Login สำเร็จ",
+        confirmButtonText: "กลับสู่หน้าแรก",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/");
+        }
+      });
       console.log(response);
     } else {
       console.log("Error adding recipe");
       console.log(response);
     }
   } catch (error) {
-    console.error("Error while login:", error);
-    console.log(error.response);
+    if (error.response.status === 400) {
+      Swal.fire({
+        icon: "error",
+        title: `เกิดข้อผิดพลาดโปรดลองอีกครั้ง \n${error.response.data.message}`,
+        confirmButtonText: "Ok",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      });
+      console.log(error.response);
+    }
   }
 };
 </script>
 
 <template>
-  <div>
+  <div class="pb-24">
     <Navbar />
   </div>
   <div
-    class="login-form bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-xs mx-auto"
+    class="login-form bg-white shadow-md rounded px-8 pt-4 pb-8 mb-4 max-w-xs mx-auto"
   >
     <div class="flex justify-between my-4">
       <div class="text-center text-xl font-semibold">Login</div>
@@ -52,7 +72,7 @@ const login = async (userEmail, password) => {
     <form @submit.prevent="login">
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="username"
-          >Username:</label
+          >Email:</label
         >
         <input
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

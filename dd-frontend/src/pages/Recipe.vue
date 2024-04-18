@@ -320,9 +320,7 @@ onBeforeMount(() => {
         </div>
         <p class="text-[40px] font-bold pb-2 text-green-700">สูตรอาหารของเรา</p>
       </div>
-      <h1 class="text-[80px] text-center ml-82 pt-16">
-        ยังไม่มีสูตรอาหารในขณะนี้
-      </h1>
+      <h1 class="text-[80px] text-center ml-82 pt-16"></h1>
     </div>
     <div v-else>
       <div class="justify-start flex flex-wrap ml-56 pt-16">

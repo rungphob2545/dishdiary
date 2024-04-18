@@ -22,25 +22,27 @@ const addToCart = async (req, res) => {
 
     const { ingredientId, quantity } = req.body;
 
-    // ตรวจสอบว่ารายการอาหารมีในตะกร้าแล้วหรือยัง
-    let cartItem = await CartItem.findOne({
+    const existingCartItem = await CartItem.findOne({
       where: { userId: id, ingredientId: ingredientId },
     });
 
-    if (cartItem) {
+    if (existingCartItem) {
       // อัปเดตจำนวนสินค้าในตะกร้า
-      cartItem.quantity += quantity;
-      await cartItem.save();
-    } else {
-      // สร้างรายการใหม่ในตะกร้า
-      cartItem = await CartItem.create({
-        userId: id,
-        ingredientId: ingredientId,
-        quantity: quantity,
-      });
+      existingCartItem.quantity += req.body.quantity;
+      await existingCartItem.save();
+      return res
+        .status(200)
+        .json({ message: "Updated cart item", cartItem: existingCartItem });
     }
 
-    res.status(201).json({ message: "Added to cart", cartItem });
+    // สร้างรายการใหม่ในตะกร้า
+    const newCartItem = await CartItem.create({
+      userId: id,
+      ingredientId: req.body.ingredientId,
+      quantity: req.body.quantity,
+    });
+
+    res.status(201).json({ message: "Added to cart", newCartItem });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

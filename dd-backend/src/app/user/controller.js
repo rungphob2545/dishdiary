@@ -126,7 +126,7 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-const checkUserRole = (roleName) => {
+const checkUserRole = (...roleName) => {
   return (req, res, next) => {
     try {
       // ดึง Token จาก header
@@ -136,7 +136,7 @@ const checkUserRole = (roleName) => {
       const decodedToken = jwt.verify(token, "mysecretpassword");
       console.log(decodedToken);
       // ตรวจสอบว่า Token ถูกสร้างโดยผู้ใช้ที่มีบทบาทที่ต้องการหรือไม่
-      if (decodedToken.role === roleName) {
+      if (roleName.includes(decodedToken.role)) {
         return next(); // ผู้ใช้มีสิทธิ์ในการเข้าถึง
       } else {
         return res.status(403).json({ error: "Unauthorized" });

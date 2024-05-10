@@ -4,6 +4,8 @@ const Recipe = db.recipes;
 const multer = require("multer");
 const path = require("path");
 const { Op } = require("sequelize");
+const jwt = require("jsonwebtoken");
+const User = db.users;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -91,6 +93,13 @@ const addRecipe = async (req, res) => {
         message: `Recipe name must be at least ${minLength} characters long`,
       });
     }
+    const token = req.headers.authorization.split(" ")[1];
+
+    // ตรวจสอบ Token
+    const decodedToken = jwt.verify(token, "mysecretpassword");
+    console.log(decodedToken);
+
+    let id = decodedToken.userId;
 
     let result = {
       recipeName: req.body.recipeName,
@@ -99,6 +108,7 @@ const addRecipe = async (req, res) => {
       introduce: req.body.introduce,
       recipeImage: req.file.path,
       categoryId: req.body.categoryId,
+      userId: id,
     };
 
     const recipe = await Recipe.create(result);
@@ -210,6 +220,74 @@ const searchRecipes = async (req, res) => {
   }
 };
 
+//Get recipe by userId
+const getRecipeByUser = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+
+    // ตรวจสอบ Token
+    const decodedToken = jwt.verify(token, "mysecretpassword");
+    console.log(decodedToken);
+
+    let id = decodedToken.userId;
+    const myRecipe = await Recipe.findAll({
+      where: { userId: id },
+    });
+
+    res.status(200).json(myRecipe);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+//Post recipe by userId
+const createRecipeByUser = async (req, res) => {
+  try {
+    const user = User.findByPk(req.params.userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!req.body) {
+      res.status(400).send({
+        message: "can't add",
+      });
+      return;
+    }
+
+    const existingRecipe = await Recipe.findOne({
+      where: { recipeName: req.body.recipeName },
+    });
+    if (existingRecipe) {
+      return res.status(400).send({ message: "Recipe name must be unique" });
+    }
+
+    const minLength = 5;
+    if (req.body.recipeName.length < minLength) {
+      return res.status(400).send({
+        message: `Recipe name must be at least ${minLength} characters long`,
+      });
+    }
+
+    let result = {
+      recipeName: req.body.recipeName,
+      cookingSteps: req.body.cookingSteps,
+      cookingIngredients: req.body.cookingIngredients,
+      introduce: req.body.introduce,
+      recipeImage: req.file.path,
+      categoryId: req.body.categoryId,
+      userId: user.id,
+    };
+    const recipe = await Recipe.create(result);
+    res.status(201).send(recipe);
+    console.log(recipe);
+  } catch (err) {
+    console.log("err", err);
+    res.status(500).send({
+      message: err.message || " Error occurred while creating",
+    });
+  }
+};
 module.exports = {
   getAllRecipe,
   getRecipeById,
@@ -220,4 +298,6 @@ module.exports = {
   getRecipeByCategory,
   searchRecipeByName,
   searchRecipes,
+  getRecipeByUser,
+  createRecipeByUser,
 };

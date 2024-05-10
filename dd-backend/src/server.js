@@ -88,6 +88,23 @@ app.use(express.urlencoded({ extended: true }));
         role: "Admin",
         userImage: "dist\\images\\avatar_1.png",
       });
+      const normalUser = User.create({
+        userName: "nabin",
+        userEmail: "nabin.ameen@gmail.com",
+        password:
+          "$2a$12$SuV./nFfPvED9LKgvs/9yexwaZF5lYkHrL5BA3wobXA7ULimFQjCO",
+        role: "User",
+        userImage: "dist\\images\\avatar_1.png",
+      });
+
+      const normalUser1 = User.create({
+        userName: "test",
+        userEmail: "test01@gmail.com",
+        password:
+          "$2a$12$SuV./nFfPvED9LKgvs/9yexwaZF5lYkHrL5BA3wobXA7ULimFQjCO",
+        role: "User",
+        userImage: "dist\\images\\avatar_1.png",
+      });
       const recipe = Recipe.bulkCreate([
         {
           recipeName: "Spaghetti Carbonara",

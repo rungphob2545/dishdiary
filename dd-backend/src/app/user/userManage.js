@@ -6,6 +6,16 @@ const jwt = require("jsonwebtoken");
 // const multer = require("multer");
 // const path = require("path");
 
+const getAllUser = async (req, res) => {
+  try {
+    const user = await User.findAll({
+      attributes: ["id", "userName", "userEmail", "role", "userImage"],
+    });
+    res.status(200).send(user);
+    console.log(user);
+  } catch (error) {}
+};
+
 const getUserDetail = async (req, res) => {
   try {
     // ดึง Token จาก header
@@ -150,4 +160,5 @@ const editUser = async (req, res) => {
 module.exports = {
   getUserDetail,
   editUser,
+  getAllUser,
 };

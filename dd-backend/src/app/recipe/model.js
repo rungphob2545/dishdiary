@@ -174,12 +174,16 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
       },
+      userId: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
+        allowNull: false,
+      },
     },
     {
       createdAt: "created_at",
       updatedAt: "updated_at",
     }
   );
-
   return Recipe;
 };

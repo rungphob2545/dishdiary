@@ -21,12 +21,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       ingredientPricePerUnit: {
         field: "ingredient_price_per_unit",
-        type: DataTypes.FLOAT,
+        type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
       },
       ingredientQuantity: {
         field: "ingredient_quantity",
-        type: DataTypes.FLOAT,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
     },

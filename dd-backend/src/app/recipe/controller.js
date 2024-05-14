@@ -3,7 +3,9 @@ const db = require("../..");
 const Recipe = db.recipes;
 const multer = require("multer");
 const path = require("path");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
+const History = db.histories;
+const jwt = require("jsonwebtoken");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -64,6 +66,24 @@ const getRecipeById = async (req, res) => {
     return res.status(404).send({ message: "Error: Not Found" });
   }
   const recipe = await Recipe.findOne({ where: { id: id } });
+  const token = req.headers.authorization.split(" ")[1];
+
+  // ตรวจสอบ Token
+  const decodedToken = jwt.verify(token, "mysecretpassword");
+  console.log(decodedToken);
+
+  let userId = decodedToken.userId;
+
+  const existingHistory = await History.findOne({
+    where: { userId, recipeId: id },
+  });
+  if (existingHistory) {
+    // ถ้า recipeId มีการใช้งานแล้ว ให้ลบประวัติเก่าออกและสร้างประวัติใหม่
+    await History.destroy({ where: { id: existingHistory.id } });
+  }
+
+  // สร้างHistoryใหม่
+  await History.create({ userId: userId, recipeId: id });
   res.status(200).send(recipe);
   console.log(recipe);
 };

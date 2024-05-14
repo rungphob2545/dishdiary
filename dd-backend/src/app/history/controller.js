@@ -1,6 +1,7 @@
 const db = require("../..");
 const History = db.histories;
 const User = db.users;
+const jwt = require("jsonwebtoken");
 
 const searchRecord = async (req, res) => {
   try {
@@ -16,7 +17,14 @@ const searchRecord = async (req, res) => {
 
 const searchHistory = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const token = req.headers.authorization.split(" ")[1];
+
+    // ตรวจสอบ Token
+    const decodedToken = jwt.verify(token, "mysecretpassword");
+    console.log(decodedToken);
+
+    let userId = decodedToken.userId;
+
     const user = await User.findOne({
       where: { id: userId },
     });

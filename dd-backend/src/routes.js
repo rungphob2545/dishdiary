@@ -59,7 +59,7 @@ router.post("/cart", cartController.addToCart);
 router.delete("/cart/:id", cartController.removeFromCart);
 
 //Order
-router.get("/order/:id", orderController.getOwnOrder);
+router.get("/order", orderController.getOwnOrder);
 router.post("/order", orderController.createOrder);
 
 //Categories
@@ -71,7 +71,8 @@ router.post("/login", userController.userLogin);
 
 //User Manage
 router.get("/user", userManager.getUserDetail);
-router.put("/user", userManager.editUser);
+router.put("/user", userManager.editUserName);
+router.put("/user", userManager.editUserEmail);
 
 //Favorite
 router.post("/favorite", favoriteController.addFavorite);
@@ -80,6 +81,6 @@ router.delete("/favorite", favoriteController.removeFavorite);
 
 //History
 router.post("/history", historyController.searchRecord);
-router.get("/history/:userId", historyController.searchHistory);
+router.get("/history", historyController.searchHistory);
 
 module.exports = router;

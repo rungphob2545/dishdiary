@@ -27,5 +27,9 @@ db.carts = require("./app/cart/model")(sequelize, Sequelize.DataTypes);
 db.categories = require("./app/category/model")(sequelize, Sequelize.DataTypes);
 db.histories = require("./app/history/model")(sequelize, Sequelize.DataTypes);
 db.favorites = require("./app/favorite/model")(sequelize, Sequelize.DataTypes);
+db.orderItems = require("./app/orderItem/model")(
+  sequelize,
+  Sequelize.DataTypes
+);
 
 module.exports = db;

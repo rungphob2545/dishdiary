@@ -12,30 +12,24 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      ingredientId: {
-        field: "ingredient_id",
-        type: DataTypes.STRING,
-        allowNull: false,
+      userId: {
+        field: "user_id",
+        type: DataTypes.INTEGER,
       },
       quantity: {
         field: "ingredient_quantity",
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      unitPrice: {
-        field: "unit_price",
-        type: DataTypes.FLOAT,
-        allowNull: false,
-      },
-      totalPrice: {
-        field: "total_price",
-        type: DataTypes.FLOAT,
-        allowNull: false,
-      },
       orderDate: {
         field: "order_date",
         type: DataTypes.DATE,
         defaultValue: literal("CURRENT_TIMESTAMP"),
+      },
+      status: {
+        field: "status",
+        type: DataTypes.STRING,
+        allowNull: false,
       },
       shippingAddress: {
         field: "shipping_address",
@@ -45,13 +39,10 @@ module.exports = (sequelize, DataTypes) => {
         field: "payment_method",
         type: DataTypes.STRING,
       },
-      shippingMethod: {
-        field: "shipping_method",
-        type: DataTypes.STRING,
-      },
-      userId: {
-        field: "user_id",
-        type: DataTypes.INTEGER,
+      totalPrice: {
+        field: "total_price",
+        type: DataTypes.FLOAT,
+        allowNull: false,
       },
     },
     {

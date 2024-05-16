@@ -89,7 +89,14 @@ const routes = [
     },
   },
   { path: "/account/signup", component: Register, name: "Register" },
-  { path: "/account/recipe", component: MyRecipe, name: userRecipe },
+  {
+    path: "/recipe/user",
+    component: MyRecipe,
+    name: "myRecipe",
+    meta: {
+      requiresAuth: true,
+    },
+  },
 ];
 
 const router = createRouter({

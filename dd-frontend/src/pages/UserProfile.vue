@@ -283,10 +283,12 @@ onBeforeMount(() => {
       </div>
     </div>
     <div>
-      <h1>My recipe</h1>
-      <div>
-        <MyRecipe />
-      </div>
+      <router-link
+        :to="{ name: 'myRecipe' }"
+        class="flex bg-black text-white shadow-lg overflow-hidden object-center transition duration-300 hover:scale-105 cursor-pointer w-[120px] rounded-lg mt-8 ml-auto"
+      >
+        <div class="p-4 relative items-center">My recipes</div>
+      </router-link>
     </div>
     <h1
       class="text-2xl font-bold pt-4 pb-2 border-b border-gray-300 w-[1350px]"

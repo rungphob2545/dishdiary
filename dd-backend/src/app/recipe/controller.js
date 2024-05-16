@@ -3,7 +3,7 @@ const db = require("../..");
 const Recipe = db.recipes;
 const multer = require("multer");
 const path = require("path");
-const { Op } = require("sequelize");
+const { Op, where, and } = require("sequelize");
 const jwt = require("jsonwebtoken");
 const User = db.users;
 
@@ -95,7 +95,6 @@ const addRecipe = async (req, res) => {
     }
     const token = req.headers.authorization.split(" ")[1];
 
-    // ตรวจสอบ Token
     const decodedToken = jwt.verify(token, "mysecretpassword");
     console.log(decodedToken);
 
@@ -126,6 +125,19 @@ const addRecipe = async (req, res) => {
 const updateRecipe = async (req, res) => {
   try {
     let id = req.params.id;
+    const token = req.headers.authorization.split(" ")[1];
+
+    const decodedToken = jwt.verify(token, "mysecretpassword");
+    console.log(decodedToken);
+
+    let userId = decodedToken.userId;
+
+    const existingUser = await Recipe.findOne({
+      where: { userId: userId },
+    });
+    if (!existingUser) {
+      return res.status(403).send({ message: "Error: Forbidden" });
+    }
     const existingRecipe = await Recipe.findOne({
       where: { id: id },
     });
@@ -144,14 +156,28 @@ const updateRecipe = async (req, res) => {
 
 //delete recipe
 const removeRecipe = async (req, res) => {
-  let id = req.params.id;
+  let recipeId = req.params.id;
+  const token = req.headers.authorization.split(" ")[1];
+
+  const decodedToken = jwt.verify(token, "mysecretpassword");
+  console.log(decodedToken);
+
+  let userId = decodedToken.userId;
+
+  const existingUser = await Recipe.findOne({
+    where: { userId: userId },
+  });
+  if (!existingUser) {
+    return res.status(403).send({ message: "Error: Forbidden" });
+  }
   const existingRecipe = await Recipe.findOne({
-    where: { id: id },
+    where: { id: recipeId },
   });
   if (!existingRecipe) {
     return res.status(404).send({ message: "Error: Not Found" });
   }
-  await Recipe.destroy({ where: { id: id } });
+
+  await Recipe.destroy({ where: { id: recipeId } });
   res.status(200).send("Recipe has been deleted");
 };
 
@@ -240,54 +266,6 @@ const getRecipeByUser = async (req, res) => {
   }
 };
 
-//Post recipe by userId
-const createRecipeByUser = async (req, res) => {
-  try {
-    const user = User.findByPk(req.params.userId);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    if (!req.body) {
-      res.status(400).send({
-        message: "can't add",
-      });
-      return;
-    }
-
-    const existingRecipe = await Recipe.findOne({
-      where: { recipeName: req.body.recipeName },
-    });
-    if (existingRecipe) {
-      return res.status(400).send({ message: "Recipe name must be unique" });
-    }
-
-    const minLength = 5;
-    if (req.body.recipeName.length < minLength) {
-      return res.status(400).send({
-        message: `Recipe name must be at least ${minLength} characters long`,
-      });
-    }
-
-    let result = {
-      recipeName: req.body.recipeName,
-      cookingSteps: req.body.cookingSteps,
-      cookingIngredients: req.body.cookingIngredients,
-      introduce: req.body.introduce,
-      recipeImage: req.file.path,
-      categoryId: req.body.categoryId,
-      userId: user.id,
-    };
-    const recipe = await Recipe.create(result);
-    res.status(201).send(recipe);
-    console.log(recipe);
-  } catch (err) {
-    console.log("err", err);
-    res.status(500).send({
-      message: err.message || " Error occurred while creating",
-    });
-  }
-};
 module.exports = {
   getAllRecipe,
   getRecipeById,
@@ -299,5 +277,4 @@ module.exports = {
   searchRecipeByName,
   searchRecipes,
   getRecipeByUser,
-  createRecipeByUser,
 };

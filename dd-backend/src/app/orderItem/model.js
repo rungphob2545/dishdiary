@@ -2,8 +2,8 @@ const { DataTypes, literal } = require("sequelize");
 const { sequelize } = require("../..");
 
 module.exports = (sequelize, DataTypes) => {
-  const Order = sequelize.define(
-    "orderItem",
+  const OrderItem = sequelize.define(
+    "OrderItem",
     {
       orderItemId: {
         type: DataTypes.INTEGER,
@@ -37,5 +37,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  return Order;
+  return OrderItem;
 };

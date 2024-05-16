@@ -5,21 +5,9 @@ module.exports = (sequelize, DataTypes) => {
   const Order = sequelize.define(
     "order",
     {
-      orderId: {
-        field: "order_id",
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true,
-      },
       userId: {
         field: "user_id",
         type: DataTypes.INTEGER,
-      },
-      quantity: {
-        field: "ingredient_quantity",
-        type: DataTypes.INTEGER,
-        allowNull: false,
       },
       orderDate: {
         field: "order_date",
@@ -50,6 +38,13 @@ module.exports = (sequelize, DataTypes) => {
       updatedAt: "updated_at",
     }
   );
+
+  Order.associate = (models) => {
+    Order.hasMany(models.orderItem, {
+      foreignKey: "orderId",
+      as: "orderItems",
+    });
+  };
 
   return Order;
 };

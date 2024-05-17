@@ -41,6 +41,33 @@ const getOwnOrder = async (req, res) => {
   }
 };
 
+const getOrderById = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+
+    // ตรวจสอบ Token
+    const decodedToken = jwt.verify(token, "mysecretpassword");
+    console.log(decodedToken);
+
+    let userId = decodedToken.userId;
+
+    const user = await User.findOne({
+      where: { id: userId },
+    });
+    if (!user) {
+      return res.status(404).send({ message: "User Not Found !" });
+    }
+
+    const id = req.params.id;
+    const orders = await Order.findOne({ where: { id: id } });
+
+    res.status(200).json({ orders });
+    console.log(orders);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 const createOrder = async (req, res) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
@@ -60,7 +87,7 @@ const createOrder = async (req, res) => {
 
     const { shippingAddress, paymentMethod, items, status } = req.body;
 
-    // ตรวจสอบว่ามี items ใน req.body หรือไม่
+    //for check Array Items
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({
         success: false,
@@ -68,13 +95,18 @@ const createOrder = async (req, res) => {
       });
     }
 
+    const totalPrice = items.reduce(
+      (total, item) => total + item.quantity * item.price,
+      0
+    );
+
     // สร้าง Order
     const order = await Order.create({
       userId: userId,
       shippingAddress,
       paymentMethod,
       status,
-      totalPrice: 1,
+      totalPrice: totalPrice,
     });
 
     // สร้าง Order Items
@@ -99,11 +131,8 @@ const createOrder = async (req, res) => {
   }
 };
 
-function calculateTotalAmount(items) {
-  return items.reduce((total, item) => total + item.quantity * item.price, 0);
-}
-
 module.exports = {
   createOrder,
   getOwnOrder,
+  getOrderById,
 };

@@ -17,7 +17,7 @@ const userRegister = async (req, res) => {
   }
 
   const existingName = await User.findOne({
-    where: { userEmail: req.body.userName },
+    where: { userName: req.body.userName },
   });
   if (existingName) {
     return res.status(400).send({ message: "Name must be unique" });
@@ -129,15 +129,11 @@ const verifyToken = (req, res, next) => {
 const checkUserRole = (roleName) => {
   return (req, res, next) => {
     try {
-      // ดึง Token จาก header
       const token = req.headers.authorization.split(" ")[1];
-
-      // ตรวจสอบ Token
       const decodedToken = jwt.verify(token, "mysecretpassword");
       console.log(decodedToken);
-      // ตรวจสอบว่า Token ถูกสร้างโดยผู้ใช้ที่มีบทบาทที่ต้องการหรือไม่
       if (decodedToken.role === roleName) {
-        return next(); // ผู้ใช้มีสิทธิ์ในการเข้าถึง
+        return next();
       } else {
         return res.status(403).json({ error: "Unauthorized" });
       }

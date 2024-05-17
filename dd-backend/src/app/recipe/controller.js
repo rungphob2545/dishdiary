@@ -6,6 +6,7 @@ const path = require("path");
 const { Op, where } = require("sequelize");
 const History = db.histories;
 const jwt = require("jsonwebtoken");
+const User = db.users;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -37,62 +38,78 @@ const upload = multer({
 
 //get all recipe
 const getAllRecipe = async (req, res) => {
-  const recipe = await Recipe.findAll({
-    attributes: [
-      "id",
-      "recipeName",
-      "recipeImage",
-      "categoryId",
-      "video",
-      "vegetarian",
-      "nutAllergy",
-      "rating",
-      "timeBased",
-      "difficulty",
-      "type",
-    ],
-  });
-  res.status(200).send(recipe);
-  console.log(recipe);
+  try {
+    const recipe = await Recipe.findAll({
+      attributes: [
+        "id",
+        "recipeName",
+        "recipeImage",
+        "categoryId",
+        "video",
+        "vegetarian",
+        "nutAllergy",
+        "rating",
+        "timeBased",
+        "difficulty",
+        "type",
+      ],
+    });
+    res.status(200).send(recipe);
+    console.log(recipe);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
 
 //get one recipe by id
 const getRecipeById = async (req, res) => {
-  let id = req.params.id;
-  const existingRecipe = await Recipe.findOne({
-    where: { id: id },
-  });
-  if (!existingRecipe) {
-    return res.status(404).send({ message: "Error: Not Found" });
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+
+    // ตรวจสอบ Token
+    const decodedToken = jwt.verify(token, "mysecretpassword");
+    console.log(decodedToken);
+
+    let userId = decodedToken.userId;
+
+    const user = await User.findOne({
+      where: { id: userId },
+    });
+    if (!user) {
+      return res.status(404).send({ message: "User Not Found !" });
+    }
+
+    let id = req.params.id;
+    const existingRecipe = await Recipe.findOne({
+      where: { id: id },
+    });
+    if (!existingRecipe) {
+      return res.status(404).send({ message: "Error: Not Found" });
+    }
+    const recipe = await Recipe.findOne({ where: { id: id } });
+
+    const existingHistory = await History.findOne({
+      where: { userId, recipeId: id },
+    });
+    if (existingHistory) {
+      // ถ้า recipeId มีการใช้งานแล้ว ให้ลบประวัติเก่าออกและสร้างประวัติใหม่
+      await History.destroy({ where: { id: existingHistory.id } });
+    }
+
+    // สร้างHistoryใหม่
+    await History.create({ userId: userId, recipeId: id });
+    res.status(200).send(recipe);
+    console.log(recipe);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
-  const recipe = await Recipe.findOne({ where: { id: id } });
-  const token = req.headers.authorization.split(" ")[1];
-
-  // ตรวจสอบ Token
-  const decodedToken = jwt.verify(token, "mysecretpassword");
-  console.log(decodedToken);
-
-  let userId = decodedToken.userId;
-
-  const existingHistory = await History.findOne({
-    where: { userId, recipeId: id },
-  });
-  if (existingHistory) {
-    // ถ้า recipeId มีการใช้งานแล้ว ให้ลบประวัติเก่าออกและสร้างประวัติใหม่
-    await History.destroy({ where: { id: existingHistory.id } });
-  }
-
-  // สร้างHistoryใหม่
-  await History.create({ userId: userId, recipeId: id });
-  res.status(200).send(recipe);
-  console.log(recipe);
 };
 
 const addRecipe = async (req, res) => {
   try {
     if (!req.body) {
       res.status(400).send({
-        message: "can't add",
+        message: "ไม่มีข้อมูลถูกส่่งมา",
       });
       return;
     }
@@ -118,6 +135,12 @@ const addRecipe = async (req, res) => {
       introduce: req.body.introduce,
       recipeImage: req.file.path,
       categoryId: req.body.categoryId,
+      type: req.body.type,
+      video: req.body.video,
+      vegetarian: req.body.vegetarian,
+      nutAllergy: req.body.nutAllergy,
+      difficulty: req.body.difficulty,
+      timeBased: req.body.timeBased,
     };
 
     const recipe = await Recipe.create(result);
@@ -140,7 +163,17 @@ const updateRecipe = async (req, res) => {
     if (!existingRecipe) {
       return res.status(404).send({ message: "Error: Not Found" });
     }
-    const recipe = await Recipe.update(req.body, { where: { id: id } });
+
+    const updateFields = {
+      recipeName: req.body.recipeName,
+      cookingSteps: req.body.cookingSteps,
+      cookingIngredients: req.body.cookingIngredients,
+      introduce: req.body.introduce,
+      difficulty: req.body.difficulty,
+      timeBased: req.body.timeBased,
+    };
+
+    const recipe = await Recipe.update(updateFields, { where: { id: id } });
     res.status(200).send("update success");
     console.log(recipe);
   } catch (err) {
@@ -151,15 +184,21 @@ const updateRecipe = async (req, res) => {
 };
 
 const removeRecipe = async (req, res) => {
-  let id = req.params.id;
-  const existingRecipe = await Recipe.findOne({
-    where: { id: id },
-  });
-  if (!existingRecipe) {
-    return res.status(404).send({ message: "Error: Not Found" });
+  try {
+    let id = req.params.id;
+    const existingRecipe = await Recipe.findOne({
+      where: { id: id },
+    });
+    if (!existingRecipe) {
+      return res.status(404).send({ message: "Error: Not Found" });
+    }
+    await Recipe.destroy({ where: { id: id } });
+    res.status(200).send("Recipe has been deleted");
+  } catch (error) {
+    res.status(500).send({
+      message: err.message || " Error occurred while updating",
+    });
   }
-  await Recipe.destroy({ where: { id: id } });
-  res.status(200).send("Recipe has been deleted");
 };
 
 const getRecipeByCategory = async (req, res) => {

@@ -57,9 +57,11 @@ router.get("/ingredients", ingredientController.getAllIngredients);
 router.get("/cart", cartController.getCartItems);
 router.post("/cart", cartController.addToCart);
 router.delete("/cart/:id", cartController.removeFromCart);
+router.delete("/cart", cartController.removeAllFromCart);
 
 //Order
 router.get("/order", orderController.getOwnOrder);
+router.get("/order/:id", orderController.getOrderById);
 router.post("/order", orderController.createOrder);
 
 //Categories
@@ -77,10 +79,11 @@ router.put("/user", userManager.editUserEmail);
 //Favorite
 router.post("/favorite", favoriteController.addFavorite);
 router.get("/favorite", favoriteController.getFavoritesById);
+router.get("/favorite/:id", favoriteController.getFavoritesByParamsId);
 router.delete("/favorite", favoriteController.removeFavorite);
 
 //History
-router.post("/history", historyController.searchRecord);
+router.delete("/history", historyController.removeHistory);
 router.get("/history", historyController.searchHistory);
 
 module.exports = router;

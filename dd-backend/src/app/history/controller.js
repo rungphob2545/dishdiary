@@ -39,7 +39,37 @@ const searchHistory = async (req, res) => {
   }
 };
 
+const removeHistory = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+
+    // ตรวจสอบ Token
+    const decodedToken = jwt.verify(token, "mysecretpassword");
+    console.log(decodedToken);
+
+    let userId = decodedToken.userId;
+
+    const user = await User.findOne({
+      where: { id: userId },
+    });
+    if (!user) {
+      return res.status(404).send({ message: "User Not Found!" });
+    }
+
+    // ลบประวัติการค้นหาทั้งหมดของผู้ใช้
+    await History.destroy({
+      where: { userId: userId, recipeId: req.body.recipeId },
+    });
+
+    res.status(200).json({ message: "Search history removed" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Error while removing search history" });
+  }
+};
+
 module.exports = {
   searchRecord,
   searchHistory,
+  removeHistory,
 };

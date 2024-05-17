@@ -183,6 +183,9 @@ const clearSearch = () => {
           </svg>
           ทำการค้นหา "{{ searchQuery }}"
         </div>
+        <span v-if="searchResults.length" class="text-sm ml-2">
+          ({{ searchResults.filter((result) => result.type).length }} tags)
+        </span>
       </div>
     </div>
   </div>

@@ -296,6 +296,7 @@ onBeforeMount(() => {
   fetchFavorites();
   console.log("filter", filteredItems);
   console.log("fav", favorites);
+  console.log("com", combinedItems);
 });
 </script>
 
@@ -309,19 +310,10 @@ onBeforeMount(() => {
       v-if="items.length < 1"
     >
       <div class="w-full">
-        <div class="text py-4 pb-16">
-          <h1 class="text-8xl font-bold pb-4 text-green-700">Dish DIARIES</h1>
-
-          <p class="text-lg">
-            ค้นพบความสุขในการทำอาหารด้วยเรา!
-            ที่นี่คุณจะได้พบกับสูตรอาหารที่ยอดเยี่ยมและวิธีการทำอาหารที่ง่ายต่อการติดตาม
-            ขอเสนอให้คุณสร้างประสบการณ์ทำอาหารที่สุดแสนสนุกและอร่อยที่สุดได้ที่นี่
-          </p>
-        </div>
-        <p class="text-[40px] font-bold pb-2 text-green-700">สูตรอาหารของเรา</p>
+        <div class="text py-4 pb-16"></div>
       </div>
-      <h1 class="text-[80px] text-center ml-82 pt-16">
-        ยังไม่มีสูตรอาหารในขณะนี้
+      <h1 class="text-[80px] text-center pt-16">
+        กำลังโหลด รอสักครู่นะครับ...
       </h1>
     </div>
     <div v-else>
@@ -516,9 +508,9 @@ onBeforeMount(() => {
             class="flex flex-col items-center"
           >
             <div
-              class="flex flex-col items-center bg-gradient-to-b from-blue-200 to-white shadow-lg rounded-lg overflow-hidden object-center transition duration-300 transform hover:scale-105 cursor-pointer w-[450px]"
+              class="flex flex-col items-center bg-gradient-to-b from-blue-200 to-white shadow-lg rounded-lg overflow-hidden object-center transition duration-300 transform over:scale-105 cursor-pointer w-[450px]"
             >
-              <div>
+              <div class="">
                 <button
                   v-if="item.favorite"
                   class="absolute top-0 right-0 m-2 p-2 rounded-full bg-white shadow-md hover:bg-gray-200 focus:outline-none"

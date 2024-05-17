@@ -125,7 +125,6 @@ router.beforeEach((to, from, next) => {
       // ตรวจสอบบทบาทของผู้ใช้ก่อนเข้าถึงหน้าที่ไม่มีอยู่ใน route
       if (to.path === "/recipe/admin" && tokenData.role !== "Admin") {
         // ผู้ใช้ไม่ใช่ Admin ไม่สามารถเข้าถึงหน้านี้ได้
-        // แสดงข้อความเตือนหรือทำการ redirect ไปยังหน้าอื่น ๆ ตามต้องการ
         Swal.fire({
           icon: "error",
           title: "ไม่มีสิทธิ์เข้าถึงหน้านี้",
@@ -142,8 +141,6 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     if (!to.matched.length) {
-      // ถ้าไม่มีเส้นทางที่ตรงกับ URL ที่ผู้ใช้พยายามเข้าถึง
-      // แสดงข้อความเตือนหรือทำการ redirect ไปยังหน้าอื่น ๆ ตามต้องการ
       Swal.fire({
         icon: "question",
         title: "ไม่พบหน้านี้",
@@ -165,9 +162,9 @@ router.beforeEach((to, from, next) => {
         allowOutsideClick: false,
         allowEscapeKey: false,
       });
-      next({ name: "Login" }); // แสดงหน้า Login สำหรับการล็อกอิน
+      next({ name: "Login" });
     } else {
-      next(); // อนุญาตให้เข้าถึงหน้าที่ไม่ต้องการ token ได้โดยตรง
+      next();
     }
   }
 });

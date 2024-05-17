@@ -20,7 +20,12 @@ const fetchData = async (id) => {
   console.log(id);
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe/" + `${id}`
+      `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe/" + `${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
     );
     if (response.status === 404) {
       alert("Not found this recipe id");
@@ -46,10 +51,10 @@ const fetchData = async (id) => {
   }
 };
 
-const fetchFavorites = async () => {
+const fetchFavoritesById = async (id) => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/favorite`,
+      `${import.meta.env.VITE_APP_API_URL}/api/favorite/${id}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -59,7 +64,7 @@ const fetchFavorites = async () => {
     );
 
     favorites.value = response.data;
-    console.log("favorite", favorites.value.recipes[0].id);
+    console.log("favorite", favorites.value);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -153,8 +158,9 @@ watch(
 
 onMounted(() => {
   fetchData(id.value);
-  fetchFavorites();
+  fetchFavoritesById(id.value);
   console.log("com", combinedItems);
+  console.log("fav", favorites);
 });
 
 const formatCookingSteps = (steps) => {
@@ -346,7 +352,7 @@ const pauseVideo = () => {
             <div class="flex items-center">
               <div>
                 <button
-                  v-if="items.favorite"
+                  v-if="favorites"
                   class="m-2 p-2 rounded-full bg-white shadow-md hover:bg-gray-200 focus:outline-none"
                   @click="removeFavorites(items.id)"
                 >

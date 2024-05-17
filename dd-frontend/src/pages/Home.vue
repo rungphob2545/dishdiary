@@ -96,10 +96,18 @@ const addToCart = async (ingredientId, quantity) => {
         showConfirmButton: false,
         allowOutsideClick: false,
         allowEscapeKey: false,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          location.reload();
-        }
+      });
+    } else if (response.status === 200 && !response.data.success) {
+      Swal.fire({
+        icon: "warning",
+        toast: true,
+        position: "top-right",
+        title: "อัพเดตตะกร้ารถเข็นแล้ว",
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
       });
     }
   } catch (err) {
@@ -180,20 +188,8 @@ onBeforeMount(() => {
       v-if="items.length < 1"
     >
       <div class="w-full">
-        <div class="text py-4 pb-16">
-          <h1 class="text-8xl font-bold pb-4 text-white">Dish DIARIES</h1>
-
-          <p class="text-lg">
-            ค้นพบความสุขในการทำอาหารด้วยเรา!
-            ที่นี่คุณจะได้พบกับสูตรอาหารที่ยอดเยี่ยมและวิธีการทำอาหารที่ง่ายต่อการติดตาม
-            ขอเสนอให้คุณสร้างประสบการณ์ทำอาหารที่สุดแสนสนุกและอร่อยที่สุดได้ที่นี่
-          </p>
-        </div>
-        <p class="text-[40px] font-bold pb-2 text-green-700">สูตรอาหารของเรา</p>
+        <div class="text py-4 pb-16"></div>
       </div>
-      <h1 class="text-[80px] text-center ml-82 pt-16">
-        ยังไม่มีสูตรอาหารในขณะนี้
-      </h1>
     </div>
     <div class="justify-start flex flex-wrap ml-96 pt-16" v-else>
       <div class="w-full flex">
@@ -210,7 +206,7 @@ onBeforeMount(() => {
               :to="{ name: 'Recipe' }"
               class="flex bg-black text-white shadow-lg overflow-hidden object-center transition duration-300 hover:scale-105 cursor-pointer w-[120px] rounded-lg mt-8 ml-auto"
             >
-              <div class="p-4 relative items-center">เริ่มต้นใช้งาน</div>
+              <div class="p-4 items-center">เริ่มต้นใช้งาน</div>
             </router-link>
           </div>
         </div>

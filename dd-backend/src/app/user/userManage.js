@@ -6,6 +6,16 @@ const jwt = require("jsonwebtoken");
 // const multer = require("multer");
 // const path = require("path");
 
+const getAllUser = async (req, res) => {
+  try {
+    const user = await User.findAll({
+      attributes: ["id", "userName", "userEmail", "role", "userImage"],
+    });
+    res.status(200).send(user);
+    console.log(user);
+  } catch (error) {}
+};
+
 const getUserDetail = async (req, res) => {
   try {
     // ดึง Token จาก header
@@ -36,7 +46,7 @@ const getUserDetail = async (req, res) => {
   }
 };
 
-const editUserName = async (req, res) => {
+const editUser = async (req, res) => {
   try {
     // ดึง Token จาก header
     const token = req.headers.authorization.split(" ")[1];
@@ -52,7 +62,7 @@ const editUserName = async (req, res) => {
     if (!existingUser) {
       return res.status(404).send({ message: "Error: Not Found" });
     }
-    const user = await User.update(req.body.userName, {
+    const user = await User.update(req.body, {
       where: { id: id },
     });
     res.status(201).send(user);
@@ -64,36 +74,64 @@ const editUserName = async (req, res) => {
   }
 };
 
-const editUserEmail = async (req, res) => {
-  try {
-    // ดึง Token จาก header
-    const token = req.headers.authorization.split(" ")[1];
+// const editUserName = async (req, res) => {
+//   try {
+//     // ดึง Token จาก header
+//     const token = req.headers.authorization.split(" ")[1];
 
-    // ตรวจสอบ Token
-    const decodedToken = jwt.verify(token, "mysecretpassword");
-    console.log(decodedToken);
+//     // ตรวจสอบ Token
+//     const decodedToken = jwt.verify(token, "mysecretpassword");
+//     console.log(decodedToken);
 
-    let id = decodedToken.userId;
-    const existingUser = await User.findOne({
-      where: { id: id },
-    });
-    if (!existingUser) {
-      return res.status(404).send({ message: "Error: Not Found" });
-    }
-    const user = await User.update(req.body.userEmail, {
-      where: { id: id },
-    });
-    res.status(201).send(user);
-    console.log("dd", user);
-  } catch (err) {
-    res.status(500).send({
-      message: err.message || " Error occurred while updating",
-    });
-  }
-};
+//     let id = decodedToken.userId;
+//     const existingUser = await User.findOne({
+//       where: { id: id },
+//     });
+//     if (!existingUser) {
+//       return res.status(404).send({ message: "Error: Not Found" });
+//     }
+//     const user = await User.update(req.body.userName, {
+//       where: { id: id },
+//     });
+//     res.status(201).send(user);
+//     console.log("dd", user);
+//   } catch (err) {
+//     res.status(500).send({
+//       message: err.message || " Error occurred while updating",
+//     });
+//   }
+// };
+
+// const editUserEmail = async (req, res) => {
+//   try {
+//     // ดึง Token จาก header
+//     const token = req.headers.authorization.split(" ")[1];
+
+//     // ตรวจสอบ Token
+//     const decodedToken = jwt.verify(token, "mysecretpassword");
+//     console.log(decodedToken);
+
+//     let id = decodedToken.userId;
+//     const existingUser = await User.findOne({
+//       where: { id: id },
+//     });
+//     if (!existingUser) {
+//       return res.status(404).send({ message: "Error: Not Found" });
+//     }
+//     const user = await User.update(req.body.userEmail, {
+//       where: { id: id },
+//     });
+//     res.status(201).send(user);
+//     console.log("dd", user);
+//   } catch (err) {
+//     res.status(500).send({
+//       message: err.message || " Error occurred while updating",
+//     });
+//   }
+// };
 
 module.exports = {
   getUserDetail,
-  editUserName,
-  editUserEmail,
+  editUser,
+  getAllUser,
 };

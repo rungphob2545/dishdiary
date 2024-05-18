@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       paymentMethod: {
         field: "payment_method",
         type: DataTypes.STRING,
+        allowNull: false,
       },
       totalPrice: {
         field: "total_price",

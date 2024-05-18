@@ -1,5 +1,5 @@
 
-FROM node:18
+FROM node:19.0.1
 
 # Set the working directory in the container
 WORKDIR /usr/src/app

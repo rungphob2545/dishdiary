@@ -10,6 +10,7 @@ import Recipe from "../pages/Recipe.vue";
 import Swal from "sweetalert2";
 import Cart from "../pages/Cart.vue";
 import UserProfile from "../pages/UserProfile.vue";
+import MyRecipe from "../pages/MyRecipe.vue";
 
 const history = createWebHashHistory(import.meta.env.BASE_URL);
 
@@ -88,6 +89,14 @@ const routes = [
     },
   },
   { path: "/account/signup", component: Register, name: "Register" },
+  {
+    path: "/recipe/user",
+    component: MyRecipe,
+    name: "myRecipe",
+    meta: {
+      requiresAuth: true,
+    },
+  },
 ];
 
 const router = createRouter({

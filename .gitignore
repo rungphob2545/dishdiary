@@ -1,0 +1,4 @@
+# Ignore directories
+certificateFiles/
+dd-database/*
+dohttps/nginx/ssl

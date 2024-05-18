@@ -30,23 +30,23 @@ router.get("/recipe/search", recipeController.searchRecipes);
 router.get("/recipe/:id", validateId, recipeController.getRecipeById);
 router.post(
   "/recipe",
-  userController.checkUserRole("Admin"),
+  userController.checkUserRole("Admin", "User"),
   recipeController.upload,
   recipeController.addRecipe
 );
 router.put(
   "/recipe/:id",
-  userController.checkUserRole("Admin"),
+  userController.checkUserRole("Admin", "User"),
   recipeController.updateRecipe
 );
 router.delete(
   "/recipe/:id",
-  userController.checkUserRole("Admin"),
+  userController.checkUserRole("Admin", "User"),
   recipeController.removeRecipe
 );
 router.get(
   "/recipe/category/:id",
-  userController.checkUserRole("Admin"),
+  userController.checkUserRole("Admin", "User"),
   recipeController.getRecipeByCategory
 );
 
@@ -72,9 +72,13 @@ router.post("/register", userController.userRegister);
 router.post("/login", userController.userLogin);
 
 //User Manage
+router.get(
+  "/users",
+  userController.checkUserRole("Admin"),
+  userManager.getAllUser
+);
 router.get("/user", userManager.getUserDetail);
-router.put("/user", userManager.editUserName);
-router.put("/user", userManager.editUserEmail);
+router.put("/user/:id", userManager.editUser);
 
 //Favorite
 router.post("/favorite", favoriteController.addFavorite);

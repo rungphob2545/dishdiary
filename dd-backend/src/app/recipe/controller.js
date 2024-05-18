@@ -105,6 +105,7 @@ const getRecipeById = async (req, res) => {
   }
 };
 
+//add recipe
 const addRecipe = async (req, res) => {
   try {
     if (!req.body) {
@@ -127,6 +128,12 @@ const addRecipe = async (req, res) => {
         message: `Recipe name must be at least ${minLength} characters long`,
       });
     }
+    const token = req.headers.authorization.split(" ")[1];
+
+    const decodedToken = jwt.verify(token, "mysecretpassword");
+    console.log(decodedToken);
+
+    let id = decodedToken.userId;
 
     let result = {
       recipeName: req.body.recipeName,
@@ -141,6 +148,7 @@ const addRecipe = async (req, res) => {
       nutAllergy: req.body.nutAllergy,
       difficulty: req.body.difficulty,
       timeBased: req.body.timeBased,
+      userId: id,
     };
 
     const recipe = await Recipe.create(result);
@@ -154,9 +162,23 @@ const addRecipe = async (req, res) => {
   }
 };
 
+//update recipe
 const updateRecipe = async (req, res) => {
   try {
     let id = req.params.id;
+    const token = req.headers.authorization.split(" ")[1];
+
+    const decodedToken = jwt.verify(token, "mysecretpassword");
+    console.log(decodedToken);
+
+    let userId = decodedToken.userId;
+
+    const existingUser = await Recipe.findOne({
+      where: { userId: userId },
+    });
+    if (!existingUser) {
+      return res.status(403).send({ message: "Error: Forbidden" });
+    }
     const existingRecipe = await Recipe.findOne({
       where: { id: id },
     });
@@ -183,24 +205,40 @@ const updateRecipe = async (req, res) => {
   }
 };
 
+//delete recipe
 const removeRecipe = async (req, res) => {
   try {
-    let id = req.params.id;
+    let recipeId = req.params.id;
+    const token = req.headers.authorization.split(" ")[1];
+
+    const decodedToken = jwt.verify(token, "mysecretpassword");
+    console.log(decodedToken);
+
+    let userId = decodedToken.userId;
+
+    const existingUser = await Recipe.findOne({
+      where: { userId: userId },
+    });
+    if (!existingUser) {
+      return res.status(403).send({ message: "Error: Forbidden" });
+    }
     const existingRecipe = await Recipe.findOne({
-      where: { id: id },
+      where: { id: recipeId },
     });
     if (!existingRecipe) {
       return res.status(404).send({ message: "Error: Not Found" });
     }
-    await Recipe.destroy({ where: { id: id } });
+
+    await Recipe.destroy({ where: { id: recipeId } });
     res.status(200).send("Recipe has been deleted");
-  } catch (error) {
+  } catch (err) {
     res.status(500).send({
       message: err.message || " Error occurred while updating",
     });
   }
 };
 
+//get recipe by category
 const getRecipeByCategory = async (req, res) => {
   let id = req.params.id;
   try {
@@ -265,6 +303,26 @@ const searchRecipes = async (req, res) => {
   }
 };
 
+//Get recipe by userId
+const getRecipeByUser = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+
+    // ตรวจสอบ Token
+    const decodedToken = jwt.verify(token, "mysecretpassword");
+    console.log(decodedToken);
+
+    let id = decodedToken.userId;
+    const myRecipe = await Recipe.findAll({
+      where: { userId: id },
+    });
+
+    res.status(200).json(myRecipe);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   getAllRecipe,
   getRecipeById,
@@ -275,4 +333,5 @@ module.exports = {
   getRecipeByCategory,
   searchRecipeByName,
   searchRecipes,
+  getRecipeByUser,
 };

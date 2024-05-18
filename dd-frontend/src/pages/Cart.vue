@@ -2,6 +2,7 @@
 import { onBeforeMount, ref, computed } from "vue";
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
+import Swal from "sweetalert2";
 
 const carts = ref([]);
 
@@ -37,7 +38,60 @@ const removeFromCart = async (id) => {
     if (response.status === 200) {
       location.reload();
       console.log("deleted successfully");
-    } else console.log("error, cannot delete data");
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
+const shippingAddress = ref("");
+const paymentMethod = ref("Credit Card"); //Default value
+const shippingAddressValid = ref(true);
+
+const addOrderFromCart = async () => {
+  shippingAddressValid.value = !!shippingAddress.value.trim();
+
+  if (!shippingAddress.value.trim() || !paymentMethod.value.trim()) {
+    Swal.fire({
+      icon: "error",
+      toast: true,
+      text: "ตรวจสอบก่อนทำรายการอีกครั้ง",
+      position: "top-right",
+      timer: 3000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+    });
+    return;
+  }
+
+  const orderData = {
+    shippingAddress: shippingAddress.value.trim(),
+    paymentMethod: paymentMethod.value.trim(),
+    status: "Pending", // Change as necessary
+    items: combinedItems.value.map((item) => ({
+      ingredientId: item.ingredient.id,
+      quantity: item.quantity,
+      price: item.ingredient.ingredientPricePerUnit,
+    })),
+  };
+  console.log("order: ", orderData);
+
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_APP_API_URL}/api/order`,
+      orderData,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        method: "POST",
+      }
+    );
+    if (response.status === 201) {
+      alert("add success");
+    }
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -57,31 +111,11 @@ const combinedItems = computed(() => {
   });
 });
 
-// const cartItemsWithDetails = computed(() => {
-//   const result = [];
-
-//   carts.value.forEach((cartItems) => {
-//     if (cartItems.ingredients) {
-//       console.log("helol", cartItems);
-//       const ingredient = cartItems.ingredients.find(
-//         (ing) => ing.ingredientId === cartItem.ingredientId
-//       );
-//       if (ingredient) {
-//         result.push({
-//           cartItemId: cartItems.cartItemId,
-//           ingredientId: ingredient.ingredientId,
-//           ingredientName: ingredient.ingredientName,
-//           ingredientImage: ingredient.ingredientImage,
-//           ingredientPricePerUnit: ingredient.ingredientPricePerUnit,
-//           quantity: cartsItem.quantity,
-//           totalPrice: cartstem.quantity * ingredient.ingredientPricePerUnit,
-//         });
-//       }
-//     }
-//   });
-//   console.log(result);
-//   return result;
-// });
+const totalPrice = computed(() => {
+  return combinedItems.value.reduce((total, item) => {
+    return total + item.quantity * item.ingredient.ingredientPricePerUnit;
+  }, 0);
+});
 
 const formatPrice = (ingredient) => {
   return `$${
@@ -166,11 +200,53 @@ onBeforeMount(() => {
           </div>
           <div>
             Total Price:
+
             {{ item.quantity * item.ingredient.ingredientPricePerUnit }}
           </div>
         </div>
       </div>
-      <div>Total Price:</div>
+      <div class="w-[1200px]">
+        <div class="mb-4">
+          <label
+            for="shippingAddress"
+            class="block text-sm font-medium text-gray-700"
+            >Shipping Address</label
+          >
+          <input
+            v-model="shippingAddress"
+            type="text"
+            id="shippingAddress"
+            :class="{
+              'mt-1 p-2 border rounded w-full': true,
+              'border-red-500': !shippingAddressValid,
+            }"
+          />
+          <span v-if="!shippingAddressValid" class="text-red-500 text-sm"
+            >Shipping Address is required</span
+          >
+        </div>
+
+        <div class="mb-4">
+          <label
+            for="paymentMethod"
+            class="block text-sm font-medium text-gray-700"
+            >Payment Method</label
+          >
+          <select
+            v-model="paymentMethod"
+            id="paymentMethod"
+            class="mt-1 p-2 border rounded w-full"
+          >
+            <option value="Credit Card">Credit Card</option>
+            <option value="Paypal">Paypal</option>
+            <option value="Cash on Delivery">Cash on Delivery</option>
+          </select>
+        </div>
+      </div>
+      <div>Total Price: {{ totalPrice }}</div>
+      <div>
+        <button @click="addOrderFromCart()">Add Order</button>
+      </div>
     </div>
   </div>
 </template>

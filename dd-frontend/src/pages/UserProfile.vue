@@ -4,6 +4,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import Swal from "sweetalert2";
 import { useRoute, useRouter } from "vue-router";
+import MyRecipe from "./MyRecipe.vue";
 
 const user = ref({});
 const favorites = ref([]);
@@ -280,6 +281,14 @@ onBeforeMount(() => {
         <h1 class="text-5xl font-bold">{{ favoriteCount }}</h1>
         <p class="text-lg">จำนวนเมนูที่คุณถูกใจ</p>
       </div>
+    </div>
+    <div>
+      <router-link
+        :to="{ name: 'myRecipe' }"
+        class="flex bg-black text-white shadow-lg overflow-hidden object-center transition duration-300 hover:scale-105 cursor-pointer w-[120px] rounded-lg mt-8 ml-auto"
+      >
+        <div class="p-4 relative items-center">My recipes</div>
+      </router-link>
     </div>
     <h1
       class="text-2xl font-bold pt-4 pb-2 border-b border-gray-300 w-[1350px]"

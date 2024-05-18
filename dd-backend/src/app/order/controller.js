@@ -127,7 +127,9 @@ const createOrder = async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating order:", error);
-    res.status(500).json({ success: false, message: "Error creating order" });
+    res
+      .status(500)
+      .json({ success: false, message: "Error creating order", error });
   }
 };
 

@@ -2,9 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const ip = require("ip");
 const app = express();
-const path = require("path");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 const swaggerUi = require("swagger-ui-express");
 
 const fs = require("fs");
@@ -89,6 +86,23 @@ app.use(express.urlencoded({ extended: true }));
         password:
           "$2b$10$dRcsEB1USbHe6gAhnHFEXOxUAMytTCjGnzkfzfeeHLPjye853YxEe",
         role: "Admin",
+        userImage: "dist\\images\\avatar_1.png",
+      });
+      const normalUser = User.create({
+        userName: "nabin",
+        userEmail: "nabin.ameen@gmail.com",
+        password:
+          "$2a$12$SuV./nFfPvED9LKgvs/9yexwaZF5lYkHrL5BA3wobXA7ULimFQjCO",
+        role: "User",
+        userImage: "dist\\images\\avatar_1.png",
+      });
+
+      const normalUser1 = User.create({
+        userName: "test",
+        userEmail: "test01@gmail.com",
+        password:
+          "$2a$12$SuV./nFfPvED9LKgvs/9yexwaZF5lYkHrL5BA3wobXA7ULimFQjCO",
+        role: "User",
         userImage: "dist\\images\\avatar_1.png",
       });
       const recipe = Recipe.bulkCreate([
@@ -516,6 +530,7 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Hello from api!" });
 });
 
+//start server
 app.listen(port, () =>
   console.log(`[server] listening on: ${ip.address()}:${port}`)
 );

@@ -1,5 +1,5 @@
+const { sequelize, recipes } = require("../..");
 const { DataTypes } = require("sequelize");
-const { sequelize } = require("../..");
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
@@ -14,6 +14,12 @@ module.exports = (sequelize, DataTypes) => {
       userEmail: {
         field: "user_email",
         type: DataTypes.STRING,
+        validate: {
+          isEmail: {
+            arg: true,
+            msg: "Invalid email address format",
+          },
+        },
         allowNull: false,
         unique: true,
       },

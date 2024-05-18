@@ -126,14 +126,18 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-const checkUserRole = (roleName) => {
+const checkUserRole = (...roleName) => {
   return (req, res, next) => {
     try {
+      // ดึง Token จาก header
       const token = req.headers.authorization.split(" ")[1];
+
+      // ตรวจสอบ Token
       const decodedToken = jwt.verify(token, "mysecretpassword");
       console.log(decodedToken);
-      if (decodedToken.role === roleName) {
-        return next();
+      // ตรวจสอบว่า Token ถูกสร้างโดยผู้ใช้ที่มีบทบาทที่ต้องการหรือไม่
+      if (roleName.includes(decodedToken.role)) {
+        return next(); // ผู้ใช้มีสิทธิ์ในการเข้าถึง
       } else {
         return res.status(403).json({ error: "Unauthorized" });
       }

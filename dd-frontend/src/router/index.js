@@ -41,7 +41,7 @@ const routes = [
     },
   },
   {
-    path: "/order/:id",
+    path: "/account/order",
     component: MyOrder,
     name: "MyOrder",
     meta: {

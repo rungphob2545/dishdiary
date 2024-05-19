@@ -1,28 +1,87 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
-import moment from "moment";
+import dayjs from "dayjs";
+import "dayjs/locale/th";
 
-const items = ref([]);
+const orders = ref([]);
+const ingredients = ref([]);
 
-const fetchData = async (id) => {
+const fetchData = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_PRODUCT_API_URL}` + "/api/order/" + `${id}`
+      `${import.meta.env.VITE_APP_API_URL}` + "/api/order",
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        method: "GET",
+      }
     );
-    items.value = response.data;
-    console.log(items.value);
+    orders.value = response.data;
+    console.log(orders.value);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 };
+
+const fetchIngredients = async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_APP_API_URL}/api/ingredients`
+    );
+
+    ingredients.value = response.data;
+    console.log("ingredient", ingredients.value);
+  } catch (error) {
+    console.error("Error fetching ingredient:", error);
+  }
+};
+
+const selectedOrder = ref(null);
+
+const showOrderDetails = (order) => {
+  selectedOrder.value = order;
+};
+
+const closePopup = () => {
+  selectedOrder.value = null;
+};
+
+const combinedItems = computed(() => {
+  if (!orders.value.orders || !orders.value.orderItems || !ingredients.value) {
+    return [];
+  }
+
+  return orders.value.orders.map((order) => {
+    const items = orders.value.orderItems
+      .filter((orderItem) => orderItem.orderId === order.id)
+      .map((orderItem) => {
+        const ingredient = ingredients.value.find(
+          (ingredient) => ingredient.id === orderItem.ingredientId
+        );
+        return {
+          ...orderItem,
+          ingredientName: ingredient ? ingredient.ingredientName : "Unknown",
+        };
+      });
+
+    return {
+      ...order,
+      items,
+    };
+  });
+});
+
+const formatDate = (date) => {
+  return dayjs(date).locale("th").format("D MMMM YYYY HH:mm");
+};
+
 onMounted(() => {
-  const route = useRoute();
-  const id = route.params.id;
-  console.log(id);
-  fetchData(id);
+  fetchData();
+  fetchIngredients();
+  console.log("comb", combinedItems);
 });
 </script>
 
@@ -31,26 +90,73 @@ onMounted(() => {
     <div>
       <Navbar />
     </div>
-    <div class="mt-[-900px] ml-96 justify-start flex-wrap">
-      <h1 class="text-lg mb-4">รายการของฉัน</h1>
-      <ul v-for="item in items" :key="item.id" class="px-5 pb-10">
-        <li>หมายเลข Product : {{ item.ingredientId }}</li>
-        <li>ปริมาณ : {{ item.quantity }}</li>
-        <li>ราคาต่อหนึ่งชิ้น : {{ item.unitPrice }}</li>
-        <li>
-          วันที่ทำรายการ : {{ moment(item.orderDate).format("MMMM Do YYYY") }}
-        </li>
-        <li>ที่อยู่จัดส่ง : {{ item.shippingAddress }}</li>
-        <li>จัดส่งด้วย : {{ item.shippingMethod }}</li>
-        <li>ชำระเงินด้วย : {{ item.paymentMethod }}</li>
-        <li>ราคารวมทั้งสิ้น : {{ item.totalPrice }}</li>
-      </ul>
+  </div>
+  <div class="pt-28 ml-80">
+    <h2 class="text-lg font-semibold mb-4">Customer Orders</h2>
+
+    <table class="w-[1200px] table-auto border-collapse">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="border px-4 py-2">Order Number</th>
+          <th class="border px-4 py-2">Order Date</th>
+          <th class="border px-4 py-2">Status</th>
+          <th class="border px-4 py-2">Total Price</th>
+          <th class="border px-4 py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="order in combinedItems"
+          :key="order.id"
+          class="hover:bg-gray-100"
+        >
+          <td class="border px-4 py-2">{{ order.id }}</td>
+          <td class="border px-4 py-2">{{ formatDate(order.orderDate) }}</td>
+          <td class="border px-4 py-2">{{ order.status }}</td>
+          <td
+            class="border px-4 py-2"
+            v-for="item in combinedItems.items"
+            :key="item.itemId"
+          >
+            {{ item.ingredientName }}d555
+          </td>
+          <td class="border px-4 py-2">{{ order.totalPrice }}</td>
+          <td class="border px-4 py-2">
+            <button
+              @click="showOrderDetails(order)"
+              class="bg-blue-500 text-white px-2 py-1 rounded"
+            >
+              View Details
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div
+      v-if="selectedOrder"
+      class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
+    >
+      <div class="bg-white p-6 rounded shadow-lg w-[800px]">
+        <h3 class="text-lg font-semibold mb-4">Order Details</h3>
+        <button @click="closePopup" class="float-right mb-2">Close</button>
+        <table>
+          <thead class="">
+            <tr>
+              <th class="">ชื่อสินค้า</th>
+              <th class="">จำนวน</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in selectedOrder.items" :key="item.itemId">
+              <td>{{ item.ingredientName }}</td>
+              <td>{{ item.quantity }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-
-  <!-- Brand name on the left -->
-
-  <!-- Navigation bar at the bottom -->
 </template>
 
 <style scoped></style>

@@ -36,6 +36,16 @@ const removeFromCart = async (id) => {
       }
     );
     if (response.status === 200) {
+      Swal.fire({
+        icon: "danger",
+        title: "นำออกจาก Cart สำเร็จ",
+        toast: true,
+        position: "top-right",
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        allowEscapeKey: false,
+      });
       location.reload();
       console.log("deleted successfully");
     }
@@ -45,7 +55,7 @@ const removeFromCart = async (id) => {
 };
 
 const shippingAddress = ref("");
-const paymentMethod = ref("Credit Card"); //Default value
+const paymentMethod = ref("เก็บเงินปลายทาง"); //Default value
 const shippingAddressValid = ref(true);
 
 const addOrderFromCart = async () => {
@@ -138,7 +148,7 @@ const decreaseQuantity = (item) => {
 
 onBeforeMount(() => {
   fetchCart();
-  console.log("dd", combinedItems);
+  console.log("comb", combinedItems);
 });
 </script>
 
@@ -151,61 +161,65 @@ onBeforeMount(() => {
     <div class="pt-28 ml-80">
       <h2 class="text-lg font-semibold mb-4">Your Cart</h2>
 
-      <div
-        v-for="item in combinedItems"
-        :key="item.cartItemId"
-        class="flex items-center mb-4 border p-4 w-[1200px]"
-      >
-        <!-- Image -->
-        <img
-          :src="item.ingredient.ingredientImage"
-          alt="Ingredient Image"
-          class="w-16 h-16 rounded-full mr-4"
-        />
+      <table class="w-[1200px]">
+        <thead class="border">
+          <tr class="">
+            <th></th>
+            <th class="text-left">Ingredient Name</th>
+            <th class="text-center">Quantity</th>
+            <th class="text-right">Price per Unit</th>
+            <th class="text-right">Total Price</th>
+            <th></th>
+            <!-- Empty column for remove button -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="item in combinedItems"
+            :key="item.cartItemId"
+            class="border-b-2"
+          >
+            <td>
+              <img
+                :src="item.ingredient.ingredientImage"
+                alt="Ingredient Image"
+                class="w-16 h-16 rounded-full"
+              />
+            </td>
+            <td>{{ item.ingredient.ingredientName }}</td>
+            <td class="text-center">
+              <!-- Increase and Decrease buttons -->
+              <button @click="decreaseQuantity(item)" class="btn-quantity">
+                -
+              </button>
+              <input
+                type="text"
+                v-model.number="item.quantity"
+                class="input-quantity"
+              />
+              <button @click="increaseQuantity(item)" class="btn-quantity">
+                +
+              </button>
+            </td>
+            <td class="text-right">
+              {{ item.ingredient.ingredientPricePerUnit }}
+            </td>
+            <td class="text-right">
+              {{ item.quantity * item.ingredient.ingredientPricePerUnit }}
+            </td>
+            <td class="text-center">
+              <!-- Remove button -->
+              <span
+                @click="removeFromCart(item.cartItemId)"
+                class="btn-remove p-1 bg-red-500 border rounded-lg text-white"
+                >นำออก</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-        <!-- Details -->
-        <div class="flex">
-          <div>{{ item.ingredient.ingredientName }}</div>
-          <div>
-            <!-- Increase and Decrease buttons -->
-            <button
-              @click="decreaseQuantity(item)"
-              class="bg-gray-200 hover:bg-gray-300 px-2 rounded-l"
-            >
-              -
-            </button>
-            <input
-              type="text"
-              v-model.number="item.quantity"
-              class="w-10 text-center"
-            />
-            <button
-              @click="increaseQuantity(item)"
-              class="bg-gray-200 hover:bg-gray-300 px-2 rounded-r"
-            >
-              +
-            </button>
-          </div>
-          <div>
-            Price per unit: {{ item.ingredient.ingredientPricePerUnit }}
-          </div>
-          <div>
-            <!-- Remove button -->
-            <span
-              @click="removeFromCart(item.cartItemId)"
-              class="text-red-500 hover:text-red-700 cursor-pointer"
-            >
-              ลบออกจากรถเข็น
-            </span>
-          </div>
-          <div>
-            Total Price:
-
-            {{ item.quantity * item.ingredient.ingredientPricePerUnit }}
-          </div>
-        </div>
-      </div>
-      <div class="w-[1200px]">
+      <div class="w-[1200px] mt-8">
         <div class="mb-4">
           <label
             for="shippingAddress"
@@ -239,7 +253,7 @@ onBeforeMount(() => {
           >
             <option value="Credit Card">Credit Card</option>
             <option value="Paypal">Paypal</option>
-            <option value="Cash on Delivery">Cash on Delivery</option>
+            <option value="เก็บเงินปลายทาง">เก็บเงินปลายทาง</option>
           </select>
         </div>
       </div>

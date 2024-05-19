@@ -86,6 +86,8 @@ const addToCart = async (ingredientId, quantity) => {
       }
     );
     if (response.status === 201) {
+      await fetchCartItemCount();
+
       Swal.fire({
         icon: "success",
         toast: true,
@@ -94,7 +96,6 @@ const addToCart = async (ingredientId, quantity) => {
         timer: 3000,
         timerProgressBar: true,
         showConfirmButton: false,
-        allowOutsideClick: false,
         allowEscapeKey: false,
       });
     } else if (response.status === 200 && !response.data.success) {
@@ -106,32 +107,12 @@ const addToCart = async (ingredientId, quantity) => {
         timer: 3000,
         timerProgressBar: true,
         showConfirmButton: false,
-        allowOutsideClick: false,
         allowEscapeKey: false,
       });
     }
   } catch (err) {
     console.log(err);
   }
-};
-
-const formatPrice = (ingredient) => {
-  return `$${
-    ingredient.ingredientPricePerUnit * ingredient.ingredientQuantity
-  }`;
-};
-
-const calculatePrice = (ingredient) => {
-  ingredient.price =
-    ingredient.ingredientPricePerUnit * ingredient.ingredientQuantity;
-};
-
-const increaseQuantity = (ingredient) => {
-  ingredient.ingredientQuantity++; // เพิ่มจำนวนส่วนประกอบของรายการนี้
-};
-
-const deceaseQuantity = (ingredient) => {
-  ingredient.ingredientQuantity--; // เพิ่มจำนวนส่วนประกอบของรายการนี้
 };
 
 const convertCategoryIdToString = (id) => {

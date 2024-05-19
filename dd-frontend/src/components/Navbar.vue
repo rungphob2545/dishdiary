@@ -1,8 +1,9 @@
 <script setup>
 import Search from "./Search.vue";
-import { ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const router = useRouter();
 const isOpen = ref(false);
@@ -23,10 +24,50 @@ const clearData = () => {
   });
 };
 
-const toggleCart = () => {
-  isOpen.value = !isOpen.value;
-  console.log(isOpen.value);
+const cartItemCount = ref(0);
+const carts = ref([]);
+
+const fetchCartItemCount = async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_APP_API_URL}/api/cart`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    carts.value = response.data;
+    cartItemCount.value = carts.value.cartItems.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
+
+    console.log("count", cartItemCount.value);
+  } catch (error) {
+    console.error("Error fetching cart items:", error);
+  }
 };
+
+onMounted(() => {
+  fetchCartItemCount();
+});
+
+const updateCartItemCount = () => {
+  cartItemCount.value = carts.value.cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
+};
+
+watch(
+  carts,
+  (newCarts) => {
+    updateCartItemCount();
+    console.log("new c", cartItemCount.value);
+  },
+  { deep: true }
+);
 </script>
 <template>
   <div class="">
@@ -76,7 +117,7 @@ const toggleCart = () => {
             </svg>
           </router-link>
 
-          <router-link to="/account/cart">
+          <router-link to="/account/cart" class="relative">
             <svg
               class="h-8 w-8 text-white mx-auto mr-4"
               width="24"
@@ -93,6 +134,12 @@ const toggleCart = () => {
               <circle cx="17" cy="19" r="2" />
               <path d="M3 3h2l2 12a3 3 0 0 0 3 2h7a3 3 0 0 0 3 -2l1 -7h-15.2" />
             </svg>
+            <span
+              v-if="cartItemCount > 0"
+              class="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2 mr-4"
+            >
+              {{ cartItemCount }}
+            </span>
           </router-link>
         </div>
 

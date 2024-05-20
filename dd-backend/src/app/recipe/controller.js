@@ -44,14 +44,16 @@ const getAllRecipe = async (req, res) => {
         "id",
         "recipeName",
         "recipeImage",
-        "categoryId",
+        "categoryTh",
+        "categoryEn",
+        "typeTh",
+        "typeEn",
         "video",
         "vegetarian",
         "nutAllergy",
         "rating",
         "timeBased",
         "difficulty",
-        "type",
       ],
     });
     res.status(200).send(recipe);
@@ -173,7 +175,7 @@ const updateRecipe = async (req, res) => {
 
     let userId = decodedToken.userId;
 
-    const existingUser = await Recipe.findOne({
+    const existingUser = await User.findOne({
       where: { userId: userId },
     });
     if (!existingUser) {
@@ -216,7 +218,7 @@ const removeRecipe = async (req, res) => {
 
     let userId = decodedToken.userId;
 
-    const existingUser = await Recipe.findOne({
+    const existingUser = await User.findOne({
       where: { userId: userId },
     });
     if (!existingUser) {
@@ -264,8 +266,11 @@ const searchRecipeByName = async (req, res) => {
     const recipes = await Recipe.findAll({
       where: {
         [Op.or]: [
-          { recipeName: { [Op.like]: `${query}%` } }, // ค้นหาชื่อเมนู
-          { type: { [Op.like]: `${query}%` } }, // ค้นหา tag
+          { recipeName: { [Op.like]: `%${query}%` } }, // ค้นหาชื่อเมนู
+          { categoryTh: { [Op.like]: `%${query}%` } }, // ค้นหาชื่อเมนู
+          { categoryEn: { [Op.like]: `%${query}%` } }, // ค้นหาชื่อเมนู
+          { typeTh: { [Op.like]: `%${query}%` } }, // ค้นหา tag
+          { typeEn: { [Op.like]: `%${query}%` } }, // ค้นหา tag
         ],
       },
     });

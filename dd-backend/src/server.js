@@ -37,34 +37,58 @@ app.use(express.urlencoded({ extended: true }));
       const ingredients = Ingredient.bulkCreate([
         {
           ingredientId: "1",
-          ingredientName: "วิปครีม",
+          ingredientName: "มะเขือเทศ",
           ingredientImage:
-            "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/16/94/9414977000016/9414977000016_1_1.jpg",
-          ingredientPricePerUnit: "199",
+            "https://cdn.pixabay.com/photo/2018/06/17/14/44/tomatoes-3480643_1280.jpg",
+          ingredientPricePerUnit: "29",
           ingredientQuantity: "1",
         },
         {
           ingredientId: "2",
-          ingredientName: "ปีกไก่",
+          ingredientName: "เนื้อไก่",
           ingredientImage:
-            "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/16/94/9414977000016/9414977000016_1_1.jpg",
+            "https://www.shutterstock.com/image-photo/fresh-raw-chicken-isolated-on-600nw-583587001.jpg",
           ingredientPricePerUnit: "150",
           ingredientQuantity: "1",
         },
         {
           ingredientId: "3",
-          ingredientName: "ปีกเป็ด",
+          ingredientName: "เนื้อสเต็กวัว",
           ingredientImage:
-            "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/16/94/9414977000016/9414977000016_1_1.jpg",
-          ingredientPricePerUnit: "150",
+            "https://png.pngtree.com/thumb_back/fh260/background/20220523/pngtree-steaks-meal-tasty-cow-photo-image_79812.jpg",
+          ingredientPricePerUnit: "300",
           ingredientQuantity: "1",
         },
         {
           ingredientId: "4",
-          ingredientName: "เนื้อหมู",
+          ingredientName: "หอมแดง",
           ingredientImage:
-            "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=90/public/media/catalog/product/16/94/9414977000016/9414977000016_1_1.jpg",
-          ingredientPricePerUnit: "150",
+            "https://cdn.pixabay.com/photo/2023/01/13/15/41/onions-7716342_1280.jpg",
+          ingredientPricePerUnit: "20",
+          ingredientQuantity: "1",
+        },
+        {
+          ingredientId: "5",
+          ingredientName: "เส้นสปาเก็ตตี้",
+          ingredientImage:
+            "https://png.pngtree.com/thumb_back/fh260/background/20220112/pngtree-bundles-of-spaghetti-pasta-white-background-noodles-spaghetti-photo-image_28841002.jpg",
+          ingredientPricePerUnit: "159",
+          ingredientQuantity: "1",
+        },
+        {
+          ingredientId: "6",
+          ingredientName: "ช็อกโกแลต",
+          ingredientImage:
+            "https://png.pngtree.com/png-vector/20240129/ourmid/pngtree-chocolate-bar-tablets-png-image_11564535.png",
+          ingredientPricePerUnit: "59",
+          ingredientQuantity: "1",
+        },
+        {
+          ingredientId: "7",
+          ingredientName: "กะหล่ำปี",
+          ingredientImage:
+            "https://png.pngtree.com/thumb_back/fw800/background/20230905/pngtree-cabbage-on-white-background-premium-royalty-free-code-6706768943-image_13236609.jpg",
+          ingredientPricePerUnit: "39",
           ingredientQuantity: "1",
         },
       ]);
@@ -81,11 +105,13 @@ app.use(express.urlencoded({ extended: true }));
         { categoryName: "Vegetarian" },
       ]);
       const superUser = User.create({
+        id: 1,
         userName: "superuser",
         userEmail: "superuser01@mail.com",
         password:
           "$2b$10$dRcsEB1USbHe6gAhnHFEXOxUAMytTCjGnzkfzfeeHLPjye853YxEe",
         role: "Admin",
+        userNumber: "0809885665",
         userImage: "dist\\images\\avatar_1.png",
       });
       const normalUser = User.create({
@@ -94,6 +120,7 @@ app.use(express.urlencoded({ extended: true }));
         password:
           "$2a$12$SuV./nFfPvED9LKgvs/9yexwaZF5lYkHrL5BA3wobXA7ULimFQjCO",
         role: "User",
+        userNumber: "0981725583",
         userImage: "dist\\images\\avatar_1.png",
       });
 
@@ -103,6 +130,7 @@ app.use(express.urlencoded({ extended: true }));
         password:
           "$2a$12$SuV./nFfPvED9LKgvs/9yexwaZF5lYkHrL5BA3wobXA7ULimFQjCO",
         role: "User",
+        userNumber: "0807432012",
         userImage: "dist\\images\\avatar_1.png",
       });
       const recipe = Recipe.bulkCreate([
@@ -128,7 +156,10 @@ app.use(express.urlencoded({ extended: true }));
           measure8: "1 ฟอง",
           introduce:
             "สปาเก็ตตี้คาโบนาร่าเป็นอาหารพื้นเมืองของอิตาลีที่มีเส้นสปาเก็ตตี้นุ่มๆ รับรสหวานจากไข่และเกลือ และมีรสชาติเข้มข้นจากพาเมซานชีสและเบคอนที่อบกรอบ อาหารชนิดนี้มีชื่อเสียงทั่วโลกและเป็นที่นิยมอย่างมาก โดยมักจะเสริฟพร้อมกับขนมปังหรือขนมปังกรอบ เป็นเมนูที่เหมาะสำหรับคนที่ชื่นชอบอาหารอิตาเลียนและความหรูหราของรสชาติที่เข้มข้น",
-          categoryId: [4],
+          categoryTh: "เนื้อวัว",
+          categoryEn: "Beef",
+          typeTh: "เส้น",
+          typeEn: "Noodle",
           recipeImage: "dist\\images\\Spagetti_Carbonara.jpg",
           video: "https://www.youtube.com/embed/mRoaxyGLHgw",
           nutAllergy: "0",
@@ -160,8 +191,10 @@ app.use(express.urlencoded({ extended: true }));
           measure10: "1 ช้อนชา",
           introduce:
             "ไข่กระทะ เมนูอาหารเช้าทำง่าย สามารถหาวัตถุดิบได้จากร้านค้า หรือห้างสรรพสินค้าทั่วไป โดยใช้เวลาเตรียมวัตถุดิบไม่นาน และมีขั้นตอนแน่นอนว่านอกจากความอร่อย ทำง่าย กินง่าย ไข่กระทะยังอุดมไปด้วยสารอาหารครบที่จำเป็นต่อร่างกาย ดีต่อใจและดีต่อสุขภาพ",
-          categoryId: [1],
-          type: "Soup",
+          categoryTh: "ไข่",
+          categoryEn: "Egg",
+          typeTh: "กับข้าว",
+          typeEn: "Side dish",
           recipeImage: "dist\\images\\Pan_Fried_Egg.jpg",
           nutAllergy: "0",
           rating: "8.0",
@@ -192,7 +225,10 @@ app.use(express.urlencoded({ extended: true }));
           measure10: "1 ช้อนชา",
           introduce:
             "สเต็กเนื้อเป็นเมนูอาหารที่เป็นที่นิยมและเหมาะสำหรับทุกโอกาส ไม่ว่าจะเป็นการย่างนอกบ้านหรือใช้กระทะบนเตา สำคัญคือการปรุงรสด้วยเกลือและพริกไทยอย่างเหมาะสม และนำไปย่างให้สุกตามรสชาติที่ต้องการ ให้เสิร์ฟพร้อมกับมันสำปะหลังสับ, ผักย่าง หรือสลัดสดเพื่อได้เมนูครบถ้วน",
-          categoryId: [2],
+          categoryTh: "เนื้อวัว",
+          categoryEn: "Beef",
+          typeTh: "สเต็ก",
+          typeEn: "Steak",
           recipeImage: "dist\\images\\steak.jpg",
           nutAllergy: "0",
         },
@@ -232,7 +268,10 @@ app.use(express.urlencoded({ extended: true }));
           measure15: "1 ถ้วย",
           introduce:
             "ข้าวหน้าเนื้อ ถือว่าเป็นอาหารฟาสต์ฟู้ดของชาวญี่ปุ่น เป็นเมนูง่ายๆ และรวดเร็ว แถมยังอิ่มนาน สารอาหารครบถ้วนอีกด้วย",
-          categoryId: [2],
+          categoryTh: "เนื้อวัว",
+          categoryEn: "Beef",
+          typeTh: "ข้าว",
+          typeEn: "Rice",
           recipeImage: "dist\\images\\beef_rice.jpg",
           nutAllergy: "0",
           rating: "5.4",
@@ -241,7 +280,7 @@ app.use(express.urlencoded({ extended: true }));
           recipeName: "Crispy Chick Fried",
           cookingSteps:
             "1. นำไก่ที่ผ่าดอกออกมาทำความสะอาดและเช็ดแห้ง\n2. ผสมแป้งทอดกรอบกับเกลือ พริกไทย และเครื่องปรุงรสตามชอบ\n3. จากนั้นนำไก่มาหล่อนแป้งทอดกรอบให้ทั่ว\n4. ทอดในน้ำมันร้อนจนเหลืองกรอบและสุกทั้งสองด้าน\n5. ตักใส่จานพร้อมเสิร์ฟ",
-          ingredients1: "เนื้อวัวแล่บาง",
+          ingredients1: "อกไก่",
           ingredients2: "ไก่บด",
           ingredients3: "แป้งทอดกรอบ",
           ingredients4: "เกลือ",
@@ -255,7 +294,10 @@ app.use(express.urlencoded({ extended: true }));
           measure6: "1 ช้อนโต๊ะ",
           introduce:
             "เมนูอาหารทอดกรอบที่มีรสชาติเครื่องเทศกลมกล่อมและกรอบนุ่มที่ยากจะหาที่ไหนได้ใกล้เคียง เป็นเมนูที่เหมาะสำหรับทุกเพศทุกวัย ทานได้ทั้งเป็นอาหารหลักหรือเป็นอาหารว่าง",
-          categoryId: [3],
+          categoryTh: "เนื้อไก่",
+          categoryEn: "Chicken",
+          typeTh: "Fried",
+          typeEn: "ของทอด",
           recipeImage: "dist\\images\\chicken_fried.jpg",
           nutAllergy: "0",
           rating: "7.8",
@@ -264,8 +306,8 @@ app.use(express.urlencoded({ extended: true }));
         {
           recipeName: "Stir-fried vegetarian",
           cookingSteps:
-            "1. หมักเนื้อให้สุกในน้ำปลา ซีอิ๊ว น้ำตาล และพริกไทย\n2. ตั้งกระทะใส่น้ำมันลงไป พอน้ำมันร้อนใส่กระเทียมและพริกไทยสดลงไปผัดจนหอม\n3. ใส่เนื้อหมักที่หมักไว้ลงไปผัดจนสุก\n4. ใส่ผักต่างๆ เช่น คะน้า กะหล่ำปลี ผักชี และพริกลงไปผัด\n5. ปรุงรสตามชอบ จัดเสิร์ฟพร้อมข้าวสวย",
-          ingredients1: "เนื้อวัวแล่บาง",
+            "1. ตั้งกระทะใส่น้ำมันพืชลงไป รอจนน้ำมันร้อน\n2. ใส่กระเทียมและขิงสับลงไปผัดจนมีกลิ่นหอม\n3. ใส่หอมใหญ่ลงไปผัดจนเริ่มใส\n4. ใส่พริกหวาน แครอท เห็ดหอม ถั่วลันเตา และบร็อคโคลี่ลงไปผัดต่อประมาณ 3-5 นาที\n5. ปรุงรสด้วยซีอิ๊วขาว ซอสหอยนางรมเจ น้ำตาลทราย และพริกไทยป่น ผัดให้เข้ากัน",
+          ingredients1: "แครอทแล่",
           ingredients2: "คะน้า",
           ingredients3: "กะหล่ำปลี",
           ingredients4: "ผักชี",
@@ -291,10 +333,13 @@ app.use(express.urlencoded({ extended: true }));
           measure12: "2 ช้อนโต๊ะ",
           introduce:
             "เมนูผัดผักเป็นอาหารที่มีรสชาติหอม อร่อย และสีสันสดใส มีความเผ็ดน้อยพอดีกับคนไทย สามารถเพิ่มหรือลดระดับความเผ็ดได้ตามชอบ",
-          categoryId: [5],
+          categoryTh: "มังสวิรัติ",
+          categoryEn: "Vegan",
+          typeTh: "กับข้าว",
+          typeEn: "Side dish",
           recipeImage: "dist\\images\\stir_fried_vegetables.jpg",
           nutAllergy: "0",
-          vegetarian: "0",
+          vegetarian: "1",
           rating: "10.0",
           timeBased: "120m",
         },
@@ -303,20 +348,25 @@ app.use(express.urlencoded({ extended: true }));
           cookingSteps:
             "1. ล้างผักทุกชนิดให้สะอาด\n2. หั่นผักเป็นชิ้นเล็กๆ\n3. ผสมผักทุกชนิดในชามใหญ่\n4. ปรุงน้ำสลัด: ผสมน้ำมันมะพร้าว, มะนาว, น้ำตาล, ซอสซอย, และเกลือให้เข้ากัน\n5. รวมน้ำสลัดกับผักและคนให้เข้ากัน\n6. ตักสลัดใส่จานเสิร์ฟพร้อมกับเมล็ดที่แต่งด้วย",
           ingredients1: "ผักสดต่างๆ",
-          ingredients2: "เมล็ดแต่งสลัด",
+          ingredients2: "ถั่วแต่งสลัด",
           ingredients3: "น้ำมันมะพร้าว",
           ingredients4: "มะนาว",
           ingredients5: "น้ำตาลทราย",
           ingredients6: "ซอสซอย",
           ingredients7: "เกลือ",
+          measure1: "200 กรัม",
+          measure2: "100 กรัม",
           measure3: "2 ช้อนโต๊ะ",
-          measure4: "2 ลูก",
+          measure4: "1 ช้อนโต๊ะ",
           measure5: "1 ช้อนชา",
           measure6: "1 ช้อนโต๊ะ",
           measure7: "10 กรัม",
           introduce:
-            "สลัดผักมังสวิรัติเป็นอาหารที่เสริมสร้างสุขภาพด้วยผักสดและเมล็ดที่อุดมไปด้วยโภชนาการ มีรสชาติหวานเปรี้ยวจากมะนาวและน้ำตาล และมีความเค็มน้อยจากเกลือ",
-          categoryId: [5],
+            "สลัดผักมังสวิรัติเป็นอาหารที่เสริมสร้างสุขภาพด้วยผักสดและเมล็ดถั่วที่อุดมไปด้วยโภชนาการ มีรสชาติหวานเปรี้ยวจากมะนาวและน้ำตาล และมีความเค็มน้อยจากเกลือ",
+          categoryTh: "มังสวิรัติ",
+          categoryEn: "Vegan",
+          typeTh: "กับข้าว",
+          typeEn: "Side dish",
           recipeImage: "dist\\images\\salad_nut.jpg",
           nutAllergy: "1",
           vegetarian: "1",
@@ -341,7 +391,10 @@ app.use(express.urlencoded({ extended: true }));
           measure7: "1/2 ถ้วย",
           introduce:
             "ข้าวผัดมังสวิรัติเป็นอาหารสำหรับคนที่รักในรสชาติของมังสวิรัติ มีกลิ่นหอมจากการผัดอย่างสุดคลายใจ สามารถเพิ่มผักสดเพื่อความเป็นสุขภาพมากขึ้นได้",
-          categoryId: [5],
+          categoryTh: "มังสวิรัติ",
+          categoryEn: "Vegan",
+          typeTh: "ข้าว",
+          typeEn: "Rice",
           recipeImage: "dist\\images\\vegan_fried_rice.jpg",
           nutAllergy: "0",
           vegetarian: "1",
@@ -376,7 +429,10 @@ app.use(express.urlencoded({ extended: true }));
           measure12: "140 กรัม",
           introduce:
             "ต้มกะทิแบบโบราณ รสคล้ายต้มข่าแต่ไม่เปรี้ยว สูตรนี้มากับเนื้อแดดเดียวย่าง",
-          categoryId: [4],
+          categoryTh: "เนื้อไก่",
+          categoryEn: "Chicken",
+          typeTh: "กับข้าว",
+          typeEn: "Side dish",
           recipeImage: "dist\\images\\stir_fried_chick.png",
 
           nutAllergy: "0",
@@ -406,7 +462,10 @@ app.use(express.urlencoded({ extended: true }));
           measure9: "6 เม็ด",
           introduce:
             "ต้มกะทิแบบโบราณ รสคล้ายต้มข่าแต่ไม่เปรี้ยว สูตรนี้มากับเนื้อแดดเดียวย่าง",
-          categoryId: [4],
+          categoryTh: "เนื้อวัว",
+          categoryEn: "Beef",
+          typeTh: "กับข้าว",
+          typeEn: "Side dish",
           recipeImage: "dist\\images\\BeefCoMilk.jpg",
           nutAllergy: "0",
           rating: "10.0",
@@ -439,10 +498,14 @@ app.use(express.urlencoded({ extended: true }));
           measure11: "1/2 ช้อนชา",
           introduce:
             "สะโพกไก่นุ่มๆ ผัดกับพริกหยวกสีสวย แถมมีเนื้อสัมผัสกรอบและรสหวาน รับประทานกับข้าวสวยร้อนๆ",
-          categoryId: [4],
+          categoryTh: "เนื้อไก่",
+          categoryEn: "Chicken",
+          typeTh: "กับข้าว",
+          typeEn: "Side dish",
           recipeImage: "dist\\images\\StirChickBan.jpg",
           nutAllergy: "0",
           rating: "10.0",
+          userId: "2",
         },
         {
           recipeName: "Deep-Fried Pork belly",
@@ -460,10 +523,14 @@ app.use(express.urlencoded({ extended: true }));
           measure5: "1 ต้น",
           introduce:
             "เมนูทอดง่าย ๆ ที่สามารถกินฟิน ๆ ได้ทุกเพศ ทุกวัย กับเมนู “หมูทอดเกลือ” หมูทอดรสเข้ม กินคู่กับข้าวเหนียวเป็นอาหารเช้าก็ดี หรือจะทอดไว้กินเพลิน ๆ ยามมีปาร์ตี้ก็ไม่เลวเลย",
-          categoryId: [4],
+          categoryTh: "เนื้อหมู",
+          categoryEn: "Pork",
+          typeTh: "ของทอด",
+          typeEn: "Fried",
           recipeImage: "dist\\images\\FriedPorkBel.jpg",
           nutAllergy: "0",
           rating: "10.0",
+          userId: "2",
         },
         {
           recipeName: "Sweet Pork",
@@ -491,11 +558,15 @@ app.use(express.urlencoded({ extended: true }));
           measure10: "2 ช้อนโต๊ะ",
           introduce:
             "เป็นที่รู้กันว่า “หมูหวาน” กินกับอะไรก็ดีไปหมด ไม่ว่าจะเป็น ข้าวต้ม ข้าวสวย ข้าวเหนียว หรือข้าวคลุกกะปิก็เด็ดดวง ด้วยเนื้อหมูที่นำไปหมักและเคี่ยวจนนุ่มลิ้น ได้รสชาติเค็มนิด ๆ หวานหน่อย ๆ กลมกล่อมเข้าเนื้อสุด ๆ",
-          categoryId: [4],
+          categoryTh: "เนื้อหมู",
+          categoryEn: "Pork",
+          typeTh: "กับข้าว",
+          typeEn: "Side dish",
           recipeImage: "dist\\images\\SweetBel.jpg",
           video: "-",
           nutAllergy: "0",
           rating: "10.0",
+          userId: "2",
         },
       ]);
       console.log("Table and model has been synced");

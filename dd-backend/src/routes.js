@@ -21,6 +21,7 @@ const validateId = (req, res, next) => {
 
 //Recipe
 router.get("/recipe", recipeController.getAllRecipe);
+router.get("/recipe/user", recipeController.getRecipeByUser);
 
 //search
 router.get("/recipe/searchByName", recipeController.searchRecipeByName);
@@ -50,8 +51,23 @@ router.get(
   recipeController.getRecipeByCategory
 );
 
+//History
+router.delete("/recipe/history", historyController.removeHistory);
+router.get("/recipe/history", historyController.searchHistory);
+
 //Ingredients
 router.get("/ingredients", ingredientController.getAllIngredients);
+router.post(
+  "/ingredients",
+  userController.checkUserRole("Admin"),
+  ingredientController.upload,
+  ingredientController.addIngredient
+);
+router.delete(
+  "/ingredients/:id",
+  userController.checkUserRole("Admin"),
+  ingredientController.deleteIngredientById
+);
 
 //Cart
 router.get("/cart", cartController.getCartItems);
@@ -85,9 +101,5 @@ router.post("/favorite", favoriteController.addFavorite);
 router.get("/favorite", favoriteController.getFavoritesById);
 router.get("/favorite/:id", favoriteController.getFavoritesByParamsId);
 router.delete("/favorite", favoriteController.removeFavorite);
-
-//History
-router.delete("/history", historyController.removeHistory);
-router.get("/history", historyController.searchHistory);
 
 module.exports = router;

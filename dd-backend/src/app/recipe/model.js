@@ -132,13 +132,25 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         // isUrl: true
       },
-      categoryId: {
-        field: "category_id",
-        type: DataTypes.INTEGER,
+      categoryTh: {
+        field: "category_th",
+        type: DataTypes.STRING,
         allowNull: false,
       },
-      type: {
-        type: DataTypes.ENUM("Soup", "Pizza", "Noodles", "Rice", "Side dish"),
+      categoryEn: {
+        field: "category_en",
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      typeTh: {
+        field: "type_th",
+        type: DataTypes.STRING,
+        defaultValue: "ข้าว",
+        allowNull: false,
+      },
+      typeEn: {
+        field: "type_en",
+        type: DataTypes.STRING,
         defaultValue: "Rice",
         allowNull: false,
       },

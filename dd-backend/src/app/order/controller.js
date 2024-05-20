@@ -2,6 +2,7 @@ const db = require("../..");
 const Order = db.orders;
 const OrderItem = db.orderItems;
 const User = db.users;
+const CartItem = db.carts;
 const jwt = require("jsonwebtoken");
 
 const getOwnOrder = async (req, res) => {
@@ -119,6 +120,13 @@ const createOrder = async (req, res) => {
     }));
 
     await OrderItem.bulkCreate(orderItems);
+
+    await CartItem.destroy({
+      where: {
+        userId: userId,
+        ingredientId: items.map((item) => item.ingredientId),
+      },
+    });
 
     res.status(201).json({
       success: true,

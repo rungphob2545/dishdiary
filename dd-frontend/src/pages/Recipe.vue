@@ -142,6 +142,14 @@ const removeFavorites = async (recipeId, userId) => {
   }
 };
 
+const toggleFavorites = (item) => {
+  if (item.favorite) {
+    removeFavorites(item.id, item.userId);
+  } else {
+    addToFavorites(item.id, item.userId);
+  }
+};
+
 const convertCategoryIdToString = (id) => {
   switch (id) {
     case 1:
@@ -290,10 +298,17 @@ const combinedItems = computed(() => {
   });
 });
 
+const checkToken = () => {
+  const token = localStorage.getItem("token");
+  return !!token;
+};
+
 onBeforeMount(() => {
   fetchData();
-  fetchCategories();
-  fetchFavorites();
+  if (checkToken()) {
+    fetchFavorites();
+  }
+
   console.log("filter", filteredItems);
   console.log("fav", favorites);
   console.log("com", combinedItems);
@@ -312,9 +327,7 @@ onBeforeMount(() => {
       <div class="w-full">
         <div class="text py-4 pb-16"></div>
       </div>
-      <h1 class="text-[80px] text-center pt-16">
-        กำลังโหลด รอสักครู่นะครับ...
-      </h1>
+      <h1 class="text-[80px] text-center pt-16"></h1>
     </div>
     <div v-else>
       <div class="justify-start flex flex-wrap ml-56 pt-16">
@@ -508,36 +521,8 @@ onBeforeMount(() => {
             class="flex flex-col items-center"
           >
             <div
-              class="flex flex-col items-center bg-gradient-to-b from-blue-200 to-white shadow-lg rounded-lg overflow-hidden object-center transition duration-300 transform over:scale-105 cursor-pointer w-[450px]"
+              class="flex flex-col items-center bg-gradient-to-b from-blue-200 to-white shadow-lg rounded-lg overflow-hidden object-center cursor-pointer w-[450px] relative z-40"
             >
-              <div class="">
-                <button
-                  v-if="item.favorite"
-                  class="absolute top-0 right-0 m-2 p-2 rounded-full bg-white shadow-md hover:bg-gray-200 focus:outline-none"
-                  @click="removeFavorites(item.id)"
-                >
-                  <img src="src\assets\icon\heart.png" class="w-7 h-7" />
-                </button>
-                <button
-                  v-else
-                  class="absolute top-0 right-0 m-2 p-2 rounded-full bg-white shadow-md hover:bg-gray-200 focus:outline-none"
-                  @click="addToFavorites(item.id)"
-                >
-                  <svg
-                    class="h-8 w-8 text-gray-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
-                </button>
-              </div>
               <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
                 <img
                   class="h-40 w-[1000px] object-cover"
@@ -582,7 +567,7 @@ onBeforeMount(() => {
                     <div class="text-sm mt-2 flex gap-2">
                       <span>ประเภทวัตถุดิบ: </span>
                       <img
-                        :src="getCategoryImage(item.categoryId)"
+                        :src="getCategoryImage(item.categoryEn)"
                         class="w-6 h-6"
                       />
                     </div>
@@ -631,6 +616,33 @@ onBeforeMount(() => {
                   </div>
                 </div>
               </router-link>
+              <div class="absolute top-2 right-2 z-10">
+                <button
+                  class="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-md hover:bg-gray-200 focus:outline-none"
+                  @click="toggleFavorites(item)"
+                >
+                  <img
+                    src="src/assets/icon/heart.png"
+                    class="w-6 h-6"
+                    v-if="item.favorite"
+                  />
+
+                  <svg
+                    v-else
+                    class="w-7 h-7 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </ul>
         </div>

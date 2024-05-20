@@ -29,9 +29,6 @@ const searchFetch = async (query) => {
     setTimeout(() => {
       isLoading.value = false; // ปิดใช้งาน Loading Screen หลังจากผ่านไปเวลาที่ต้องการ
     }, 1000);
-
-    console.log(searchQuery.value);
-    console.log(searchResults.value);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -166,26 +163,6 @@ const clearSearch = () => {
             </router-link>
           </li>
         </ul>
-
-        <div class="flex items-center p-2">
-          <svg
-            class="h-9 w-9 text-white bg-gray-500 rounded-full p-1 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-          ทำการค้นหา "{{ searchQuery }}"
-        </div>
-        <span v-if="searchResults.length" class="text-sm ml-2">
-          ({{ searchResults.filter((result) => result.type).length }} tags)
-        </span>
       </div>
     </div>
   </div>

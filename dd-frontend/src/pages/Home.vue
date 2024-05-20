@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onBeforeMount, computed } from "vue";
+import { ref, onBeforeMount, computed, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import { useRoute, useRouter } from "vue-router";
@@ -67,8 +67,6 @@ const fetchIngredients = async () => {
   }
 };
 
-// ตัวอย่างการใช้งาน
-
 const addToCart = async (ingredientId, quantity) => {
   console.log(ingredientId, quantity);
   try {
@@ -86,8 +84,6 @@ const addToCart = async (ingredientId, quantity) => {
       }
     );
     if (response.status === 201) {
-      await fetchCartItemCount();
-
       Swal.fire({
         icon: "success",
         toast: true,
@@ -115,23 +111,6 @@ const addToCart = async (ingredientId, quantity) => {
   }
 };
 
-const convertCategoryIdToString = (id) => {
-  switch (id) {
-    case 1:
-      return "ไข่";
-    case 2:
-      return "เนื้อวัว";
-    case 3:
-      return "เนื้อไก่";
-    case 4:
-      return "เนื้อหมู";
-    case 5:
-      return "ผัก";
-    default:
-      return "หมวดหมู่อื่นๆ";
-  }
-};
-
 const filteredItems = computed(() => {
   if (selectedCategory.value.length === 0) {
     console.log("Filtered items1:", selectedCategory); // เพิ่ม console.log นี้เพื่อดูผลลัพธ์ของการ filter
@@ -151,6 +130,52 @@ const shuffledItems = computed(() => {
   return filteredItems.value.sort(() => Math.random() - 0.5);
 });
 
+const slides = ref([
+  {
+    title: "ยินดีต้อนรับเข้าสู่เว็บไซต์ของพวกเรา Dish DIARIES",
+    description:
+      "เว็บไซต์ที่รวมรวบสูตรอาหาร สามารถซื้อวัตถุดิบผ่านเว็บไซต์ และ ยังสามารถบอกต่อสูตรอาหารของคุณด้วยได้ในที่เดียว",
+
+    link: "/recipe",
+    linkText: "ดูสูตรอาหาร",
+  },
+  {
+    title: "Store in One Place",
+    description: "รวบรวมสินค้า วัตถุดิบไว้ในที่เดียว ไม่ต้องไปหาซื้อให้ยุ่งยาก",
+    link: "/store",
+    linkText: "ไปยังร้านค้า",
+  },
+  {
+    title: "Share Your Recipes",
+    description: "อยากเผยแพร่สูตรอาหารงั้นหรอ? ลองดูสิ !",
+    link: "/account/profile",
+    linkText: "ลองเลย !",
+  },
+]);
+
+const currentIndex = ref(0);
+const intervalDuration = 5000; // 3 วินาที
+
+const nextSlide = () => {
+  currentIndex.value = (currentIndex.value + 1) % slides.value.length;
+};
+
+let slideInterval;
+
+onMounted(() => {
+  slideInterval = setInterval(nextSlide, intervalDuration);
+});
+
+onUnmounted(() => {
+  clearInterval(slideInterval);
+});
+
+const goToSlide = (index) => {
+  currentIndex.value = index;
+  clearInterval(slideInterval);
+  slideInterval = setInterval(nextSlide, intervalDuration);
+};
+
 onBeforeMount(() => {
   fetchData();
   fetchCategories();
@@ -164,6 +189,45 @@ onBeforeMount(() => {
     <div class="">
       <Navbar />
     </div>
+
+    <div class="relative w-full h-96 overflow-hidden">
+      <div
+        class="absolute inset-0 flex transition-transform duration-700"
+        :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
+      >
+        <div
+          v-for="(slide, index) in slides"
+          :key="index"
+          class="flex-shrink-0 w-full h-full flex items-center justify-center bg-gray-200"
+        >
+          <!-- เนื้อหาของสไลด์ -->
+          <div class="text-center p-4">
+            <h2 class="text-2xl font-bold mb-2">{{ slide.title }}</h2>
+            <p class="mb-4">{{ slide.description }}</p>
+
+            <router-link
+              v-if="slide.link"
+              :to="slide.link"
+              class="bg-black text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              {{ slide.linkText }}
+            </router-link>
+          </div>
+        </div>
+      </div>
+      <div
+        class="absolute bottom-0 left-0 right-0 p-4 flex justify-center space-x-2"
+      >
+        <span
+          v-for="(slide, index) in slides"
+          :key="index"
+          class="w-3 h-3 bg-white rounded-full cursor-pointer"
+          :class="{ 'bg-gray-800': currentIndex === index }"
+          @click="goToSlide(index)"
+        ></span>
+      </div>
+    </div>
+
     <div
       class="justify-start flex flex-wrap ml-56 pt-16"
       v-if="items.length < 1"

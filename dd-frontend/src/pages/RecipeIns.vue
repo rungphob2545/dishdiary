@@ -614,25 +614,8 @@ const playVideo = () => {
         <div v-else>
           <p class="text-white text-2xl">ขออภัย Video ไม่พร้อมในขณะนี้</p>
         </div>
-        <div>
-          <button class="text-white" @click="pauseVideo()">Pause</button>
-        </div>
       </div>
-      <div>
-        <button @click="pauseVideo">Pause</button>
-      </div>
-      <div>
-        <button @click="playVideo">Play</button>
-      </div>
-      <div>
-        <button @click="toggleVideo">{{ isPlaying ? "Pause" : "Play" }}</button>
-      </div>
-      <div>
-        <button @click="pauseVideo">Pause</button>
-      </div>
-      <div>
-        <button @click="playVideo">Play</button>
-      </div>
+
       <div>
         <button @click="toggleVideo">{{ isPlaying ? "Pause" : "Play" }}</button>
       </div>

@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import Cart from "../pages/Cart.vue";
 import UserProfile from "../pages/UserProfile.vue";
 import MyRecipe from "../pages/MyRecipe.vue";
+import Ingredient from "../pages/Ingredient.vue";
 
 const history = createWebHashHistory(import.meta.env.BASE_URL);
 
@@ -28,7 +29,7 @@ const routes = [
     component: Recipe,
     name: "Recipe",
     meta: {
-      requiresAuth: true,
+      requiresAuth: false,
     },
   },
   {
@@ -89,6 +90,11 @@ const routes = [
     },
   },
   { path: "/account/signup", component: Register, name: "Register" },
+  {
+    path: "/store",
+    component: Ingredient,
+    name: "Ingredient",
+  },
   {
     path: "/recipe/user",
     component: MyRecipe,

@@ -86,7 +86,7 @@ const createData = async (
   introduce,
   cookingIngredients,
   cookingSteps,
-  categoryId,
+  categoryEn,
   recipeImage
 ) => {
   console.log(
@@ -94,7 +94,7 @@ const createData = async (
     introduce,
     cookingIngredients,
     cookingSteps,
-    categoryId,
+    categoryEn,
     recipeImage
   );
   try {
@@ -110,7 +110,7 @@ const createData = async (
     formData.append("cookingIngredients", cookingIngredients);
     formData.append("introduce", introduce);
     formData.append("recipeImage", fileInput);
-    formData.append("categoryId", categoryId);
+    formData.append("categoryEn", categoryEn);
 
     const response = await axios.post(
       `${import.meta.env.VITE_PRODUCT_API_URL}` + "/api/recipe",
@@ -247,7 +247,7 @@ onBeforeMount(() => {
 //   () => items.value.cookingIngredients.length > 0
 // );
 // const isCookingStepsValid = computed(() => items.value.cookingSteps.length > 0);
-// const isCategoryValid = computed(() => items.value.categoryId !== null);
+// const isCategoryValid = computed(() => items.value.categoryEn !== null);
 </script>
 
 <template>
@@ -259,7 +259,7 @@ onBeforeMount(() => {
     <!-- Modal Create -->
     <div
       v-show="isOpenCreate"
-      class="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 h-screen w-screen"
+      class="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 h-screen w-screen z-50"
     >
       <div class="max-w-2xl p-6 bg-white rounded-md shadow-xl w-1/2">
         <div class="flex items-center justify-between">
@@ -412,7 +412,7 @@ onBeforeMount(() => {
                 type=""
                 name="cookingSteps"
                 id="cookingSteps"
-                v-model="newRecipe.categoryId"
+                v-model="newRecipe.categoryEn"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                 required
               >
@@ -457,7 +457,7 @@ onBeforeMount(() => {
                 newRecipe.introduce,
                 newRecipe.cookingIngredients,
                 newRecipe.cookingSteps,
-                newRecipe.categoryId,
+                newRecipe.categoryEn,
                 imageName
               )
             "
@@ -488,77 +488,109 @@ onBeforeMount(() => {
         เพิ่มสูตรอาหาร
       </button>
 
-      <div class="grid grid-cols-3 gap-4 pb-12">
-        <ul v-for="item in filteredItems" :key="item.id" class="">
+      <div class="grid grid-cols-3 gap-4 pb-12 w-[1400px]">
+        <ul
+          v-for="item in items"
+          :key="item.id"
+          class="flex flex-col items-center"
+        >
           <div
-            class="flex bg-white shadow-lg rounded-lg overflow-hidden object-center transition duration-300 hover:scale-105 cursor-pointer"
+            class="flex flex-col items-center bg-gradient-to-b from-blue-200 to-white shadow-lg rounded-lg overflow-hidden object-center cursor-pointer w-[450px]"
           >
-            <div class="w-[200px]">
-              <li>
-                <img
-                  class="h-40 w-full object-cover"
-                  v-bind:src="getImage(item.recipeImage)"
-                />
-              </li>
-            </div>
-            <div class="p-6 w-[300px]">
-              <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
-                <li
-                  class="text-right font-bold text-2xl mb-2 mt-[-10px] text-green-500"
-                >
-                  {{ item.recipeName }}
-                </li>
-                <li class="float-right flex gap-2">
-                  <span class=""> ประเภท </span>
-                  <img
-                    :src="getCategoryImage(item.categoryId)"
-                    class="w-8 h-8"
-                  />
-                  <img
-                    v-if="item.nutAllergy == 1"
-                    src="src\assets\icon\nut.png"
-                    class="w-8 h-8"
-                  />
-                  <img
-                    v-if="item.vegetarian == 1"
-                    src="src\assets\icon\vegan.png"
-                    class="w-8 h-8"
-                  />
-                </li>
-                <li class="absolute bottom-0 mb-2" v-if="item.video">
-                  <svg
-                    class="h-8 w-8 text-red-500 ml-56"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <polygon points="23 7 16 12 23 17 23 7" />
-                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-                  </svg>
-                </li>
-                <li class="absolute bottom-0 mb-2" v-else>
-                  <svg
-                    class="h-8 w-8 text-gray-500 ml-56"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path
-                      d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10"
-                    />
-                    <line x1="1" y1="1" x2="23" y2="23" />
-                  </svg>
-                </li>
-              </router-link>
-            </div>
-          </div>
+            <router-link :to="{ name: 'RecipeIns', params: { id: item.id } }">
+              <img
+                class="h-40 w-[1000px] object-cover"
+                v-bind:src="getImage(item.recipeImage)"
+              />
 
+              <div class="p-4 w-full">
+                <div class="flex items-center">
+                  <div class="font-bold text-2xl text-black">
+                    {{ item.recipeName }}
+                  </div>
+                  <div class="flex items-center ml-4 gap-1">
+                    <svg
+                      class="h-6 w-6 text-gray-600"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    <span>
+                      {{ item.timeBased }}
+                    </span>
+                  </div>
+                  <div class="ml-auto flex gap-2">
+                    <div v-if="item.nutAllergy == 1">
+                      <img src="src\assets\icon\nut.png" class="w-8 h-8" />
+                    </div>
+                    <div v-if="item.vegetarian == 1">
+                      <img src="src\assets\icon\vegan.png" class="w-8 h-8" />
+                    </div>
+                  </div>
+                </div>
+                <div class="flex gap-4">
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-sm">เรทติ้ง: {{ item.rating }}</span>
+                  </div>
+                  <div class="text-sm mt-2 flex gap-2">
+                    <span>ประเภทวัตถุดิบ: </span>
+                    <img
+                      :src="getCategoryImage(item.categoryEn)"
+                      class="w-6 h-6"
+                    />
+                  </div>
+                  <div class="text-sm mt-2 flex">
+                    <span>ประเภทอาหาร: {{ item.type }}</span>
+                  </div>
+                  <div class="ml-auto">
+                    <div class="" v-if="item.video">
+                      <svg
+                        class="h-8 w-8 text-red-500"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polygon points="23 7 16 12 23 17 23 7" />
+                        <rect
+                          x="1"
+                          y="5"
+                          width="15"
+                          height="14"
+                          rx="2"
+                          ry="2"
+                        />
+                      </svg>
+                    </div>
+                    <div class="" v-else>
+                      <svg
+                        class="h-8 w-8 text-gray-500"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10"
+                        />
+                        <line x1="1" y1="1" x2="23" y2="23" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </router-link>
+          </div>
           <div class="pt-4">
             <div class="flex justify-between">
               <button
@@ -575,119 +607,119 @@ onBeforeMount(() => {
               </button>
             </div>
           </div>
-
-          <!-- Modal Edit -->
-          <div
-            v-show="isOpen"
-            class="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 h-screen w-screen"
-          >
-            <div class="max-w-2xl p-6 bg-white rounded-md shadow-xl w-1/2">
-              <div class="flex items-center justify-between">
-                <h3 class="text-2xl">Edit Recipe</h3>
-                <svg
-                  @click="isOpen = false"
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-8 h-8 text-red-900 cursor-pointer"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <div class="mt-2">
-                <form class="space-y-4" action="#">
-                  <div>
-                    <label
-                      for="Recipe's name"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
-                      >Recipe's name
-                    </label>
-                    <input
-                      type="text"
-                      name="recipeName"
-                      id="recipeName"
-                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
-                      v-model="recipe.recipeName"
-                      disabled
-                    />
-                  </div>
-                  <div>
-                    <label
-                      for="Introduce"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
-                      >Introduce</label
-                    >
-                    <textarea
-                      type="text"
-                      name="Introduce"
-                      id="Introduce"
-                      v-model="recipe.introduce"
-                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      required
-                    ></textarea>
-                  </div>
-                  <div>
-                    <label
-                      for="cookingIngredients"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
-                      >Cooking's Ingredients</label
-                    >
-                    <textarea
-                      type="text"
-                      name="cookingIngredients"
-                      id="cookingIngredients"
-                      v-model="recipe.cookingIngredients"
-                      class="bg-gray-50 h-32 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      required
-                    ></textarea>
-                  </div>
-                  <div>
-                    <label
-                      for="cookingSteps"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
-                      >Cooking Steps</label
-                    >
-                    <textarea
-                      type="text"
-                      name="cookingSteps"
-                      id="cookingSteps"
-                      v-model="recipe.cookingSteps"
-                      class="bg-gray-50 h-32 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      required
-                    ></textarea>
-                  </div>
-                  <div class="flex justify-between"></div>
-                </form>
-                <button
-                  @click="isOpen = false"
-                  class="px-6 py-2 text-blue-800 border border-blue-600 rounded"
-                >
-                  Cancel
-                </button>
-                <button
-                  class="px-6 py-2 ml-2 text-blue-100 bg-blue-600 rounded"
-                  @click="
-                    editData(
-                      recipe.id,
-                      recipe.recipeName,
-                      recipe.introduce,
-                      recipe.cookingIngredients,
-                      recipe.cookingSteps
-                    )
-                  "
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
         </ul>
+      </div>
+
+      <!-- Modal Edit -->
+      <div
+        v-show="isOpen"
+        class="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 h-screen w-screen"
+      >
+        <div class="max-w-2xl p-6 bg-white rounded-md shadow-xl w-1/2">
+          <div class="flex items-center justify-between">
+            <h3 class="text-2xl">Edit Recipe</h3>
+            <svg
+              @click="isOpen = false"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-8 h-8 text-red-900 cursor-pointer"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <div class="mt-2">
+            <form class="space-y-4" action="#">
+              <div>
+                <label
+                  for="Recipe's name"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                  >Recipe's name
+                </label>
+                <input
+                  type="text"
+                  name="recipeName"
+                  id="recipeName"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                  v-model="recipe.recipeName"
+                  disabled
+                />
+              </div>
+              <div>
+                <label
+                  for="Introduce"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                  >Introduce</label
+                >
+                <textarea
+                  type="text"
+                  name="Introduce"
+                  id="Introduce"
+                  v-model="recipe.introduce"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  required
+                ></textarea>
+              </div>
+              <div>
+                <label
+                  for="cookingIngredients"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                  >Cooking's Ingredients</label
+                >
+                <textarea
+                  type="text"
+                  name="cookingIngredients"
+                  id="cookingIngredients"
+                  v-model="recipe.cookingIngredients"
+                  class="bg-gray-50 h-32 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  required
+                ></textarea>
+              </div>
+              <div>
+                <label
+                  for="cookingSteps"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                  >Cooking Steps</label
+                >
+                <textarea
+                  type="text"
+                  name="cookingSteps"
+                  id="cookingSteps"
+                  v-model="recipe.cookingSteps"
+                  class="bg-gray-50 h-32 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  required
+                ></textarea>
+              </div>
+              <div class="flex justify-between"></div>
+            </form>
+            <button
+              @click="isOpen = false"
+              class="px-6 py-2 text-blue-800 border border-blue-600 rounded"
+            >
+              Cancel
+            </button>
+            <button
+              class="px-6 py-2 ml-2 text-blue-100 bg-blue-600 rounded"
+              @click="
+                editData(
+                  recipe.id,
+                  recipe.recipeName,
+                  recipe.introduce,
+                  recipe.cookingIngredients,
+                  recipe.cookingSteps
+                )
+              "
+            >
+              Save
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

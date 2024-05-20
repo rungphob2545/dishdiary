@@ -328,6 +328,54 @@ const createData = async (
   }
 };
 
+const confirmDelete = (id) => {
+  Swal.fire({
+    title: "ลบเมนูของคุณ?",
+    text: "คุณต้องการยืนยันลบข้อมูลนี้หรือไม่?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "ยืนยัน",
+    cancelButtonText: "ยกเลิก",
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      deleteRecipe(id);
+    }
+  });
+};
+
+const deleteRecipe = async (recipeId) => {
+  console.log(recipeId);
+  try {
+    const response = await axios.delete(
+      `${import.meta.env.VITE_APP_API_URL}/api/recipe/${recipeId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        method: "DELETE",
+      }
+    );
+
+    if (response.status === 200) {
+      Swal.fire({
+        icon: "success",
+        title: "ลบ Recipe สำเร็จ !",
+        confirmButtonText: "ตกลง",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          location.reload();
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
 const checkValid = ref(false);
 const isRecipeNameValid = () => {
   console.log(newRecipe.value.recipeName.length);
@@ -438,6 +486,12 @@ const types = {
   Salad: "สลัด",
   Rice: "ข้าว",
   Dessert: "ของหวาน",
+};
+
+const dropdownOpen = ref(null);
+
+const toggleDropdown = (id) => {
+  dropdownOpen.value = dropdownOpen.value === id ? null : id;
 };
 
 watch(
@@ -1255,6 +1309,46 @@ onBeforeMount(() => {
                   </div>
                 </div>
               </router-link>
+              <div class="absolute top-2 right-2">
+                <button
+                  @click="toggleDropdown(item.id)"
+                  class="text-gray-500 hover:text-gray-700 focus:outline-none"
+                >
+                  <svg
+                    class="h-8 w-8 text-black p-1 bg-gray-400 rounded-full"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" />
+                    <circle cx="5" cy="12" r="1" />
+                    <circle cx="12" cy="12" r="1" />
+                    <circle cx="19" cy="12" r="1" />
+                  </svg>
+                </button>
+                <div
+                  v-if="dropdownOpen === item.id"
+                  class="mt-2 w-48 bg-white rounded-md shadow-lg z-20 absolute right-0"
+                >
+                  <button
+                    @click="editRecipe(item.id)"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    @click="confirmDelete(item.id)"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
             </div>
           </ul>
         </div>

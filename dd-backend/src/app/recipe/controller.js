@@ -66,19 +66,24 @@ const getAllRecipe = async (req, res) => {
 //get one recipe by id
 const getRecipeById = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    let userId = null;
 
-    // ตรวจสอบ Token
-    const decodedToken = jwt.verify(token, "mysecretpassword");
-    console.log(decodedToken);
+    // ตรวจสอบว่ามีโทเค็นหรือไม่
+    if (req.headers.authorization) {
+      const token = req.headers.authorization.split(" ")[1];
 
-    let userId = decodedToken.userId;
+      // ตรวจสอบ Token
+      const decodedToken = jwt.verify(token, "mysecretpassword");
+      console.log(decodedToken);
 
-    const user = await User.findOne({
-      where: { id: userId },
-    });
-    if (!user) {
-      return res.status(404).send({ message: "User Not Found !" });
+      userId = decodedToken.userId;
+
+      const user = await User.findOne({
+        where: { id: userId },
+      });
+      if (!user) {
+        return res.status(404).send({ message: "User Not Found !" });
+      }
     }
 
     let id = req.params.id;
@@ -90,12 +95,15 @@ const getRecipeById = async (req, res) => {
     }
     const recipe = await Recipe.findOne({ where: { id: id } });
 
-    const existingHistory = await History.findOne({
-      where: { userId, recipeId: id },
-    });
-    if (existingHistory) {
-      // ถ้า recipeId มีการใช้งานแล้ว ให้ลบประวัติเก่าออกและสร้างประวัติใหม่
-      await History.destroy({ where: { id: existingHistory.id } });
+    if (userId) {
+      const existingHistory = await History.findOne({
+        where: { userId, recipeId: id },
+      });
+      if (existingHistory) {
+        await History.destroy({ where: { id: existingHistory.id } });
+      }
+
+      await History.create({ userId: userId, recipeId: id });
     }
 
     // สร้างHistoryใหม่
@@ -140,11 +148,36 @@ const addRecipe = async (req, res) => {
     let result = {
       recipeName: req.body.recipeName,
       cookingSteps: req.body.cookingSteps,
-      cookingIngredients: req.body.cookingIngredients,
+      ingrediant1: req.body.ingrediant1,
+      ingrediant2: req.body.ingrediant2,
+      ingrediant3: req.body.ingrediant3,
+      ingrediant4: req.body.ingrediant4,
+      ingrediant5: req.body.ingrediant5,
+      ingrediant6: req.body.ingrediant6,
+      ingrediant7: req.body.ingrediant7,
+      ingrediant8: req.body.ingrediant8,
+      ingrediant9: req.body.ingrediant9,
+      ingrediant10: req.body.ingrediant10,
+      ingrediant11: req.body.ingrediant11,
+      ingrediant12: req.body.ingrediant12,
+      measure1: req.body.measure1,
+      measure2: req.body.measure2,
+      measure3: req.body.measure3,
+      measure4: req.body.measure4,
+      measure5: req.body.measure5,
+      measure6: req.body.measure6,
+      measure7: req.body.measure7,
+      measure8: req.body.measure8,
+      measure9: req.body.measure9,
+      measure10: req.body.measure10,
+      measure11: req.body.measure11,
+      measure12: req.body.measure12,
       introduce: req.body.introduce,
       recipeImage: req.file.path,
-      categoryId: req.body.categoryId,
-      type: req.body.type,
+      categoryTh: req.body.categoryTh,
+      categoryEn: req.body.categoryEn,
+      typeTh: req.body.typeTh,
+      typeEn: req.body.typeEn,
       video: req.body.video,
       vegetarian: req.body.vegetarian,
       nutAllergy: req.body.nutAllergy,

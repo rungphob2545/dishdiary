@@ -115,6 +115,7 @@ app.use(express.urlencoded({ extended: true }));
         userImage: "dist\\images\\avatar_1.png",
       });
       const normalUser = User.create({
+        id: 2,
         userName: "nabin",
         userEmail: "nabin.ameen@gmail.com",
         password:
@@ -125,6 +126,7 @@ app.use(express.urlencoded({ extended: true }));
       });
 
       const normalUser1 = User.create({
+        id: 3,
         userName: "test",
         userEmail: "test01@gmail.com",
         password:

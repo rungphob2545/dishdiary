@@ -177,7 +177,7 @@ module.exports = (sequelize, DataTypes) => {
       timeBased: {
         field: "time_based",
         type: DataTypes.STRING,
-        defaultValue: "30m",
+        defaultValue: "30",
         allowNull: false,
       },
       rating: {

@@ -100,14 +100,13 @@ const getRecipeById = async (req, res) => {
         where: { userId, recipeId: id },
       });
       if (existingHistory) {
-        await History.destroy({ where: { id: existingHistory.id } });
+        await History.destroy({ where: { userId: userId, recipeId: id } });
       }
 
       await History.create({ userId: userId, recipeId: id });
     }
 
     // สร้างHistoryใหม่
-    await History.create({ userId: userId, recipeId: id });
     res.status(200).send(recipe);
     console.log(recipe);
   } catch (error) {
@@ -261,14 +260,6 @@ const removeRecipe = async (req, res) => {
     const decodedToken = jwt.verify(token, "mysecretpassword");
     console.log(decodedToken);
 
-    let userId = decodedToken.userId;
-
-    const existingUser = await User.findOne({
-      where: { userId: userId },
-    });
-    if (!existingUser) {
-      return res.status(403).send({ message: "Error: Forbidden" });
-    }
     const existingRecipe = await Recipe.findOne({
       where: { id: recipeId },
     });

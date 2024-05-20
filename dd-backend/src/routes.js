@@ -27,6 +27,10 @@ router.get("/recipe/user", recipeController.getRecipeByUser);
 router.get("/recipe/searchByName", recipeController.searchRecipeByName);
 router.get("/recipe/search", recipeController.searchRecipes);
 
+//History
+router.delete("/recipe/history", historyController.removeHistory);
+router.get("/recipe/history", historyController.searchHistory);
+
 //CRUD Recipe
 router.get("/recipe/:id", validateId, recipeController.getRecipeById);
 router.post(
@@ -50,10 +54,6 @@ router.get(
   userController.checkUserRole("Admin", "User"),
   recipeController.getRecipeByCategory
 );
-
-//History
-router.delete("/recipe/history", historyController.removeHistory);
-router.get("/recipe/history", historyController.searchHistory);
 
 //Ingredients
 router.get("/ingredients", ingredientController.getAllIngredients);

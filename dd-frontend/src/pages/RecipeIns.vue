@@ -472,84 +472,84 @@ const playVideo = () => {
               <tbody class="">
                 <tr
                   class="border-b border-gray-300"
-                  v-if="items.ingredients1 != null"
+                  v-if="items.ingredients1 != `undefined` || null"
                 >
                   <td class="text-left">{{ items.ingredients1 }}</td>
                   <td>{{ items.measure1 }}</td>
                 </tr>
                 <tr
                   class="border-b border-gray-300"
-                  v-if="items.ingredients2 != null"
+                  v-if="items.ingredients2 !== `undefined` || null"
                 >
                   <td class="text-left">{{ items.ingredients2 }}</td>
                   <td>{{ items.measure2 }}</td>
                 </tr>
                 <tr
                   class="border-b border-gray-300"
-                  v-if="items.ingredients3 != null"
+                  v-if="items.ingredients3 != `undefined` || null"
                 >
                   <td class="text-left">{{ items.ingredients3 }}</td>
                   <td>{{ items.measure3 }}</td>
                 </tr>
                 <tr
                   class="border-b border-gray-300"
-                  v-if="items.ingredients4 != null"
+                  v-if="items.ingredients4 != `undefined` || null"
                 >
                   <td class="text-left">{{ items.ingredients4 }}</td>
                   <td>{{ items.measure4 }}</td>
                 </tr>
                 <tr
                   class="border-b border-gray-300"
-                  v-if="items.ingredients5 != null"
+                  v-if="items.ingredients5 != `undefined` || null"
                 >
                   <td class="text-left">{{ items.ingredients5 }}</td>
                   <td>{{ items.measure5 }}</td>
                 </tr>
                 <tr
                   class="border-b border-gray-300"
-                  v-if="items.ingredients6 != null"
+                  v-if="items.ingredients6 != `undefined` || null"
                 >
                   <td class="text-left">{{ items.ingredients6 }}</td>
                   <td>{{ items.measure6 }}</td>
                 </tr>
                 <tr
                   class="border-b border-gray-300"
-                  v-if="items.ingredients7 != null"
+                  v-if="items.ingredients7 != `undefined` || null"
                 >
                   <td class="text-left">{{ items.ingredients7 }}</td>
                   <td>{{ items.measure7 }}</td>
                 </tr>
                 <tr
                   class="border-b border-gray-300"
-                  v-if="items.ingredients8 != null"
+                  v-if="items.ingredients8 != `undefined` || null"
                 >
                   <td class="text-left">{{ items.ingredients8 }}</td>
                   <td>{{ items.measure8 }}</td>
                 </tr>
                 <tr
                   class="border-b border-gray-300"
-                  v-if="items.ingredients9 != null"
+                  v-if="items.ingredients9 != `undefined` || null"
                 >
                   <td class="text-left">{{ items.ingredients9 }}</td>
                   <td>{{ items.measure9 }}</td>
                 </tr>
                 <tr
                   class="border-b border-gray-300"
-                  v-if="items.ingredients10 != null"
+                  v-if="items.ingredients10 != `undefined` || null"
                 >
                   <td class="text-left">{{ items.ingredients10 }}</td>
                   <td>{{ items.measure10 }}</td>
                 </tr>
                 <tr
                   class="border-b border-gray-300"
-                  v-if="items.ingredients11 != null"
+                  v-if="items.ingredients11 != `undefined` || null"
                 >
                   <td class="text-left">{{ items.ingredients11 }}</td>
                   <td>{{ items.measure11 }}</td>
                 </tr>
                 <tr
                   class="border-b border-gray-300"
-                  v-if="items.ingredients12 != null"
+                  v-if="items.ingredients12 != `undefined` || null"
                 >
                   <td class="text-left">{{ items.ingredients12 }}</td>
                   <td>{{ items.measure12 }}</td>
@@ -604,7 +604,7 @@ const playVideo = () => {
       >
         <iframe
           ref="videoRef"
-          v-if="items.video !== null"
+          v-if="items.video !== `0`"
           width="660"
           height="400"
           :src="items.video + `?enablejsapi=1`"

@@ -208,7 +208,7 @@ onBeforeMount(() => {
             <router-link
               v-if="slide.link"
               :to="slide.link"
-              class="bg-black text-white px-4 py-2 rounded hover:bg-blue-700"
+              class="bg-black text-white px-4 py-2 rounded hover:bg-gray-700"
             >
               {{ slide.linkText }}
             </router-link>

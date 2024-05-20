@@ -575,7 +575,7 @@ onBeforeMount(() => {
                       <span>ประเภทอาหาร: {{ item.type }}</span>
                     </div>
                     <div class="ml-auto">
-                      <div class="" v-if="item.video">
+                      <div class="" v-if="item.video !== `0`">
                         <svg
                           class="h-8 w-8 text-red-500"
                           viewBox="0 0 24 24"

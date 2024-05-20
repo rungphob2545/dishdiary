@@ -1,16 +1,16 @@
 <script setup>
-import { ref, onBeforeMount, computed } from "vue";
+import { ref, onBeforeMount, computed, watch } from "vue";
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import Swal from "sweetalert2";
-import { useRoute, useRouter } from "vue-router";
-import MyRecipe from "./MyRecipe.vue";
 
 const user = ref({});
 const favorites = ref([]);
 const userRecipes = ref([]);
 const errors = ref(null);
+const isOpenCreate = ref(false);
 const currentView = ref("myRecipes");
+const newRecipe = ref({});
 
 const getImage = (img) => `http://localhost:8080/${img}`;
 const getCategoryImage = (id) => `/kp2/src/assets/icon/category_${id}.png`;
@@ -140,6 +140,202 @@ const removeFavorites = async (recipeId, userId) => {
   }
 };
 
+const fileup = ref("");
+const imageName = ref("");
+let dataTransfer = new DataTransfer();
+const sizeCheck = (e) => {
+  const maxSize = 10 * 1024 * 1024; //10MB
+  const file = e.target.files[0];
+
+  // ตรวจสอบว่าเป็นไฟล์รูปภาพหรือไม่ (jpg, jpeg, png)
+  const allowedExtensions = ["jpg", "jpeg", "png"];
+  const fileExtension = file.name.split(".").pop().toLowerCase();
+  let fileInput = document.getElementById("fileupload");
+  console.log(fileInput.value);
+  if (!allowedExtensions.includes(fileExtension)) {
+    alert("Please select an image file (jpg, jpeg, or png)");
+    clearFile();
+    return;
+  }
+
+  if (file.size > maxSize) {
+    alert("File size should be less than 10MB");
+    clearFile();
+  } else {
+    fileup.value = e.target.files[0];
+    imageName.value = file.name;
+  }
+};
+
+const clearFile = () => {
+  document.getElementById("fileupload").value = "";
+  imageName.value = "";
+};
+
+const videoUrlError = ref("");
+
+const validateVideoUrl = () => {
+  const url = newRecipe.value.videoUrl;
+  const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
+
+  if (url && !youtubeRegex.test(url)) {
+    videoUrlError.value = "Please enter a valid YouTube URL.";
+  } else {
+    videoUrlError.value = "";
+  }
+};
+
+const createData = async (
+  recipeName,
+  introduce,
+  cookingSteps,
+  ingredients1,
+  ingredients2,
+  ingredients3,
+  ingredients4,
+  ingredients5,
+  ingredients6,
+  ingredients7,
+  ingredients8,
+  ingredients9,
+  ingredients10,
+  ingredients11,
+  ingredients12,
+  measure1,
+  measure2,
+  measure3,
+  measure4,
+  measure5,
+  measure6,
+  measure7,
+  measure8,
+  measure9,
+  measure10,
+  measure11,
+  measure12,
+  typeEn,
+  typeTh,
+  categoryEn,
+  categoryTh,
+  difficulty,
+  timeBased,
+  vegetarian,
+  nutAllergy,
+  video,
+  recipeImage
+) => {
+  try {
+    const fileInput = document.getElementById("fileupload").files[0];
+    if (!fileInput) {
+      console.error("File input element not found");
+      return;
+    }
+
+    const setValue = (value) => (value === undefined ? "0" : value);
+
+    const formData = new FormData();
+    formData.append("recipeName", recipeName);
+
+    formData.append("ingredients1", ingredients1);
+    formData.append("ingredients2", ingredients2);
+    formData.append("ingredients3", ingredients3);
+    formData.append("ingredients4", ingredients4);
+    formData.append("ingredients5", ingredients5);
+    formData.append("ingredients6", ingredients6);
+    formData.append("ingredients7", ingredients7);
+    formData.append("ingredients8", ingredients8);
+    formData.append("ingredients9", ingredients9);
+    formData.append("ingredients10", ingredients10);
+    formData.append("ingredients11", ingredients11);
+    formData.append("ingredients12", ingredients12);
+    formData.append("measure1", measure1);
+    formData.append("measure2", measure2);
+    formData.append("measure3", measure3);
+    formData.append("measure4", measure4);
+    formData.append("measure5", measure5);
+    formData.append("measure6", measure6);
+    formData.append("measure7", measure7);
+    formData.append("measure8", measure8);
+    formData.append("measure9", measure9);
+    formData.append("measure10", measure10);
+    formData.append("measure11", measure11);
+    formData.append("measure12", measure12);
+    formData.append("cookingSteps", cookingSteps);
+    formData.append("introduce", introduce);
+
+    formData.append("typeEn", typeEn);
+    formData.append("typeTh", typeTh);
+    formData.append("categoryEn", categoryEn);
+    formData.append("categoryTh", categoryTh);
+    formData.append("difficulty", difficulty);
+    formData.append("timeBased", timeBased);
+
+    formData.append("vegetarian", vegetarian);
+    formData.append("nutAllergy", nutAllergy);
+
+    formData.append("recipeImage", fileInput);
+    formData.append("video", setValue(video));
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_APP_API_URL}` + "/api/recipe",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (response.status === 201) {
+      Swal.fire({
+        icon: "success",
+        title: "สร้าง Recipe สำเร็จ !",
+        confirmButtonText: "ตกลง",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          location.reload();
+        }
+      });
+    } else if (res.status === 400) {
+      Swal.fire({
+        icon: "error",
+        toast: true,
+        text: "ตรวจสอบก่อนทำรายการอีกครั้ง",
+        position: "top-right",
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        allowEscapeKey: false,
+      });
+      validateUnique.value = true;
+    }
+  } catch (error) {
+    console.error("Error adding recipe:", error);
+    Swal.fire({
+      icon: "error",
+      toast: true,
+      text: "ตรวจสอบก่อนทำรายการอีกครั้ง",
+      position: "top-right",
+      timer: 3000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+      allowEscapeKey: false,
+    });
+    errors.value = error;
+    console.log(errors);
+  }
+};
+
+const checkValid = ref(false);
+const isRecipeNameValid = () => {
+  console.log(newRecipe.value.recipeName.length);
+  if (newRecipe.value.recipeName.length < 5) {
+    checkValid.value = false;
+  } else checkValid.value = true;
+};
+
 const recipeCount = computed(() => {
   if (userRecipes.value && Array.isArray(userRecipes.value)) {
     return userRecipes.value.length;
@@ -219,6 +415,37 @@ const combinedItems = computed(() => {
     };
   });
 });
+
+const categories = {
+  Egg: "ไข่",
+  Beef: "เนื้อวัว",
+  Chicken: "เนื้อไก่",
+  Pork: "เนื้อหมู",
+};
+
+watch(
+  () => newRecipe.value.categoryEn,
+  (newVal) => {
+    newRecipe.value.categoryTh = categories[newVal];
+  }
+);
+
+const types = {
+  Fried: "ของทอด",
+  Noodle: "เส้น",
+  Steak: "สเต็ก",
+  SideDish: "กับข้าว",
+  Salad: "สลัด",
+  Rice: "ข้าว",
+  Dessert: "ของหวาน",
+};
+
+watch(
+  () => newRecipe.value.typeEn,
+  (newVal) => {
+    newRecipe.value.typeTh = types[newVal];
+  }
+);
 
 onBeforeMount(() => {
   fetchData();
@@ -318,12 +545,586 @@ onBeforeMount(() => {
       </div>
     </div>
 
+    <!-- Modal Create -->
+    <div
+      v-show="isOpenCreate"
+      class="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 h-screen w-screen z-50"
+    >
+      <div class="p-6 bg-white rounded-md shadow-xl w-[1200px] fixed">
+        <div class="flex items-center justify-between">
+          <h3 class="text-2xl">เพิ่มสูตรอาหาร</h3>
+          <svg
+            @click="isOpenCreate = false"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-8 h-8 text-red-900 cursor-pointer"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+        <div class="mt-2">
+          <form class="space-y-4" action="#">
+            <div>
+              <label
+                for="Recipe's name"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                >Recipe's name
+              </label>
+              <input
+                type="text"
+                name="recipeName"
+                id="recipeName"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:text-black"
+                v-model="newRecipe.recipeName"
+                v-on:input="isRecipeNameValid()"
+                minlength="5"
+                maxlength="20"
+                required
+              />
+            </div>
+            <div v-if="errors" class="text-red-500 mt-2 mb-4 flex items-center">
+              <span>{{ errors.response.data.message }}</span>
+              <svg
+                class="h-8 w-8 text-red-500 ml-2"
+                fill="none"
+                viewBox="0 0 30 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div
+              v-show="!checkValid"
+              class="text-red-500 mt-2 mb-4 flex items-center"
+            >
+              <span class="text-red-500"
+                >Name must between 5-20 characters</span
+              >
+              <svg
+                class="h-8 w-8 text-red-400 ml-2"
+                fill="none"
+                viewBox="0 0 30 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div
+              v-show="checkValid"
+              class="text-green-500 mt-2 mb-6 flex items-center"
+            >
+              <span class="text-green-500 pr-1">Valid Recipe Name</span>
+              <svg
+                class="h-8 w-8 text-green-500"
+                fill="none"
+                viewBox="0 0 30 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+
+            <div>
+              <label
+                for="Introduce"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                >Introduce</label
+              >
+              <textarea
+                type="text"
+                name="Introduce"
+                id="Introduce"
+                v-model="newRecipe.introduce"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                required
+              ></textarea>
+            </div>
+            <div class="block">
+              <label
+                for="cookingIngredients"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                >วัตถุดิบที่ใช้</label
+              >
+              <div class="flex gap-2">
+                <input
+                  type="text"
+                  name="ingredients1"
+                  id="ingredients1"
+                  v-model="newRecipe.ingredients1"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                  required
+                />
+                <input
+                  type="text"
+                  name="ingredients2"
+                  id="ingredients2"
+                  v-model="newRecipe.ingredients2"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="ingredients3"
+                  id="ingredients3"
+                  v-model="newRecipe.ingredients3"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="ingredients4"
+                  id="ingredients4"
+                  v-model="newRecipe.ingredients4"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="ingredients5"
+                  id="ingredients5"
+                  v-model="newRecipe.ingredients5"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="ingredients6"
+                  id="ingredients6"
+                  v-model="newRecipe.ingredients6"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="ingredients7"
+                  id="ingredients7"
+                  v-model="newRecipe.ingredients7"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="ingredients8"
+                  id="ingredients8"
+                  v-model="newRecipe.ingredients8"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="ingredients9"
+                  id="ingredients9"
+                  v-model="newRecipe.ingredients9"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="ingredients10"
+                  id="ingredients10"
+                  v-model="newRecipe.ingredients10"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="ingredients11"
+                  id="ingredients11"
+                  v-model="newRecipe.ingredients11"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="ingredients12"
+                  id="ingredients12"
+                  v-model="newRecipe.ingredients12"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+              </div>
+              <label
+                for="cookingIngredients"
+                class="block my-2 text-sm font-medium text-gray-900 dark:text-dark"
+                >ปริมาณของวัตถุดิบ ( ปริมาณ หน่วย ) เช่น 10 กรัม</label
+              >
+              <div class="flex gap-2">
+                <input
+                  type="text"
+                  name="measure1"
+                  id="measure1"
+                  v-model="newRecipe.measure1"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                  required
+                />
+                <input
+                  type="text"
+                  name="measure2"
+                  id="measure2"
+                  v-model="newRecipe.measure2"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="measure3"
+                  id="measure3"
+                  v-model="newRecipe.measure3"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="measure4"
+                  id="measure4"
+                  v-model="newRecipe.measure4"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="measure5"
+                  id="measure5"
+                  v-model="newRecipe.measure5"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="measure6"
+                  id="measure6"
+                  v-model="newRecipe.measure6"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="measure7"
+                  id="measure7"
+                  v-model="newRecipe.measure7"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="measure8"
+                  id="measure8"
+                  v-model="newRecipe.measure8"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="measure9"
+                  id="measure9"
+                  v-model="newRecipe.measure9"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="measure10"
+                  id="measure10"
+                  v-model="newRecipe.measure10"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="measure11"
+                  id="measure11"
+                  v-model="newRecipe.measure11"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+                <input
+                  type="text"
+                  name="measure12"
+                  id="measure12"
+                  v-model="newRecipe.measure12"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                for="cookingSteps"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                >ขั้นตอนในการทำ</label
+              >
+              <textarea
+                type="text"
+                name="cookingSteps"
+                id="cookingSteps"
+                v-model="newRecipe.cookingSteps"
+                class="bg-gray-50 h-32 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                required
+              ></textarea>
+            </div>
+            <div class="flex gap-4">
+              <div>
+                <label
+                  for="categoryEn"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                >
+                  Category (English)
+                </label>
+                <select
+                  name="categoryEn"
+                  id="categoryEn"
+                  v-model="newRecipe.categoryEn"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[275px] p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                  required
+                >
+                  <option value="Egg">Egg</option>
+                  <option value="Beef">Beef</option>
+                  <option value="Chicken">Chicken</option>
+                  <option value="Pork">Pork</option>
+                  <option value="Vegan">Vegan</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  for="categoryTh"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                >
+                  Category (Thai)
+                </label>
+                <select
+                  name="categoryTh"
+                  id="categoryTh"
+                  v-model="newRecipe.categoryTh"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[275px] p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                  required
+                  disabled
+                >
+                  <option value="ไข่">ไข่</option>
+                  <option value="เนื้อวัว">เนื้อวัว</option>
+                  <option value="เนื้อไก่">เนื้อไก่</option>
+                  <option value="เนื้อหมู">เนื้อหมู</option>
+                  <option value="มังสวิรัติ">มังสวิรัติ</option>
+                </select>
+              </div>
+
+              <div>
+                <label
+                  for="typeEn"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                >
+                  Type (English)
+                </label>
+                <select
+                  name="typeEn"
+                  id="typeEn"
+                  v-model="newRecipe.typeEn"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[275px] p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                  required
+                >
+                  <option value="Noodle">Noodle</option>
+                  <option value="Steak">Steak</option>
+                  <option value="Fried">Fried</option>
+                  <option value="Rice">Rice</option>
+                  <option value="SideDish">Side Dish</option>
+                  <option value="Salad">Salad</option>
+                  <option value="Dessert">Dessert</option>
+                </select>
+              </div>
+
+              <div>
+                <label
+                  for="typeTh"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                >
+                  Type (Thai)
+                </label>
+                <select
+                  name="typeTh"
+                  id="typeTh"
+                  v-model="newRecipe.typeTh"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[275px] p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                  required
+                  disabled
+                >
+                  <option value="เส้น">เส้น</option>
+                  <option value="สเต็ก">สเต็ก</option>
+                  <option value="ของทอด">ของทอด</option>
+                  <option value="สลัด">สลัด</option>
+                  <option value="ของหวาน">ของหวาน</option>
+                </select>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div>
+                <label
+                  for="difficulty"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                  >ระดับความยากง่ายของเมนู</label
+                >
+                <select
+                  name="vegetarian"
+                  id="vegetarian"
+                  v-model="newRecipe.difficulty"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[275px] p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                  required
+                >
+                  <option value="Easy">ง่าย</option>
+                  <option value="Normal">ปานกลาง</option>
+                  <option value="Difficult">ค่อนข้างใช้ความสามารถ</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  for="timeBased"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                  >เวลาที่ใช้โดยประมาณ</label
+                >
+                <input
+                  type="text"
+                  name="recipeImage"
+                  id="timeBased"
+                  v-model="newRecipe.timeBased"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[275px] p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  for="nutAllergy"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                  >เป็นอาหารทีมีถั่วมั้ย?</label
+                >
+                <select
+                  name="nutAllergy"
+                  id="nutAllergy"
+                  v-model="newRecipe.nutAllergy"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[275px] p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                  required
+                >
+                  <option value="0">ไม่เป็น</option>
+                  <option value="1">เป็น</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  for="vegetarian"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                  >เป็นอาหารประเภทมังสวัรติมั้ย?</label
+                >
+                <select
+                  name="vegetarian"
+                  id="vegetarian"
+                  v-model="newRecipe.vegetarian"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[275px] p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                  required
+                >
+                  <option value="0">ไม่เป็น</option>
+                  <option value="1">เป็น</option>
+                </select>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div>
+                <label
+                  for="video"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                  >คลิปวิดิโอ ( optimal )</label
+                >
+                <input
+                  type="text"
+                  name="recipeImage"
+                  v-model="newRecipe.video"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block h-12 w-[560px] p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                  required
+                />
+                <p v-if="videoUrlError" class="text-red-500">
+                  {{ videoUrlError }}
+                </p>
+              </div>
+              <div>
+                <label
+                  for="recipeImage"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark"
+                  >รูปเมนู</label
+                >
+                <input
+                  type="file"
+                  name="recipeImage"
+                  id="fileupload"
+                  @change="sizeCheck($event)"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[570px] p-2.5 dark:bg-white dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="flex justify-between"></div>
+          </form>
+
+          <button
+            @click="isOpenCreate = false"
+            class="px-6 py-2 text-blue-800 border border-blue-600 rounded"
+          >
+            Cancel
+          </button>
+          <button
+            class="px-6 py-2 ml-2 text-blue-100 bg-blue-600 rounded"
+            :class="{ disabled: !checkValid }"
+            :disabled="!checkValid"
+            @click="
+              createData(
+                newRecipe.recipeName,
+                newRecipe.introduce,
+                newRecipe.cookingSteps,
+                newRecipe.ingredients1,
+                newRecipe.ingredients2,
+                newRecipe.ingredients3,
+                newRecipe.ingredients4,
+                newRecipe.ingredients5,
+                newRecipe.ingredients6,
+                newRecipe.ingredients7,
+                newRecipe.ingredients8,
+                newRecipe.ingredients9,
+                newRecipe.ingredients10,
+                newRecipe.ingredients11,
+                newRecipe.ingredients12,
+                newRecipe.measure1,
+                newRecipe.measure2,
+                newRecipe.measure3,
+                newRecipe.measure4,
+                newRecipe.measure5,
+                newRecipe.measure6,
+                newRecipe.measure7,
+                newRecipe.measure8,
+                newRecipe.measure9,
+                newRecipe.measure10,
+                newRecipe.measure11,
+                newRecipe.measure12,
+                newRecipe.typeEn,
+                newRecipe.typeTh,
+                newRecipe.categoryEn,
+                newRecipe.categoryTh,
+                newRecipe.difficulty,
+                newRecipe.timeBased,
+                newRecipe.vegetarian,
+                newRecipe.nutAllergy,
+                newRecipe.video,
+                imageName
+              )
+            "
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="w-[1350px]">
       <div class="flex space-x-4 mt-4">
         <button
           @click="currentView = 'myRecipes'"
           :class="{
-            'bg-blue-500 text-white px-4 py-2 rounded': true,
+            'bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded': true,
             'bg-blue-700': currentView === 'myRecipes',
           }"
         >
@@ -332,12 +1133,20 @@ onBeforeMount(() => {
         <button
           @click="currentView = 'favoriteRecipes'"
           :class="{
-            'bg-green-500 text-white px-4 py-2 rounded': true,
+            'bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded': true,
             'bg-green-700': currentView === 'favoriteRecipes',
           }"
         >
           เมนูที่คุณถูกใจ
         </button>
+        <div class="justify-start">
+          <button
+            class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
+            @click="isOpenCreate = true"
+          >
+            เพิ่มสูตรอาหาร
+          </button>
+        </div>
       </div>
 
       <div
@@ -405,7 +1214,7 @@ onBeforeMount(() => {
                       <span>ประเภทอาหาร: {{ item.type }}</span>
                     </div>
                     <div class="ml-auto">
-                      <div class="" v-if="item.video">
+                      <div class="" v-if="item.video !== `0`">
                         <svg
                           class="h-8 w-8 text-red-500"
                           viewBox="0 0 24 24"
@@ -544,7 +1353,7 @@ onBeforeMount(() => {
                       <span>ประเภทอาหาร: {{ item.type }}</span>
                     </div>
                     <div class="ml-auto">
-                      <div class="" v-if="item.video">
+                      <div class="" v-if="item.video !== `0`">
                         <svg
                           class="h-8 w-8 text-red-500"
                           viewBox="0 0 24 24"

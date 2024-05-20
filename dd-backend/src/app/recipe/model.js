@@ -157,20 +157,20 @@ module.exports = (sequelize, DataTypes) => {
       video: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: null,
+        defaultValue: "0",
       },
       vegetarian: {
-        type: DataTypes.ENUM("0", "1"),
+        type: DataTypes.STRING(4),
         defaultValue: "0",
         allowNull: false,
       },
       nutAllergy: {
-        type: DataTypes.ENUM("0", "1"),
+        type: DataTypes.STRING(4),
         defaultValue: "0",
         allowNull: false,
       },
       difficulty: {
-        type: DataTypes.ENUM("Easy", "Normal", "Difficult"),
+        type: DataTypes.STRING,
         defaultValue: "Easy",
         allowNull: false,
       },

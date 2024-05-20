@@ -148,18 +148,18 @@ const addRecipe = async (req, res) => {
     let result = {
       recipeName: req.body.recipeName,
       cookingSteps: req.body.cookingSteps,
-      ingrediant1: req.body.ingrediant1,
-      ingrediant2: req.body.ingrediant2,
-      ingrediant3: req.body.ingrediant3,
-      ingrediant4: req.body.ingrediant4,
-      ingrediant5: req.body.ingrediant5,
-      ingrediant6: req.body.ingrediant6,
-      ingrediant7: req.body.ingrediant7,
-      ingrediant8: req.body.ingrediant8,
-      ingrediant9: req.body.ingrediant9,
-      ingrediant10: req.body.ingrediant10,
-      ingrediant11: req.body.ingrediant11,
-      ingrediant12: req.body.ingrediant12,
+      ingredients1: req.body.ingredients1,
+      ingredients2: req.body.ingredients2,
+      ingredients3: req.body.ingredients3,
+      ingredients4: req.body.ingredients4,
+      ingredients5: req.body.ingredients5,
+      ingredients6: req.body.ingredients6,
+      ingredients7: req.body.ingredients7,
+      ingredients8: req.body.ingredients8,
+      ingredients9: req.body.ingredients9,
+      ingredients10: req.body.ingredients10,
+      ingredients11: req.body.ingredients11,
+      ingredients12: req.body.ingredients12,
       measure1: req.body.measure1,
       measure2: req.body.measure2,
       measure3: req.body.measure3,
@@ -185,6 +185,18 @@ const addRecipe = async (req, res) => {
       timeBased: req.body.timeBased,
       userId: id,
     };
+
+    if (req.body.vegetarian !== "0" && req.body.vegetarian !== "1") {
+      return res
+        .status(400)
+        .send({ message: "Invalid value for vegetarian. Must be 0 or 1." });
+    }
+
+    if (req.body.nutAllergy !== "0" && req.body.nutAllergy !== "1") {
+      return res
+        .status(400)
+        .send({ message: "Invalid value for nutAllergy. Must be 0 or 1." });
+    }
 
     const recipe = await Recipe.create(result);
     res.status(201).send(recipe);
